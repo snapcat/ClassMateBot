@@ -232,7 +232,7 @@ class Deadline(commands.Cog):
         for homework, due_date in reminders:
             await ctx.send(f"{homework} is due at {due_date}")
         if len(reminders) == 0:
-            await ctx.send("Rejoice..!! You have no pending homeworks for {}..!!".format(courseid))
+            await ctx.send(f"Rejoice..!! You have no pending homeworks for {courseid}..!!")
 
     @coursedue.error
     async def coursedue_error(self, ctx, error):
