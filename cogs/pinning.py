@@ -43,10 +43,8 @@ class Pinning(commands.Cog):
         )
 
         await ctx.send(
-            "A new message has been pinned with tag: {} and link: {} with a description: {} by {}.".format(tagname,
-                                                                                                           link,
-                                                                                                           description,
-                                                                                                           author))
+            f"A new message has been pinned with tag: {tagname} and link: {link} "
+            f"with a description: {description} by {author}.")
 
     @addMessage.error
     async def addMessage_error(self, ctx, error):

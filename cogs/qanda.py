@@ -45,7 +45,7 @@ class Qanda(commands.Cog):
 
         # format question
         author_str = 'anonymous' if author is None else (await self.bot.fetch_user(author)).name
-        q_str = "Q{}: {} by {}".format(num, qs, author_str)
+        q_str = f"Q{num}: {qs} by {author_str}"
 
         message = await ctx.send(q_str)
 
@@ -140,14 +140,14 @@ class Qanda(commands.Cog):
 
         # generate and edit msg with answer
         q_author_str = 'anonymous' if q[2] is None else (await self.bot.fetch_user(q[2])).name
-        new_answer = "Q{}: {} by {}\n".format(q[0], q[1], q_author_str)
+        new_answer = f"Q{q[0]}: {q[1]} by {q_author_str}\n"
 
         # get all answers for question and add to msg
         answers = db.query('SELECT answer, author_id, author_role FROM answers WHERE guild_id = %s AND q_number = %s',
                            (ctx.guild.id, num))
         for answer, author, role in answers:
             a_author = 'anonymous' if author is None else (await self.bot.fetch_user(author)).name
-            new_answer += "{} ({}) Ans: {}\n".format(a_author, role, answer)
+            new_answer += f"{a_author} ({role}) Ans: {answer}\n"
 
         # edit message
         try:
