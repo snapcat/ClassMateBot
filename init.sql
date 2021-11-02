@@ -29,7 +29,6 @@ CREATE TABLE pinned_messages (
     author_id       BIGINT NOT NULL,
     tag             VARCHAR NOT NULL,
     description     VARCHAR NOT NULL,
-    link            VARCHAR NOT NULL
 );
 
 CREATE TABLE review_questions (
