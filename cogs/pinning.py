@@ -59,56 +59,63 @@ class Pinning(commands.Cog):
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: deleteMessage(self, ctx, tagname: str, *, description: str)
-    #    Description: This command unpins the pinned messages with the provided tagname and description.
+    #    Description: This command unpins the pinned messages with the provided tagname.
     #    Inputs:
     #    - self: used to access parameters passed to the class through the constructor
     #    - ctx: used to access the values passed through the current context
     #    - tagname: the tag used to identify which pinned messages are to be deleted.
-    #    - description: description of the pinned message used to uniquely identify a particular message.
     # -----------------------------------------------------------------------------------------------------------------
-    @commands.command(name="unpin", help="Unpin a message by passing the tagname and description of the pinned message")
-    async def deleteMessage(self, ctx, tagname: str, *, description: str):
+    @commands.command(name="unpin", help="Unpin a message by passing the tagname.")
+    async def deleteMessage(self, ctx, tagname: str):
         author = ctx.message.author
 
         rows_deleted = db.query(
-            'SELECT * FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s AND description = %s',
-            (ctx.guild.id, tagname, author.id, description)
+            'SELECT * FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s',
+            (ctx.guild.id, tagname, author.id)
         )
         db.query(
-            'DELETE FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s AND description = %s',
-            (ctx.guild.id, tagname, author.id, description)
+            'DELETE FROM pinned_messages WHERE guild_id = %s AND tag = %s AND author_id = %s',
+            (ctx.guild.id, tagname, author.id)
         )
 
         if len(rows_deleted) == 0:
             await ctx.send(
-                f"No message found with the combination of tagname: {tagname}, description {description} and author: {author}.")
+                f"No message found with the combination of tagname: {tagname}, and author: {author}.")
         else:
             await ctx.send(
-                f"{len(rows_deleted)} pinned message(s) has been deleted with tag: {tagname} and description: {description}.")
+                f"{len(rows_deleted)} pinned message(s) has been deleted with tag: {tagname}.")
 
     @deleteMessage.error
     async def deleteMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                'To use the unpin command, do: $unpin TAGNAME DESCRIPTION \n ( For example: $unpin HW HW8 reminder )')
+                'To use the unpin command, do: $unpin TAGNAME \n ( For example: $unpin HW )')
         print(error)
 
     # ----------------------------------------------------------------------------------
     #    Function: retrieveMessages(self, ctx, tagname: str)
     #    Description: This command is used to retrieve all the pinned messages under a
-    #                 given tagname by a particular user.
+    #                 given tagname by a particular user, or all messages if tag is empty.
     #    Inputs:
     #    - self: used to access parameters passed to the class through the constructor
     #    - ctx: used to access the values passed through the current context
     #    - tagname: the tag used to identify which pinned messages are to be retrieved.
     # ----------------------------------------------------------------------------------
     @commands.command(name="pinnedmessages", help="Retrieve the pinned messages by passing the tagname")
-    async def retrieveMessages(self, ctx, tagname: str):
+    async def retrieveMessages(self, ctx, tagname: str = ""):
         author = ctx.message.author
-        messages = db.query(
-            'SELECT tag, link, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s AND tag = %s',
-            (ctx.guild.id, author.id, tagname)
-        )
+
+        if tagname == "":
+            messages = db.query(
+                'SELECT tag, link, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s',
+                (ctx.guild.id, author.id)
+            )
+        else:
+            messages = db.query(
+                'SELECT tag, link, description FROM pinned_messages WHERE guild_id = %s AND author_id = %s AND tag = %s',
+                (ctx.guild.id, author.id, tagname)
+            )
+        
         if len(messages) == 0:
             await ctx.send("No messages found with the given tagname and author combination")
         for tag, link, description in messages:
