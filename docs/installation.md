@@ -1,4 +1,4 @@
-# Installation and Testing Guide 
+# Installation Guide 
 ### Create a Discord Bot
 To create a Discord Bot, you must:
 * have a [Discord Account](https://discord.com/login)
