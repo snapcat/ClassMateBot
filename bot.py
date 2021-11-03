@@ -43,19 +43,25 @@ bot = Bot(intents=intents, command_prefix="$")
 @bot.event
 async def on_guild_join(guild):
     for channel in guild.text_channels:
-        if channel.permissions_for(guild.me).send_messages:
+        if channel.permissions_for(guild.me).send_messages and channel.name == "general":
             if 'verified' not in guild.roles:
                 await guild.create_role(name="verified", colour=discord.Colour(0x2ecc71),
                                         permissions=discord.Permissions.general())
             if 'unverified' not in guild.roles:
                 await guild.create_role(name="unverified", colour=discord.Colour(0xe74c3c),
                                         permissions=discord.Permissions.none())
+                unverified = discord.utils.get(guild.roles, name="unverified")
+                # unverified members can only see/send messages in general channel until they verify
+                overwrite = discord.PermissionOverwrite()
+                overwrite.update(send_messages = True)
+                overwrite.update(read_messages = True)
+                await channel.set_permissions(unverified, overwrite=overwrite)
             # Assign Verified role to admin
             leader = guild.owner
             leadrole = get(guild.roles, name='verified')
             await channel.send(leader.name + " has been given verified role!")
             await leader.add_roles(leadrole, reason=None, atomic=True)
-            await channel.send("To verified members, type \"$verify @<member>\"")
+            await channel.send("To verify yourself, use \"$verify <FirstName LastName>\"")
 
 # ------------------------------------------------------------------------------------------------------------------
 #    Function: on_ready()
