@@ -1,11 +1,14 @@
 <p align="center"><img width=20.5% src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/neworange.png"></p>
-<h1 align="center" style="font-size:40px">ClassMate Bot</h1>
+<h1 align="center" >ClassMate Bot</h1>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-![Python](https://img.shields.io/badge/python-v3.6+-yellow.svg)
+![Python](https://img.shields.io/badge/python-v3.8+-yellow.svg)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5539956.svg)](https://doi.org/10.5281/zenodo.5539956)
 ![Build Status](https://github.com/SE21-Team2/ClassMateBot/actions/workflows/main.yml/badge.svg)
+![GitHub issues](https://img.shields.io/github/issues/shikhanair/TeachersPetBot)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/SE21-Team2/ClassMateBot)
+![Lines of code](https://img.shields.io/tokei/lines/github/SE21-Team2/ClassMateBot)
 [![codecov](https://codecov.io/gh/SE21-Team2/ClassMateBot/branch/main/graph/badge.svg)](https://codecov.io/gh/SE21-Team2/ClassMateBot)
 
 <p align="center">
@@ -33,7 +36,7 @@ This project helps to improve the life of students, TAs and teachers by automati
 
 ## :orange_book: Description
 
-There are three basic user groups in a ClassMateBot, which are Students, Professor and TAs. Some basic tasks for the bot for the students user group should be automating the task of group making for projects or homewroks, Projection deadline reminders, etc. For TAs it is taking up polls, or answering FAQs asked by the students. 
+There are three basic user groups in a ClassMateBot, which are Students, Professor and TAs. Some basic tasks for the bot for the students user group should be automating the task of group making for projects or homeworks, Projection deadline reminders, asking questions, getting questions for review etc. For TAs it is taking up polls, or answering questions asked by the students. 
 
 
 Our ClassMateBot focuses on the student side of the discord channel, i.e. currently it focuses on the problems faced by the students while using these discord channels.
