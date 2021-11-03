@@ -207,6 +207,7 @@ async def test_pinError(bot):
     assert dpytest.verify().message().contains().content(
         'To use the pin command, do: $pin TAGNAME LINK DESCRIPTION \n ( For example: $pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )')
 
+
 # --------------------
 # Tests cogs/newComer
 # --------------------
