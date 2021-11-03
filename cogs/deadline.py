@@ -23,32 +23,28 @@ class Deadline(commands.Cog):
         self.units = {"second": 1, "minute": 60, "hour": 3600, "day": 86400, "week": 604800, "month": 2592000}
 
     @commands.command(name="timenow",
-                      help="fix the timezone based off input time $timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02")
-    async def fix_timezone(self, ctx, *, date: str):
+                      help="put in current time to get offset needed for proper datetime notifications $timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02")
+    async def timenow(self, ctx, *, date: str):
         author = ctx.message.author
-        # print('Author: '+str(author)+' coursename: '+coursename+' homework count: '+hwcount+' date: '+str(date))
+
         try:
             input_time = datetime.strptime(date, '%b %d %Y %H:%M')
-            # print(seconds)
         except ValueError:
-            await ctx.send("Due date could not be parsed")
+            await ctx.send("Date could not be parsed")
             return
         
         utc_dt = datetime.utcnow()
         difference = utc_dt - input_time
-        diff_in_minutes = int(difference.total_seconds() / 60)
-        input_time += timedelta(minutes=diff_in_minutes)
+        diff_in_hours = int(difference.total_seconds() / 3600)
+        input_time += timedelta(hours=diff_in_hours)
 
-        #testing time difference outputs
-        print(input_time)
-        print(utc_dt)
-        print(diff_in_minutes)
+        await ctx.send(f"Current time is {-diff_in_hours} hours from system time (UTC).")
 
-    @fix_timezone.error
-    async def fix_timezone_error(self, ctx, error):
+    @timenow.error
+    async def timenow_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                'To use the timenow command, do: $timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02')
+                'To use the timenow command (with current time), do: $timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02')
         print(error)
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -67,7 +63,7 @@ class Deadline(commands.Cog):
                       help="add homework and due-date $addhw CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) ex. $addhw CSC510 HW2 SEP 25 2024 17:02")
     async def duedate(self, ctx, coursename: str, hwcount: str, *, date: str):
         author = ctx.message.author
-        # print('Author: '+str(author)+' coursename: '+coursename+' homework count: '+hwcount+' date: '+str(date))
+
         try:
             duedate = datetime.strptime(date, '%b %d %Y %H:%M')
             # print(seconds)
@@ -77,8 +73,7 @@ class Deadline(commands.Cog):
             except:
                 await ctx.send("Due date could not be parsed")
                 return
-        # a_timedelta = duedate - datetime.today()
-        # seconds = (time.time() + a_timedelta.total_seconds())
+
         existing = db.query(
             'SELECT author_id FROM reminders WHERE guild_id = %s AND course = %s AND homework = %s',
             (ctx.guild.id, coursename, hwcount)
@@ -147,7 +142,6 @@ class Deadline(commands.Cog):
     #    Outputs: returns either an error stating a reason for failure or
     #          returns a success message indicating that the reminder has been updated
     # -----------------------------------------------------------------------------------------------------------------
-
     @commands.command(name="changeduedate", pass_context=True,
                       help="update the assignment date. $changeduedate CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) ex. $changeduedate CSC510 HW2 SEP 25 2024 17:02 ")
     async def changeduedate(self, ctx, classid: str, hwid: str, *, date: str):
@@ -189,7 +183,6 @@ class Deadline(commands.Cog):
     #    Outputs: returns either an error stating a reason for failure
     #             or returns a list of all the assignments that are due this week
     # -----------------------------------------------------------------------------------------------------------------
-
     @commands.command(name="duethisweek", pass_context=True,
                       help="check all the homeworks that are due this week $duethisweek")
     async def duethisweek(self, ctx):
@@ -228,7 +221,7 @@ class Deadline(commands.Cog):
             (ctx.guild.id,)
         )
         for course, homework, due_time in due_today:
-            await ctx.send(f"{course} {homework} is due today at {due_time}")
+            await ctx.send(f"{course} {homework} is due today at {due_time} UTC")
         if len(due_today) == 0:
             await ctx.send("You have no dues today..!!")
 
@@ -348,11 +341,8 @@ class Deadline(commands.Cog):
     async def delete_old_reminders(self):
         print("inside delete old reminders")
         while self is self.bot.get_cog("Deadline"):
-            date = db.query('SELECT due_date FROM reminders')
-            date2 = db.query('SELECT now()')
-            print(f"\n{date}\n{date2}\n")
             db.query('DELETE FROM reminders WHERE now() > due_date')
-            await asyncio.sleep(5)
+            await asyncio.sleep(10)
 
 
 # -------------------------------------
