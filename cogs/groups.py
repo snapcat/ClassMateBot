@@ -1,11 +1,9 @@
 # Copyright (c) 2021 War-Keeper
-import discord
-from discord.ext import commands
 import os
-import csv
 import sys
 
-from discord.ext.commands.core import group
+import discord
+from discord.ext import commands
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
@@ -42,7 +40,8 @@ class Groups(commands.Cog):
 
         if group_num < 0 or group_num > 99:
             await ctx.send('Not a valid group')
-            await ctx.send('To use the join command, do: $join <Num> where 0 <= <Num> <= 99 \n ( For example: $join 0 )')
+            await ctx.send("To use the join command, do: $join <Num> "
+                           "where 0 <= <Num> <= 99 \n ( For example: $join 0 )")
             return
 
         group_count = db.query(
@@ -106,7 +105,7 @@ class Groups(commands.Cog):
 
             await ctx.send(f'You have been removed from Group {current_group_num[0][0]}!')
         else:
-            await ctx.send(f'You are not in a group!')
+            await ctx.send('You are not in a group!')
 
     # -------------------------------------------------------------------------------------------------------
     #    Function: group(self, ctx)
@@ -122,7 +121,8 @@ class Groups(commands.Cog):
     async def groups(self, ctx):
         # load groups csv
         groups = db.query(
-            'SELECT group_num, array_agg(member_name) FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
+            'SELECT group_num, array_agg(member_name) '
+            'FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
             (ctx.guild.id,)
         )
 
@@ -161,10 +161,10 @@ class Groups(commands.Cog):
             )
 
             if not group_num:
-                await ctx.send(f'You are not in a group!')
+                await ctx.send('You are not in a group!')
                 return
-            else:
-                group_num = group_num[0][0]
+
+            group_num = group_num[0][0]
 
         # load groups csv
         group = db.query(
