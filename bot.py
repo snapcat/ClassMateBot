@@ -43,6 +43,14 @@ bot = Bot(intents=intents, command_prefix="$")
 @bot.event
 async def on_guild_join(guild):
     for channel in guild.text_channels:
+
+        if 'instructor-commands' not in guild.text_channels:
+            await guild.create_text_channel('instructor-commands')
+            await channel.send("instructor-commands channel has been added!")
+        if 'q-and-a' not in guild.text_channels:
+            await guild.create_text_channel('q-and-a')
+            await channel.send("q-and-a channel has been added!")
+
         if channel.permissions_for(guild.me).send_messages and channel.name == "general":
             if 'verified' not in guild.roles:
                 await guild.create_role(name="verified", colour=discord.Colour(0x2ecc71),
