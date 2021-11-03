@@ -17,5 +17,8 @@ Previously, the bot would only work for a single Discord server, which creates o
 ### Database
 Previously, all persistent data was stored in local files and each action would overwrite the entirety of data files. However, this approach suffers at scale, where datasets are large and operations are done frequently and concurrently. We transitioned persistent storage to use a PostgreSQL instance hosted through the Heroku cloud platform, to solve these issues.
 
+### Usability
+...
+
 ## Documentation
 This version includes a more detailed [Installation and Testing Guide](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/InstallationTesting.md) including the new database and cloud setup instructions.
