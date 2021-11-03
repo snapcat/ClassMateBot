@@ -9,7 +9,7 @@ import json
 import os
 import asyncio
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -21,6 +21,35 @@ class Deadline(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.units = {"second": 1, "minute": 60, "hour": 3600, "day": 86400, "week": 604800, "month": 2592000}
+
+    @commands.command(name="timenow",
+                      help="fix the timezone based off input time $timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02")
+    async def fix_timezone(self, ctx, *, date: str):
+        author = ctx.message.author
+        # print('Author: '+str(author)+' coursename: '+coursename+' homework count: '+hwcount+' date: '+str(date))
+        try:
+            input_time = datetime.strptime(date, '%b %d %Y %H:%M')
+            # print(seconds)
+        except ValueError:
+            await ctx.send("Due date could not be parsed")
+            return
+        
+        utc_dt = datetime.utcnow()
+        difference = utc_dt - input_time
+        diff_in_minutes = int(difference.total_seconds() / 60)
+        input_time += timedelta(minutes=diff_in_minutes)
+
+        #testing time difference outputs
+        print(input_time)
+        print(utc_dt)
+        print(diff_in_minutes)
+
+    @fix_timezone.error
+    async def fix_timezone_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(
+                'To use the timenow command, do: $timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02')
+        print(error)
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: duedate(self, ctx, coursename: str, hwcount: str, *, date: str)
@@ -243,9 +272,10 @@ class Deadline(commands.Cog):
     # ---------------------------------------------------------------------------------
     @commands.command(name="listreminders", pass_context=True, help="lists all reminders")
     async def listreminders(self, ctx):
-        reminders = db.query('SELECT author_id, course, homework, due_date FROM reminders WHERE guild_id = %s', (ctx.guild.id,))
+        author = ctx.message.author
+        reminders = db.query('SELECT course, homework, due_date FROM reminders WHERE guild_id = %s and author_id = %s', (ctx.guild.id, author.id))
         for author_id, course, homework, due_date in reminders:
-            await ctx.send(f"{course} homework named: {homework} which is due on: {due_date} by {author_id}")
+            await ctx.send(f"{course} homework named: {homework} which is due on: {due_date} by {author}")
         if not reminders:
             await ctx.send("Mission Accomplished..!! You don't have any more dues..!!")
 
@@ -311,13 +341,16 @@ class Deadline(commands.Cog):
 
     # -----------------------------------------------------------------------------------------------------
     #    Function: delete_old_reminders(self)
-    #    Description: asynchronously keeps on tracking the json file for expired reminders and cleans them.
+    #    Description: asynchronously keeps on tracking the database for expired reminders and cleans them.
     #    Inputs:
     #    - self: used to access parameters passed to the class through the constructor
     # -----------------------------------------------------------------------------------------------------
     async def delete_old_reminders(self):
         print("inside delete old reminders")
         while self is self.bot.get_cog("Deadline"):
+            date = db.query('SELECT due_date FROM reminders')
+            date2 = db.query('SELECT now()')
+            print(f"\n{date}\n{date2}\n")
             db.query('DELETE FROM reminders WHERE now() > due_date')
             await asyncio.sleep(5)
 
