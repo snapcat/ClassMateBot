@@ -1,5 +1,5 @@
 <p align="center"><img width=20.5% src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/neworange.png"></p>
-<p align="center"><img width=60% src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/bot.png"></p>
+<h1 align="center">ClassMate Bot</h1>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ![Python](https://img.shields.io/badge/python-v3.6+-yellow.svg)
@@ -72,30 +72,7 @@ An essential part of studying is going over questions related to the exam topics
 
 
 ## :arrow_down: Installation
-
-1. Clone the Github repository to a desired location on your computer. You will need [git](https://git-scm.com/) to be preinstalled on your machine. Once the repository is cloned, you will then ```cd``` into the local repository.
-    ```
-    git clone https://github.com/SE21-Team2/ClassMateBot.git
-    cd ClassMateBot
-    ```
-2. This project uses Python 3, so make sure that [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installation/) are preinstalled. All requirements of the project are listed in the ```requirements.txt``` file. Use pip to install all of those.
-    ```
-    pip install -r requirements.txt
-    ```
-3. Once the installation is complete, you will need to create the .env file that contains the bot token information and add this file to your .gitignore. 
-    ```
-    # .env
-    DISCORD_TOKEN={your-bot-token}
-    GUILD={your-guild-name}
-    UNVERIFIED_ROLE_NAME='unverified'
-    DATABASE_URL={your-database-url}
-    ```
-    **PLEASE DO NOT SHARE THE TOKEN ONLINE, DO NOT UPLOAD TO GITHUB OR ELSE THE TOKEN WILL AUTOMATICALLY GET DESTROYED AND HAS TO BE REGENERATED**
-
-4. Once all the requirements are installed, use the python command to run the ```bot.py``` file.
-    ```
-    python3 bot.py 
-    ```
+To install and run the ClassMate Bot, follow instructions in the [Installation and Testing Guide](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/InstallationTesting.md).
 
 ---
 
