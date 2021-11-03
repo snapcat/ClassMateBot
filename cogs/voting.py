@@ -33,25 +33,24 @@ class Voting(commands.Cog):
     #    Outputs: adds the user to the given project or returns an error if the project is invalid or the user
     #             is not in a valid group
     # ----------------------------------------------------------------------------------------------------------
-    @commands.command(name='vote', help='Used for voting for Project 2 and 3, \
-    To use the vote command, do: $vote \'Project\' <Num> \n \
-    (For example: $vote project 0)', pass_context=True)
-    async def vote(self, ctx, arg='Project', arg2='-1'):
-        # get the arguments for the project to vote on
-        project_num = int(arg2)
-
+    @commands.command(name='vote', help='Used for voting for Projects, \
+    To use the vote command, do: $vote <Num> \n \
+    (For example: $vote 0)', pass_context=True)
+    async def vote(self, ctx, project_num : int = '-1'):
         # get the name of the caller
         member_name = ctx.message.author.display_name.upper()
 
-        groups = db.query(
-            'SELECT group_num FROM group_members WHERE guild_id = %s AND member_name = %s LIMIT 1',
+        group = db.query(
+            'SELECT group_num FROM group_members WHERE guild_id = %s AND member_name = %s',
             (ctx.guild.id, member_name)
         )
 
         # error handle if member is not in a group
-        if len(groups) == 0:
-            await ctx.send("Could not find the Group you are in, please contact a TA or join with your group number")
+        if len(group) == 0:
+            await ctx.send("You are not in a group. You must join a group before voting on a project.")
             raise commands.UserInputError
+
+        group = group[0][0]
 
         num_groups = db.query(
             'SELECT COUNT(*) FROM project_groups WHERE guild_id = %s AND project_num = %s',
@@ -59,33 +58,40 @@ class Voting(commands.Cog):
         )[0]
 
         # check if project has more than 6 groups voting on it
-        if num_groups == 6:
-            await ctx.send('A Project cannot have more than 6 Groups working on it!')
+        if num_groups == 3:
+            await ctx.send('Projects are limited to 3 groups, please select another project.')
             return
 
-        member_group = groups[0]
         voted_for = db.query(
             'SELECT project_num FROM project_groups WHERE guild_id = %s AND group_num = %s',
-            (ctx.guild.id, member_group)
+            (ctx.guild.id, group)
         )
+
         if voted_for:
-            project_voted_for, *_ = voted_for[0]
-            await ctx.send(f'You already voted for Project {project_voted_for}')
-            return
+            voted_for = voted_for[0][0]
+            if voted_for == project_num:
+                await ctx.send(f'You already voted for Project {voted_for}')
+                return
+            
+            db.query(
+                'DELETE FROM project_groups WHERE guild_id = %s AND group_num = %s',
+                (ctx.guild.id, group)
+            )
+            await ctx.send(f'Group {group} removed vote for Project {voted_for}')
 
         # add the group to the project list
         db.query(
             'INSERT INTO project_groups (guild_id, project_num, group_num) VALUES (%s, %s, %s)',
-            (ctx.guild.id, project_num, member_group)
+            (ctx.guild.id, project_num, group)
         )
-        await ctx.send(f'{member_group} has voted for Project {project_num}!')
+        await ctx.send(f'Group {group} has voted for Project {project_num}!')
 
     # this handles errors related to the vote command
     @vote.error
     async def vote_error(self, ctx, error):
         if isinstance(error, commands.UserInputError):
-            await ctx.send('To join a group, use the join command, do: $vote \'Project\' <Num> \n'
-            '( For example: $vote Project 0 )')
+            await ctx.send('To join a project, use the join command, do: $vote <Num> \n'
+            '( For example: $vote 0 )')
         print(error)
 
     # ----------------------------------------------------------------------------------
@@ -103,8 +109,11 @@ class Voting(commands.Cog):
             "SELECT project_num, string_agg(group_num::text, ', ') AS group_members FROM project_groups WHERE guild_id = %s GROUP BY project_num",
             (ctx.guild.id,)
         )
-        
-        await ctx.send('\n'.join(f'Project {project_num}: Group(s) {group_members}' for project_num, group_members in projects))
+
+        if len(projects) > 0:
+            await ctx.send('\n'.join(f'Project {project_num}: Group(s) {group_members}' for project_num, group_members in projects))
+        else:
+            await ctx.send('There are currently no votes for any project numbers.')
 
 
 # -----------------------------------------------------------
