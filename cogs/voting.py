@@ -23,15 +23,14 @@ class Voting(commands.Cog):
         self.bot = bot
 
     # ----------------------------------------------------------------------------------------------------------
-    #    Function: vote(self, ctx, arg='Project', arg2='-1')
-    #    Description: "votes" for the given project by adding the user to it
+    #    Function: vote(self, ctx, arg2='-1')
+    #    Description: "votes" for the given project by adding the users group to it
     #    Inputs:
     #    - self: used to access parameters passed to the class through the constructor
     #    - ctx: used to access the values passed through the current context
-    #    - arg: the name of the project
-    #    - arg2: the number of the project
-    #    Outputs: adds the user to the given project or returns an error if the project is invalid or the user
-    #             is not in a valid group
+    #    - project_num: the number of the project to vote for with group
+    #    Outputs: adds the user to the given project, switching if already in a project
+    #             or returns an error if the project is invalid or the user is not in a valid group
     # ----------------------------------------------------------------------------------------------------------
     @commands.command(name='vote', help='Used for voting for Projects, \
     To use the vote command, do: $vote <Num> \n \
@@ -39,6 +38,10 @@ class Voting(commands.Cog):
     async def vote(self, ctx, project_num : int = '-1'):
         # get the name of the caller
         member_name = ctx.message.author.display_name.upper()
+
+        if project_num < 0 or project_num > 99:
+            await ctx.send("A valid project number is 1-99.")
+            return
 
         group = db.query(
             'SELECT group_num FROM group_members WHERE guild_id = %s AND member_name = %s',
