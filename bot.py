@@ -36,9 +36,10 @@ bot = Bot(intents=intents, command_prefix="$")
 #    Description: Activates when the bot joins a new guild, prints the name of the server it joins and the names of all members
 #                 of that server
 #    Inputs:
-#    -
+#    -guild which is bot is joining
 #    Outputs:
-#    -
+#    -Success messages for channel creation and role creation
+#    -Error if
 # ------------------------------------------------------------------------------------------------------------------
 @bot.event
 async def on_guild_join(guild):
@@ -67,8 +68,11 @@ async def on_guild_join(guild):
             # Assign Verified role to admin
             leader = guild.owner
             leadrole = get(guild.roles, name='verified')
-            await channel.send(leader.name + " has been given verified role!")
+            unverified = discord.utils.get(guild.roles, name="unverified")
             await leader.add_roles(leadrole, reason=None, atomic=True)
+            await channel.send(leader.name + " has been given verified role!")
+            for member in guild.members:
+                member.add_roles(unverified, reason=None, atomic=True)
             await channel.send("To verify yourself, use \"$verify <FirstName LastName>\"")
 
 # ------------------------------------------------------------------------------------------------------------------
