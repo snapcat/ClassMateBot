@@ -75,7 +75,7 @@ An essential part of studying is going over questions related to the exam topics
 
 
 ## :arrow_down: Installation
-To install and run the ClassMate Bot, follow instructions in the [Installation and Testing Guide](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/installationTesting.md).
+To install and run the ClassMate Bot, follow instructions in the [Installation Guide](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/installation.md).
 
 ---
 
