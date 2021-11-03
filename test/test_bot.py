@@ -204,19 +204,32 @@ async def test_pinError(bot):
     # Tests pinning without a message, will fail
     with pytest.raises(Exception):
         await dpytest.message("$pin")
-        assert dpytest.verify().message().contains().content(
-            'To use the pin command, do: $pin TAGNAME LINK DESCRIPTION \n ( For example: $pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )')
-
+    assert dpytest.verify().message().contains().content(
+        'To use the pin command, do: $pin TAGNAME LINK DESCRIPTION \n ( For example: $pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )')
 
 # --------------------
 # Tests cogs/newComer
 # --------------------
-'''
+
 @pytest.mark.asyncio
-async def test_verifyError(bot):
-    # Test verification, should raise exception since channel isn't private
-    with pytest.raises(Exception):
-        await dpytest.message(content="$verify", channel=0)'''
+async def test_verify(bot):
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    channel = await guild.create_text_channel('general')
+
+    await dpytest.message("$verify Student Name", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Warning: Please make sure the verified and unverified roles exist in this server!')
+
+    # Test self-verification - unverified role assigned
+    await guild.create_role(name="unverified")
+    await guild.create_role(name="verified")
+    role = discord.utils.get(guild.roles, name="unverified")
+    await dpytest.add_role(user, role)
+    await dpytest.message("$verify Student Name", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        f'Thank you for verifying! You can start using {guild.name}!')
+
 
 @pytest.mark.asyncio
 async def test_verifyNoName(bot):
