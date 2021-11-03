@@ -67,7 +67,7 @@ class ReviewQs(commands.Cog):
         )
 
         await ctx.send(
-            "A new review question has been added! Question: {} and Answer: {}.".format(qs, ans))
+            f"A new review question has been added! Question: {qs} and Answer: {ans}.")
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: add_question_error(self, ctx, error)
