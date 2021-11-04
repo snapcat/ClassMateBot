@@ -242,16 +242,19 @@ async def test_verify(bot):
     await dpytest.message("$verify Student Name", channel=channel)
     assert dpytest.verify().message().contains().content(
         f'Thank you for verifying! You can start using {guild.name}!')
+    dpytest.get_message()
 
 
 @pytest.mark.asyncio
 async def test_verifyNoName(bot):
+    guild = dpytest.get_config().guilds[0]
+    await guild.create_role(name="unverified")
+    await guild.create_role(name="verified")
     # Test verification without proper argument given
-    with pytest.raises(Exception):
-        await dpytest.message("$verify")
-        # print(dpytest.get_message().content)
-        assert dpytest.verify().message().contains().content(
-            'To use the verify command, do: $verify <FirstName LastName> \n ( For example: $verify Jane Doe )')
+    await dpytest.message("$verify")
+    # print(dpytest.get_message().content)
+    assert dpytest.verify().message().contains().content(
+        'To use the verify command, do: $verify <FirstName LastName> \n ( For example: $verify Jane Doe )')
 
 # We cannot currently test newComer.py in a meaningful way due to not having a way to DM the test bot directly,
 # as well as inability to have dpytest add/remove roles to test specific cases
