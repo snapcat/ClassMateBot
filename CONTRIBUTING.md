@@ -1,22 +1,42 @@
 # Contributing to ClassMateBot
 
-Thank you so much for taking an interest in contributing!
+:+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
-Follow the set of guidelines below to contribute to ClassMateBot!
+The following is a set of guidelines for contributing to   ClassMate Bot. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+
+#### Table Of Contents
+
+[Code of Conduct](#code-of-conduct)
+
+[I don't want to read this whole thing, I just have a question!!!](#i-dont-want-to-read-this-whole-thing-i-just-have-a-question)
+
+[How Can I Contribute?](#how-can-i-contribute)
+  * [Pull Requests](#pull-requests)
+  * [Adding Commands](#adding-commands)
+  * [Reporting Bugs](#reporting-bugs)
+
+[Style Guides](#style-guides)
+  * [Git Commit Messages](#git-commit-messages)
+  * [Python Style Guide](#python-style-guide)
 
 ## Code of Conduct
 
-By participating, you are expected to uphold this code. Please report unacceptable behavior to cpatel3@ncsu.edu, webrown2@ncsu.edu.
+This project and everyone participating in it is governed by the [ClassMate Bot Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to any of the original team members listed at the bottom of [README.md](README.md).
 
-Prerequisites required before starting this project during the Fall of 2021.
+## I don't want to read this whole thing I just have a question!!!
 
-1. Must be a graduate student at NC State University
-2. Must be a student in Software Engineering Course in Fall 2021
-3. Have proficiency in Python
+Reach out to one of the main contributors on Discord using their IDs:
+* Shikha Nair: incorgnito#5402
+* Pradhan Chetan Venkataramaiah: PrymMinistah#4253
+* Steve Jones: SteveJones92#6974
+* Alex Snezkho: Apollo#4953
+* Tanya Chu: TC#1784
 
-Starting 2022, anyone will be allowed to contribute, provided you have experience with python, discord.py and experience with GitHub
+*Note: Due to the dynamic nature of Discord IDs, these may change without prior notice on this page.*
 
-## How can I Contribute -
+We do not have an official message board at this time, however, we plan to have one if it will help future contributors!
+
+## How Can I Contribute?
 
 ### Pull Requests
 
@@ -77,7 +97,7 @@ Following these guidelines helps maintainers and the community understand your r
 
 - If the problem is related to performance or memory, include a CPU profile capture with your report.
 
-## Styleguides
+## Style Guides
 
 ### Git Commit Messages
 
@@ -89,3 +109,13 @@ Following these guidelines helps maintainers and the community understand your r
 
 - Limit the first line to 72 characters or less
 
+- Link an issue to the change
+
+### Python Styleguide
+
+Changes to TeachersPetBot Python code should conform to [Google Python Style Guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md).
+
+All Python code is linted with Pylint. Ensure that before you commit any changes, your code passes all default pylint checks. Pylint can be installed with
+`pip install pylint`.
+
+*This document is adapted from the [Atom Code of Conduct](https://github.com/atom/atom/blob/master/CONTRIBUTING.md#code-of-conduct)*
