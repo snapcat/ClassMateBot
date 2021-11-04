@@ -4,7 +4,6 @@ import sys
 
 import discord
 from discord.ext import commands
-from discord.utils import get
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
@@ -23,6 +22,7 @@ class Groups(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    
     # -------------------------------------------------------------------------------------------------------
     #    Function: reset(self, ctx)
     #    Description: deletes all group roles in the server
@@ -60,7 +60,7 @@ class Groups(commands.Cog):
             print(i)
             if existing_role is None:
                 await ctx.guild.create_role(name=role_name)
-
+            
         print("Roles created successfully!")
 
     # -------------------------------------------------------------------------------------------------------
@@ -73,6 +73,7 @@ class Groups(commands.Cog):
     # -------------------------------------------------------------------------------------------------------
     @commands.command(name="connect", help="Creates group roles for members")
     async def connect(self, ctx):
+        
         for i in range(100):
             group_name = "group-" + str(i)
             existing_channel = get(ctx.guild.text_channels, name=group_name)
@@ -95,7 +96,7 @@ class Groups(commands.Cog):
                 user_role: discord.PermissionOverwrite(read_messages=True)
             }
             group_channel_name = "group-" + str(group_num)
-            await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
+            channel = await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
 
     # -------------------------------------------------------------------------------------------------------
     #    Function: join(self, ctx, group_num='-1')
