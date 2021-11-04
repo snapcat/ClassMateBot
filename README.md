@@ -22,7 +22,7 @@
   ::
   <a href="#earth_americas-future-scope">Future Scope</a>
   ::
-  <a href="#pencil2-contributors">Contributors</a>
+  <a href="#pencil2-contributors-for-project-2">Contributors</a>
   
 </p>
 
@@ -31,6 +31,8 @@
 ## :dart: Basic Overview
 
 This project helps to improve the life of students, TAs and teachers by automating many mundane tasks which are sometimes done manually. ClassMateBot is a discord bot made in Python and could be used for any discord channel.
+
+This is Project 2 for the ClassMate Bot. Changes are marked below and listed in [Project 2 Changes](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Project2Changes.md).
 
 ---
 
@@ -46,11 +48,12 @@ The user stories covered here would be more concerned about the activities for t
 ---
 
 ### 1 - Student Verification
-Once the new member joins the server, before giving them the access to the channels there is a need to get the real full name of the member to map it with the discord nick name. This mapping can later be used for group creation, voting and so on. To do this we first assign the unverified role to the new comer and then ask them to verify their identity using $verify command. If that goes through, the member is assigned a student role and has full access to the server resources. The bot then welcomes the member and also provides important links related to the course. A little example is provided below.
-![$verify Jane Doe](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/verify.gif)
+Once the new member joins the server, before giving them the access to the channels there is a need to get the real full name of the member to map it with the discord nick name. This mapping can later be used for group creation, voting and so on. To do this we first assign the unverified role to the new comer and then ask them to verify their identity using $verify command. If that goes through, the member is assigned a student role and has full access to the server resources. The bot then welcomes the member and also provides important links related to the course.  
+![image](https://user-images.githubusercontent.com/32313919/140422661-ee3c4c68-8cb0-4032-b5a6-8192ee98ac10.png)
+
 
 ### 2 - Project Voting
-Voting for projects is a common occurence that many students must endure. With the addition of a voting system, this task is made easier by allowing student groups to place themselves on projects through an easy to use discord system. With the combination of the ClassMateBot grouping system, teams can easily vote their group into a project, switch their votes, or view the full list of projects that have been voted for.
+Voting for projects is a common occurence that many students must endure. With the addition of a voting system, this task is made easier by allowing student groups to place themselves on projects through an easy to use discord system. With the combination of the ClassMateBot grouping system, teams can easily vote their group into a project, switch their votes, or view the full list of projects that have been voted for.  
 ![image](https://user-images.githubusercontent.com/32313919/140250549-8de514c0-d411-41fe-976c-6b43c7bd1edf.png)
 ![image](https://user-images.githubusercontent.com/32313919/140250910-3aa8d6cd-000d-4b51-949a-0c60f3464c3b.png)
 
@@ -65,7 +68,7 @@ Another problem that the students face is that they cannot pin important message
 
 
 ### 5 - Group Creation
-Another unique and useful feature of our ClassMateBot is that it helps the students in the process of group making for their projects. Through this feature, the bot could help the students identify other members of the class with similar ideals and acts as a medium to connect them initially. This feature is also helpful for students randomly assigned to a group to connect with the new member which would not only save time, but also, saves effort as many times students do not have their names as their usernames on discord. Through this students can join, leave or connect with others. A little example is provided below. 
+Another unique and useful feature of our ClassMateBot is that it helps the students in the process of group making for their projects. Through this feature, the bot could help the students identify other members of the class with similar ideals and acts as a medium to connect them initially. This feature is also helpful for students randomly assigned to a group to connect with the new member which would not only save time, but also, saves effort as many times students do not have their names as their usernames on discord. Through this students can join, leave or connect with others. 
 ![image](https://user-images.githubusercontent.com/32313919/140244316-7fac7ce4-32a7-444d-b8cf-b3b8b2d2dea1.png)
 
 
@@ -90,7 +93,7 @@ To install and run the ClassMate Bot, follow instructions in the [Installation G
 ## :computer: Commands
 For the newComer.py file
 
-:open_file_folder: [$verify command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Verification/verify.md)
+:open_file_folder: [$verify command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Verification/verify.md) **(Modified Command in Project 2)**
 
 For the voting.py file **(All Modified Commands in Project 2)**
 
