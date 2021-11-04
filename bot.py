@@ -53,10 +53,10 @@ async def on_guild_join(guild):
                 await guild.create_text_channel('q-and-a')
                 await channel.send("q-and-a channel has been added!")
 
-            if 'verified' not in guild.roles:
+            if discord.utils.get(guild.roles, name="verified") is None:
                 await guild.create_role(name="verified", colour=discord.Colour(0x2ecc71),
                                         permissions=discord.Permissions.general())
-            if 'unverified' not in guild.roles:
+            if discord.utils.get(guild.roles, name="unverified") is None:
                 await guild.create_role(name="unverified", colour=discord.Colour(0xe74c3c),
                                         permissions=discord.Permissions.none())
                 unverified = discord.utils.get(guild.roles, name="unverified")
@@ -65,17 +65,17 @@ async def on_guild_join(guild):
                 overwrite.update(send_messages = True)
                 overwrite.update(read_messages = True)
                 await channel.set_permissions(unverified, overwrite=overwrite)
-            if 'Instructor' not in guild.roles:
+            if discord.utils.get(guild.roles, name="Instructor") is None:
                 await guild.create_role(name="Instructor", colour=discord.Colour(0x3498db),
                                         permissions=discord.Permissions.all())
             # Assign Verified role to Guild owner
             leader = guild.owner
-            leadrole = get(guild.roles, name='verified')
+            leadrole = get(guild.roles, name="verified")
             unverified = discord.utils.get(guild.roles, name="unverified")
             await leader.add_roles(leadrole, reason=None, atomic=True)
             await channel.send(leader.name + " has been given verified role!")
             # Assign Instructor role to Guild owner
-            leadrole = get(guild.roles, name='Instructor')
+            leadrole = get(guild.roles, name="Instructor")
             await leader.add_roles(leadrole, reason=None, atomic=True)
             await channel.send(leader.name + " has been given Instructor role!")
             # Assign unverified role to all other members
