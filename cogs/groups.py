@@ -162,8 +162,6 @@ class Groups(commands.Cog):
     #    Inputs:
     #    - self: used to access parameters passed to the class through the constructor
     #    - ctx: used to access the values passed through the current context
-    #    - arg: the name of the group
-    #    - arg2: the number of the group
     #    Outputs: removes the user from the given group or returns an error if the group is invalid or in
     #             case of syntax errors
     # -------------------------------------------------------------------------------------------------------
