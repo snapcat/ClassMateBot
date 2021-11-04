@@ -50,27 +50,32 @@ Once the new member joins the server, before giving them the access to the chann
 ![$verify Jane Doe](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/verify.gif)
 
 ### 2 - Project Voting
-The most important task in the upcoming semester that the bot automates is Project Voting which takes place at the end of the month of September and October. Our ClassMateBot allows the student to vote for a particular project which they would like to work on in the coming cycle. This task if done manually could be tedious as the students would have to wait for the TAs or Professor to announce which project they would be getting if voting is done manually. But the bot automates this process and would give out the results as soon as all the students have voted for their choices. A little example is provided below.
+The most important task in the upcoming semester that the bot automates is Project Voting which takes place at the end of the month of September and October. Our ClassMateBot allows the student to vote for a particular project which they would like to work on in the coming cycle. This task if done manually could be tedious as the students would have to wait for the TAs or Professor to announce which project they would be getting if voting is done manually. The bot automates this process and would give out the results as soon as all the students have voted for their choices. A little example is provided below.
 ![$vote HW](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/vote.gif)
 
 ### 3 - Deadline Reminder
-Next important thing our project covers is the Deadline reminder feature of our bot. Whenever a homework or project deadline is close the bot itself sends out a reminder to all the students so that they could submit their work on time. This feature also lets the students add other reminders along with the scheduled ones. For example, HW4 is due on 7th october, along with that the student is working on different assignments or homeworks of other subjects then they could add the other reminders too so that they are in touch with all their pending work. A little example is provided below.
+Next important thing our project covers is the Deadline reminder feature of our bot. Whenever a homework or project deadline is close the bot itself sends out a reminder to all the students so that they could submit their work on time. This feature also lets the students add other reminders along with the scheduled ones. Students working on assignments or homeworks from other subjects could add other reminders so that they are in touch with all their pending work. A little example is provided below.
 ![$addhw CSC510 HW2 SEP 25 2024 17:02](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/addhomework.gif)
 
 ### 4 - Personally Pinning Messages
-Another problem that the students face is that they cannot pin the important messages which they could come back to if they need so. This could be done through the bot as the students could send in the link of the message they would want to pin and the bot would do that. This way all the students could pin the messages personally through the bot. The pinned messages of other students would not be visible to the current user as we have added the validation of only showing the reminders added by the user not by other students. A little example is provided below.
-![$pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/pin.gif)
+Another problem that the students face is that they cannot pin important messages they want to go back to later. Students could send in the link of the message they would want to pin and the bot would do store that. This way all students could pin the messages personally through the bot. The pinned messages of other students would not be visible to the current user as we have added the validation of only showing the reminders added by the user not by other students. This feature can also be used to take quick notes with tags.
+![image](https://user-images.githubusercontent.com/32313919/140243037-8e4c192c-5842-4fd9-85b0-6cccaf3f74ab.png)
+
 
 ### 5 - Group Creation
-Another unique and useful feature of our ClassMateBot is that it helps the students in the process of group making for their projects. Through this feature the bot could help the students to identify other members of the class who have the same requirements and acts as a medium to connect them initially. Afterwards, they can talk to each other in any way possible. This feature is also helpful for times when a person is randomly assigned to a group then the members could ask the bot to connect them with the new member and this would not only save time for the students but also, saves effort as many times students do not have their names as their usernames on discord. Through this students can join, leave or connect with others. A little example is provided below. 
-![$join HW](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/join.gif)
+Another unique and useful feature of our ClassMateBot is that it helps the students in the process of group making for their projects. Through this feature, the bot could help the students identify other members of the class with similar ideals and acts as a medium to connect them initially. This feature is also helpful for students randomly assigned to a group to connect with the new member which would not only save time, but also, saves effort as many times students do not have their names as their usernames on discord. Through this students can join, leave or connect with others. A little example is provided below. 
+![image](https://user-images.githubusercontent.com/32313919/140244316-7fac7ce4-32a7-444d-b8cf-b3b8b2d2dea1.png)
+
 
 ### 6 - Question and Answer **(New Project 2 Commands)**
 A common usage for our current class Discord is for students to ask questions about the course. It is helpful for the questions to be numbered and for the answers to be attached to the question so it be easily found. Some students may feel more comfortable asking and answering questions anonymously. It is also helpful for users to know if the question is answered by a student or instructor. This feature keeps the questions and answers all in one channel so it does not clutter other channels and can be more easily viewed. 
+![image](https://user-images.githubusercontent.com/32313919/140245147-80aca7ff-525a-4cfb-89d0-df5d10afd691.png)  
+![image](https://user-images.githubusercontent.com/32313919/140245276-e2752e1b-eea0-4998-9dcc-2f6c6df6dac4.png)
+
 
 ### 7 - Review Questions **(New Project 2 Commands)**
 An essential part of studying is going over questions related to the exam topics. This feature allows instructors to add review questions and students to get random review questions. To enhance its effectiveness, the answers to the review questions are hidden as a *spoiler* that students can choose to unveil when they are ready. 
-
+![image](https://user-images.githubusercontent.com/32313919/140245925-22769537-ef22-420f-9ed2-b9153a71938e.png)
 ---
 
 
@@ -84,11 +89,11 @@ For the newComer.py file
 
 :open_file_folder: [$verify command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Verification/verify.md)
 
-For the voting.py file
+For the voting.py file **(All Modified Commands in Project 2)**
 
-:open_file_folder: [$projects command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Voting/projects.md)
+:open_file_folder: [$projects command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Voting/projects.md) 
 
-:open_file_folder: [$vote command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Voting/vote.md)
+:open_file_folder: [$vote command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Voting/vote.md) 
 
 For the deadline.py file
 
@@ -108,35 +113,40 @@ For the deadline.py file
 
 :open_file_folder: [$list_reminders command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/list_reminders.md)
 
-For the pinning.py file
+:open_file_folder: [$timenow command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Reminders/timenow.md) **(New Command in Project 2)**
 
-:open_file_folder: [$pin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/pin.md)
 
-:open_file_folder: [$unpin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/unpin.md)
+For the pinning.py file **(All Modified Commands in Project 2)**
 
-:open_file_folder: [$pinnedmessages command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/pinnedmessages.md)
+:open_file_folder: [$pin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/pin.md) 
 
-:open_file_folder: [$updatepin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/updatepin.md)
+:open_file_folder: [$unpin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/unpin.md) 
+
+:open_file_folder: [$pinnedmessages command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/pinnedmessages.md) 
+
+:open_file_folder: [$updatepin command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/PinMessage/updatepin.md) 
 
 For the groups.py file
 
-:open_file_folder: [$group command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/group.md)
+:open_file_folder: [$groups command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/groups.md **(Modified Command in Project 2)**
 
-:open_file_folder: [$join command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/join.md)
+:open_file_folder: [$group command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/group.md **(New Command in Project 2)**
 
-:open_file_folder: [$remove command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/remove.md)
+:open_file_folder: [$join command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/join.md) **(Modified Command in Project 2)**
 
-For the qanda.py file 
+:open_file_folder: [$leave command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/leave.md) **(Modified Command in Project 2)**
 
-:open_file_folder: [$ask command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/QandA/ask.md) **(New Project 2 command)**
+For the qanda.py file **(All New Commands in Project 2)**
 
-:open_file_folder: [$answer command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/QandA/answer.md) **(New Project 2 command)**
+:open_file_folder: [$ask command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/QandA/ask.md) 
 
-For the reviewqs.py file 
+:open_file_folder: [$answer command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/QandA/answer.md) 
 
-:open_file_folder: [$addQuestion command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/ReviewQs/addQuestion.md) **(New Project 2 command)**
+For the reviewqs.py file **(All New Commands in Project 2)**
 
-:open_file_folder: [$getQuestion command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/ReviewQs/getQuestion.md) **(New Project 2 command)**
+:open_file_folder: [$addQuestion command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/ReviewQs/addQuestion.md) 
+
+:open_file_folder: [$getQuestion command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/ReviewQs/getQuestion.md) 
 
 ---
 
@@ -150,7 +160,7 @@ For the reviewqs.py file
 <table>
   <tr>
     <td align="center"><a href="https://github.com/TanyaChu"><img src="https://github.com/tanyachu.png" width="75px;" alt=""/><br /><sub><b>Tanya Chu</b></sub></a></td>
-    <td align="center"><a href="https://github.com/SteveJones92"><img src="https://github.com/SteveJones92.png" width="75px;" alt=""/><br /><sub><b>Steven Jones</b></sub></a></td>
+    <td align="center"><a href="https://github.com/SteveJones92"><img src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/SteveJones92.png" width="75px;" alt=""/><br /><sub><b>Steven Jones</b></sub></a></td>
     <td align="center"><a href="https://github.com/shikhanair"><img src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/shikhanair.png" width="75px;" alt=""/><br /><sub><b>Shikha Nair</b></sub></a></td>
     <td align="center"><a href="https://github.com/alexsnezhko3"><img src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/alexsnezhko3.png" width="75px;" alt=""/><br /><sub><b>Alex Snezhko</b></sub></a></td>
     <td align="center"><a href="https://github.com/prdhnchtn"><img src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/prdhnchtn.png" width="75px;" alt=""/><br /><sub><b>Pradhan Chetan Venkataramaiah</b></sub></a></td>
