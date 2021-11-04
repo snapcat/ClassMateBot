@@ -4,6 +4,7 @@ import sys
 
 import discord
 from discord.ext import commands
+from discord.utils import get
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
@@ -72,8 +73,7 @@ class Groups(commands.Cog):
     #    Outputs: creates a private text channel for all groups
     # -------------------------------------------------------------------------------------------------------
     @commands.command(name="connect", help="Creates group roles for members")
-    async def connect(self, ctx):
-        
+    async def connect(self, ctx):        
         for i in range(100):
             group_name = "group-" + str(i)
             existing_channel = get(ctx.guild.text_channels, name=group_name)
@@ -113,6 +113,7 @@ class Groups(commands.Cog):
     async def join(self, ctx, group_num: int):
         # get the name of the caller
         member_name = ctx.message.author.display_name.upper()
+        member = ctx.message.author
 
         if group_num < 0 or group_num > 99:
             await ctx.send('Not a valid group')
@@ -142,6 +143,10 @@ class Groups(commands.Cog):
             'INSERT INTO group_members (guild_id, group_num, member_name) VALUES (%s, %s, %s)',
             (ctx.guild.id, group_num, member_name)
         )
+        identifier = "group_" + str(group_num)
+        role = get(ctx.guild.roles, name=identifier)
+        await member.add_roles(role)
+
         await ctx.send(f'You are now in Group {group_num}! There are now {group_count[0][0] + 1}/6 members.')
 
     # this handles errors related to the join command
@@ -167,6 +172,7 @@ class Groups(commands.Cog):
     async def leave(self, ctx):
         # get the name of the caller
         member_name = ctx.message.author.display_name.upper()
+        member = ctx.message.author
 
         current_group_num = db.query(
             'SELECT group_num FROM group_members WHERE guild_id = %s AND member_name = %s',
@@ -178,8 +184,12 @@ class Groups(commands.Cog):
                 'DELETE FROM group_members WHERE guild_id = %s AND member_name = %s',
                 (ctx.guild.id, member_name)
             )
-
             await ctx.send(f'You have been removed from Group {current_group_num[0][0]}!')
+
+            identifier = "group_" + str(current_group_num[0][0])
+            role = get(ctx.guild.roles, name=identifier)
+            await member.remove_roles(role)
+
         else:
             await ctx.send('You are not in a group!')
 
