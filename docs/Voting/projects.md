@@ -1,7 +1,7 @@
-# About $projects
+# About $projects _(Modified Command in Project 2)_
 This command lets the student view the projects and the groups that have voted for each of them.
 # Location of Code
-The code that implements the above-mentioned gits functionality is located [here](https://github.com/War-Keeper/ClassMateBot/blob/main/cogs/voting.py)
+The code that implements the above-mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/voting.py)
 
 # Code Description
 ## Functions
@@ -16,4 +16,4 @@ $projects
 ```
 Successful execution of this command will display the projects and all the groups that have voted for each project.
 
-![$projects HW](https://github.com/War-Keeper/ClassMateBot/blob/main/data/media/projects.gif)
+![image](https://user-images.githubusercontent.com/32313919/140250910-3aa8d6cd-000d-4b51-949a-0c60f3464c3b.png)

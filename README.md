@@ -51,7 +51,9 @@ Once the new member joins the server, before giving them the access to the chann
 
 ### 2 - Project Voting
 The most important task in the upcoming semester that the bot automates is Project Voting which takes place at the end of the month of September and October. Our ClassMateBot allows the student to vote for a particular project which they would like to work on in the coming cycle. This task if done manually could be tedious as the students would have to wait for the TAs or Professor to announce which project they would be getting if voting is done manually. The bot automates this process and would give out the results as soon as all the students have voted for their choices. A little example is provided below.
-![$vote HW](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/vote.gif)
+![image](https://user-images.githubusercontent.com/32313919/140250549-8de514c0-d411-41fe-976c-6b43c7bd1edf.png)
+![image](https://user-images.githubusercontent.com/32313919/140250910-3aa8d6cd-000d-4b51-949a-0c60f3464c3b.png)
+
 
 ### 3 - Deadline Reminder
 Next important thing our project covers is the Deadline reminder feature of our bot. Whenever a homework or project deadline is close the bot itself sends out a reminder to all the students so that they could submit their work on time. This feature also lets the students add other reminders along with the scheduled ones. Students working on assignments or homeworks from other subjects could add other reminders so that they are in touch with all their pending work. A little example is provided below.
@@ -74,7 +76,7 @@ A common usage for our current class Discord is for students to ask questions ab
 
 
 ### 7 - Review Questions **(New Project 2 Commands)**  
-An essential part of studying is going over questions related to the exam topics. This feature allows instructors to add review questions and students to get random review questions. To enhance its effectiveness, the answers to the review questions are hidden as a *spoiler* that students can choose to unveil when they are ready.   
+An essential part of studying is going over questions related to the exam topics. This feature allows instructors to add review questions and students to get random review questions. To enhance its effectiveness, the answers to the review questions are hidden as a *spoiler* that students can choose to unveil when they are ready. 
 ![image](https://user-images.githubusercontent.com/32313919/140245925-22769537-ef22-420f-9ed2-b9153a71938e.png)
 
 ---

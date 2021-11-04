@@ -21,3 +21,5 @@ $ask "When is the project due?"
 ```
 Successful execution of this command will delete the user's original message and the bot will
  send a new message with the question.
+
+![image](https://user-images.githubusercontent.com/32313919/140245147-80aca7ff-525a-4cfb-89d0-df5d10afd691.png) 

@@ -15,3 +15,5 @@ You are in the server that has the Classmate Bot active and online. You enter th
 $getQuestion
 ```
 Successful execution of this command will print a random review question from the guild database.
+
+![image](https://user-images.githubusercontent.com/32313919/140245925-22769537-ef22-420f-9ed2-b9153a71938e.png)
