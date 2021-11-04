@@ -73,9 +73,10 @@ A common usage for our current class Discord is for students to ask questions ab
 ![image](https://user-images.githubusercontent.com/32313919/140245276-e2752e1b-eea0-4998-9dcc-2f6c6df6dac4.png)
 
 
-### 7 - Review Questions **(New Project 2 Commands)**
-An essential part of studying is going over questions related to the exam topics. This feature allows instructors to add review questions and students to get random review questions. To enhance its effectiveness, the answers to the review questions are hidden as a *spoiler* that students can choose to unveil when they are ready. 
+### 7 - Review Questions **(New Project 2 Commands)**  
+An essential part of studying is going over questions related to the exam topics. This feature allows instructors to add review questions and students to get random review questions. To enhance its effectiveness, the answers to the review questions are hidden as a *spoiler* that students can choose to unveil when they are ready.   
 ![image](https://user-images.githubusercontent.com/32313919/140245925-22769537-ef22-420f-9ed2-b9153a71938e.png)
+
 ---
 
 
@@ -128,9 +129,9 @@ For the pinning.py file **(All Modified Commands in Project 2)**
 
 For the groups.py file
 
-:open_file_folder: [$groups command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/groups.md **(Modified Command in Project 2)**
+:open_file_folder: [$groups command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/groups.md) **(Modified Command in Project 2)**
 
-:open_file_folder: [$group command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/group.md **(New Command in Project 2)**
+:open_file_folder: [$group command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/group.md) **(New Command in Project 2)**
 
 :open_file_folder: [$join command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/join.md) **(Modified Command in Project 2)**
 
