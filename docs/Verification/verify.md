@@ -2,7 +2,7 @@
 This command verifies the user by getting his/her full name and then giving access to the channels
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/War-Keeper/ClassMateBot/blob/main/bot.py) and [here](https://github.com/War-Keeper/ClassMateBot/blob/main/cogs/newComer.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/bot.py) and [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/newComer.py).
 
 # Code Description
 ## Functions

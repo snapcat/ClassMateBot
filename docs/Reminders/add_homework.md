@@ -2,11 +2,11 @@
 This command lets the user (either the TAs or professor) to add a homework as a reminder to the discord channel 
 
 # Location of Code
-The code that implements the above mentioned gits functionality is located [here](https://github.com/War-Keeper/ClassMateBot/blob/main/cogs/deadline.py).
+The code that implements the above mentioned gits functionality is located [here](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/deadline.py).
 
 # Code Description
 ## Functions
-1. duedate(self, ctx, coursename: str, hwcount: str, *, date: str): <br>
+duedate(self, ctx, coursename: str, hwcount: str, *, date: str): <br>
 This function takes as arguments the values provided by the constructor through self, context in which the command was called, name of the course, name of the homework, and the date and time when the homework is due. 
 
 # How to run it? (Small Example)
@@ -19,4 +19,4 @@ $addhw CSC510 HW2 SEP 25 2024 17:02
 ```
 Successful execution of this command will add the reminder for the specified coursework and homework on the specified time.
 
-![$addhw CSC510 HW2 SEP 25 2024 17:02](https://github.com/War-Keeper/ClassMateBot/blob/main/data/media/addhomework.gif)
+![$addhw CSC510 HW2 SEP 25 2024 17:02](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/addhomework.gif)
