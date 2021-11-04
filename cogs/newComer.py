@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import os
-import random
 import sys
 import db
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -55,7 +54,9 @@ class NewComer(commands.Cog):
                 )
             else:
                 # finds the verified role in the guild
-                db.query('INSERT INTO name_mapping (guild_id, username, real_name) VALUES (%s, %s, %s)', (ctx.guild.id, member.name, name))
+                db.query(
+                    'INSERT INTO name_mapping (guild_id, username, real_name) VALUES (%s, %s, %s)',
+                    (ctx.guild.id, member.name, name))
 
                 await member.add_roles(verified)  # adding verified role
                 await member.remove_roles(unverified)  # removed unverified role
@@ -65,7 +66,9 @@ class NewComer(commands.Cog):
                 )
                 await member.send(embed=embed)
         else:  # user has verified role
-            db.query('SELECT real_name from name_mapping where guild_id = %s and username = %s', (ctx.guild.id, member.name))
+            db.query(
+                'SELECT real_name from name_mapping where guild_id = %s and username = %s',
+                (ctx.guild.id, member.name))
             await ctx.send("You are already verified!")
             embed = discord.Embed(
                 description="Click [Here](https://github.com/txt/se21) for the home page of the class Github page"

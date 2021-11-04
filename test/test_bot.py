@@ -162,11 +162,13 @@ async def test_pinning(bot):
     await dpytest.message("$pin TestMessage www.google.com this is a test")
     # print(dpytest.get_message().content)
     assert dpytest.verify().message().contains().content(
-        "A new message has been pinned with tag: TestMessage and link: www.google.com with a description: this is a test")
+        "A new message has been pinned with tag: TestMessage and link: www.google.com with a description:"
+        " this is a test")
     await dpytest.message("$pin TestMessage www.discord.com this is also a test")
     # print(dpytest.get_message().content)
     assert dpytest.verify().message().contains().content(
-        "A new message has been pinned with tag: TestMessage and link: www.discord.com with a description: this is also a test")
+        "A new message has been pinned with tag: TestMessage and link: www.discord.com with a description:"
+        " this is also a test")
 
 
 # ----------------
@@ -178,7 +180,8 @@ async def test_unpinning(bot):
     await dpytest.message("$pin TestMessage www.google.com this is a test")
     # print(dpytest.get_message().content)
     assert dpytest.verify().message().contains().content(
-        "A new message has been pinned with tag: TestMessage and link: www.google.com with a description: this is a test")
+        "A new message has been pinned with tag: TestMessage and link: www.google.com with a description: "
+        "this is a test")
     # Tests unpinning a message that doesn't exist
     await dpytest.message("$unpin None ThisWillFail")
     assert dpytest.verify().message().contains().content(
@@ -205,7 +208,9 @@ async def test_pinError(bot):
     with pytest.raises(Exception):
         await dpytest.message("$pin")
     assert dpytest.verify().message().contains().content(
-        'To use the pin command, do: $pin TAGNAME LINK DESCRIPTION \n ( For example: $pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )')
+        'To use the pin command, do: $pin TAGNAME LINK DESCRIPTION \n '
+        '( For example: $pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/'
+        '890813190433292298 HW8 reminder )')
 
 
 # --------------------
