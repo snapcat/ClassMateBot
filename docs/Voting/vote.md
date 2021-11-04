@@ -19,3 +19,7 @@ $vote 2
 Successful execution of this command will return a message saying you have voted for a project.
 
 ![image](https://user-images.githubusercontent.com/32313919/140250549-8de514c0-d411-41fe-976c-6b43c7bd1edf.png)
+  
+It is simple enough to change vote by just voting for a different project.
+  
+![image](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/votechange.gif)
