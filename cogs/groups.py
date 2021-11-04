@@ -4,6 +4,7 @@ import sys
 
 import discord
 from discord.ext import commands
+from discord.utils import get
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
@@ -21,6 +22,81 @@ class Groups(commands.Cog):
     # -----------------------------------------------------------
     def __init__(self, bot):
         self.bot = bot
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: reset(self, ctx)
+    #    Description: deletes all group roles in the server
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: confirms role deletion
+    # -------------------------------------------------------------------------------------------------------
+    @commands.command(name="reset", help="Resets group channels and roles. DO NOT USE IN PRODUCTION!")
+    async def reset(self, ctx):
+        await ctx.send('Deleting all roles...')
+
+        for i in range(100):
+            role_name = "group_" + str(i)
+            role = get(ctx.message.guild.roles, name=role_name)
+            await role.delete()
+
+        print("Roles deleted!")
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: startupgroups(self, ctx)
+    #    Description: creates roles for the groups
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: creates roles for groups
+    # -------------------------------------------------------------------------------------------------------
+    @commands.command(name="startupgroups", help="Creates group roles for members")
+    async def startupgroups(self, ctx):
+        await ctx.send('Creating roles....')
+
+        for i in range(100):
+            role_name = "group_" + str(i)
+            existing_role = get(ctx.guild.roles, name=role_name)
+            print(i)
+            if existing_role is None:
+                await ctx.guild.create_role(name=role_name)
+            
+        print("Roles created successfully!")
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: connect(self, ctx)
+    #    Description: connects all users with their groups
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: creates a private text channel for all groups
+    # -------------------------------------------------------------------------------------------------------
+    @commands.command(name="connect", help="Creates group roles for members")
+    async def connect(self, ctx):
+        
+        for i in range(100):
+            group_name = "group-" + str(i)
+            existing_channel = get(ctx.guild.text_channels, name=group_name)
+            if existing_channel is not None:
+                await existing_channel.delete()
+
+        groups = db.query(
+            'SELECT group_num, array_agg(member_name) '
+            'FROM group_members WHERE guild_id = %s GROUP BY group_num ORDER BY group_num',
+            (ctx.guild.id,)
+        )
+
+        for group_num, *_ in groups:
+            role_string = "group_" + str(group_num)
+            user_role = get(ctx.guild.roles, name=role_string)
+
+            overwrites = {
+                ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                ctx.author: discord.PermissionOverwrite(read_messages=True),
+                user_role: discord.PermissionOverwrite(read_messages=True)
+            }
+            group_channel_name = "group-" + str(group_num)
+            channel = await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
 
     # -------------------------------------------------------------------------------------------------------
     #    Function: join(self, ctx, group_num='-1')
