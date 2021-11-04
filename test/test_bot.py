@@ -211,6 +211,7 @@ async def test_pinError(bot):
     # Tests pinning without a message, will fail
     try:
         await dpytest.message("$pin")
+
         #shouldnt reach here
         assert False
     except:
@@ -222,19 +223,45 @@ async def test_pinError(bot):
 # --------------------
 # Tests cogs/newComer
 # --------------------
+
 @pytest.mark.asyncio
-async def test_verifyError(bot):
-    # Test verification, should raise exception since channel isn't private
-    with pytest.raises(Exception):
-        await dpytest.message(content="$verify", channel=0)
-    # Can only test this currently since dpytest doesn't allow us to test DM'ing
+async def test_verify(bot):
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    channel = await guild.create_text_channel('general')
+
+    await dpytest.message("$verify Student Name", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Warning: Please make sure the verified and unverified roles exist in this server!')
+
+    # Test self-verification - unverified role assigned
+    await guild.create_role(name="unverified")
+    await guild.create_role(name="verified")
+    role = discord.utils.get(guild.roles, name="unverified")
+    await dpytest.add_role(user, role)
+    await dpytest.message("$verify Student Name", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        f'Thank you for verifying! You can start using {guild.name}!')
+    dpytest.get_message()
 
 
-# We cannot currently test newComer.py in a meaningful way due to not having a way to DM the test bot directly.
+@pytest.mark.asyncio
+async def test_verifyNoName(bot):
+    guild = dpytest.get_config().guilds[0]
+    await guild.create_role(name="unverified")
+    await guild.create_role(name="verified")
+    # Test verification without proper argument given
+    await dpytest.message("$verify")
+    # print(dpytest.get_message().content)
+    assert dpytest.verify().message().contains().content(
+        'To use the verify command, do: $verify <FirstName LastName> \n ( For example: $verify Jane Doe )')
+
+# We cannot currently test newComer.py in a meaningful way due to not having a way to DM the test bot directly,
+# as well as inability to have dpytest add/remove roles to test specific cases
 
 
 # --------------------
-# Tests cogs/newComer
+# Tests cogs/Voting
 # --------------------
 @pytest.mark.asyncio
 async def test_voting(bot):

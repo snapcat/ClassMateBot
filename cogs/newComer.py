@@ -1,8 +1,6 @@
 # This file contains functionality related to new student verification
 import os
-import random
 import sys
-
 import discord
 from discord.ext import commands
 
@@ -13,9 +11,7 @@ import db
 # ---------------------------------------------------------------------------------------
 # Contains commands for member verification, which is handled with direct DMs to the bot
 # ---------------------------------------------------------------------------------------
-class Helper(commands.Cog):
-    UNVERIFIED_ROLE_NAME = os.getenv("UNVERIFIED_ROLE_NAME")
-    VERIFIED_MEMBER_ROLE = os.getenv("VERIFIED_MEMBER_ROLE")
+class NewComer(commands.Cog):
     path = os.path.join("data", "welcome")
 
     def __init__(self, bot):
@@ -24,52 +20,53 @@ class Helper(commands.Cog):
     # -------------------------------------------------------------------------------------------------------------
     #    Function: verify(self, ctx, *, name: str = None)
     #    Description: Ask the bot to give the user the verified role in the server
+    #    Constraint: only other verified members can use this command
     #    Inputs:
     #    - self: used to access parameters passed to the class through the constructor
     #    - ctx: used to access the values passed through the current context
     #    - *:
     #    - name: name of the user to verify
-    #    Outputs: returns a success message if the user is sucessfully verified or error in case of syntax problems
+    #    Outputs: returns a success message if the user is successfully verified or error in case of syntax problems
     # --------------------------------------------------------------------------------------------------------------
-    @commands.dm_only()
+
     @commands.command(
         name="verify",
         pass_context=True,
-        help="Request the bot to verify the user to get access to channels",
+        help="User self-verifies by attaching their real name to their discord username in this server: "
+             "$verify <FirstName LastName>",
     )
     async def verify(self, ctx, *, name: str = None):
         member = ctx.message.author
-        # finds the unverified role in the guild
-        unverified = discord.utils.get(ctx.guild.roles, name=self.UNVERIFIED_ROLE_NAME)
 
-        # checks if the user running the command has the unveirifed role
-        if unverified in member.roles:
+        # check if verified and unverified roles exist
+        if discord.utils.get(ctx.guild.roles, name="unverified") is None \
+                or discord.utils.get(ctx.guild.roles, name="verified") is None:
+            await ctx.send("Warning: Please make sure the verified and unverified roles exist in this server!")
+            return
+
+        # finds the unverified role in the guild
+        unverified = discord.utils.get(ctx.guild.roles, name="unverified")
+        verified = discord.utils.get(ctx.guild.roles, name="verified")
+
+        # checks if the user running the command has the verified role
+        if verified not in member.roles:
             if name is None:
                 await ctx.send(
-                    "To use the verify command, do: $verify <your_full_name> \n ( For example: $verify Jane Doe )"
+                    "To use the verify command, do: $verify <FirstName LastName> \n ( For example: $verify Jane Doe )"
                 )
             else:
-                # finds the verified role in the guild
-                verified = discord.utils.get(ctx.guild.roles, name=self.VERIFIED_MEMBER_ROLE)
-                db.query(
-                    'INSERT INTO name_mappings (guild_id, username, real_name) VALUES (%s, %s, %s)',
-                    (ctx.guild.id, member.name, name)
-                )
-
-                await member.add_roles(verified)  # adding verfied role
-                await member.remove_roles(unverified)  # removed verfied role
+                db.query('INSERT INTO name_mapping (guild_id, username, real_name) VALUES (%s, %s, %s)',
+                         (ctx.guild.id, member.name, name))
+                await member.add_roles(verified)  # adding verified role
+                await member.remove_roles(unverified)  # removed unverified role
                 await ctx.send(f"Thank you for verifying! You can start using {ctx.guild.name}!")
                 embed = discord.Embed(
                     description="Click [Here](https://github.com/txt/se21) for the home page of the class Github page"
                 )
-                welcome_images = os.listdir(self.path)
-                selected_image = random.choice(welcome_images)
-                file = discord.File(os.path.join(self.path, selected_image))
-                embed.set_image(
-                    url="attachment://" + selected_image
-                )  # Embedding the image
-                await member.send(file=file, embed=embed)
+                await member.send(embed=embed)
         else:  # user has verified role
+            db.query('SELECT real_name from name_mapping where guild_id = %s and username = %s',
+                     (ctx.guild.id, member.name))
             await ctx.send("You are already verified!")
             embed = discord.Embed(
                 description="Click [Here](https://github.com/txt/se21) for the home page of the class Github page"
@@ -81,7 +78,8 @@ class Helper(commands.Cog):
 # add the file to the bot's cog system
 # --------------------------------------
 def setup(bot):
-    bot.add_cog(Helper(bot))
+    n = NewComer(bot)
+    bot.add_cog(n)
 
 
 # Copyright (c) 2021 War-Keeper
