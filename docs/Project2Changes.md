@@ -1,10 +1,10 @@
 # Project 2 Changes
 ## Additions
 ### Question and Answer Commands
-The new question and answer commands allow students to ask questions that are automatically numbered. Both students and instructors can answer the question which will be attached to the original answer. Please see [/docs/QandA](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/QandA) for more details.
+A common usage for our current class Discord is for students to ask questions. The new question and answer commands allow students to ask questions that are automatically numbered. Both students and instructors can answer the question which will be attached to the original answer and they can choose to post anonymously. Please see [/docs/QandA](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/QandA) for more details.
 
 ### Review Questions Commands
-The new review questions commands allow instructors to add review questions for students to use as a study resource. Students can get the questions in a random order and view the hidden answers whenever they are ready. Please see [/docs/ReviewQs](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/ReviewQs) for more details.
+An essential part of studying is going over questions related to the exam topics. The new review questions commands allow instructors to add review questions for students to use as a study resource. Students can get the questions in a random order and view the hidden answers whenever they are ready. Please see [/docs/ReviewQs](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/ReviewQs) for more details.
 
 ### Cloud Deployment
 The bot can now be run through a Heroku dyno, allowing for better bot up-time and consistency and removing the inconvenience of forcing someone to run the bot locally on their own computer.
