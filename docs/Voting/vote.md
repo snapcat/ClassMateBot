@@ -6,7 +6,7 @@ The code that implements the above-mentioned gits functionality is located [here
 
 # Code Description
 ## Functions
-vote(self, ctx, project_num : int = '-1'): <br>
+vote(self, ctx, project_num : int): <br>
 This function takes as arguments the values provided by the constructor through self, context in which the command was called, and the project number argument.
 
 # How to run it? (Small Example)
