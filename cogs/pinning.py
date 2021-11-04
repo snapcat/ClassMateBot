@@ -49,7 +49,7 @@ class Pinning(commands.Cog):
     async def addMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                "To use the pin command, do: $pin TAGNAME DESCRIPTION \n (\" For example: $pin HW8 \"https://"
+                "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
                 "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )")
         print(error)
 

@@ -59,7 +59,7 @@ class Groups(commands.Cog):
         )
 
         if current_group_num:
-            await ctx.send(f'You are already in group {current_group_num[0][0]}')
+            await ctx.send(f'You are already in Group {current_group_num[0][0]}')
             return
 
         db.query(

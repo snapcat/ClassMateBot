@@ -31,7 +31,7 @@ class Voting(commands.Cog):
     @commands.command(name='vote', help='Used for voting for Projects, \
     To use the vote command, do: $vote <Num> \n \
     (For example: $vote 0)', pass_context=True)
-    async def vote(self, ctx, project_num : int = '-1'):
+    async def vote(self, ctx, project_num : int):
         # get the name of the caller
         member_name = ctx.message.author.display_name.upper()
 
@@ -47,7 +47,7 @@ class Voting(commands.Cog):
         # error handle if member is not in a group
         if len(group) == 0:
             await ctx.send("You are not in a group. You must join a group before voting on a project.")
-            raise commands.UserInputError
+            return
 
         group = group[0][0]
 

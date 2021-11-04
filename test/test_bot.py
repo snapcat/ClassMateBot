@@ -29,22 +29,25 @@ async def test_ping(bot):
 # ---------------------
 @pytest.mark.asyncio
 async def test_groupJoin(bot):
-    # Try to join a group we're already in
-    await dpytest.message("$join Group 1")
-    message = dpytest.get_message()
-    if message.content == "You are already in Group 1":
-        await dpytest.message("$remove Group 1")
-        assert dpytest.verify().message().content("You have been removed from Group 1!")
-    else:
-        assert message.content == "You are now in Group 1!"
-    # Try to remove ourselves from a group we're not in
-    await dpytest.message("$remove Group 20")
-    assert dpytest.verify().message().contains().content("You are not in Group 20")
-    # Try to remove ourself from the group
+    # first leave all groups just in case in any
+    await dpytest.message("$leave")
+    dpytest.get_message()
 
-    # For some reason we're not in the group, might be a problem with how dpytest works
+    # Try to join a group
+    await dpytest.message("$join 99")
+    assert dpytest.verify().message().content("You are now in Group 99! There are now 1/6 members.")
 
-    # assert dpytest.verify().message().contains().content("You are not in Group 1")
+    # try to join a different group
+    await dpytest.message("$join 1")
+    assert dpytest.verify().message().content("You are already in Group 99")
+
+    # leave your group
+    await dpytest.message("$leave")
+    assert dpytest.verify().message().content("You have been removed from Group 99!")
+
+    # leave with no group
+    await dpytest.message("$leave")
+    assert dpytest.verify().message().content("You are not in a group!")
 
 
 # ------------------------------------
@@ -53,20 +56,18 @@ async def test_groupJoin(bot):
 @pytest.mark.asyncio
 async def test_groupError(bot):
     # Try to join a group that doesn't exist
-    await dpytest.message("$join Group -1")
-    assert dpytest.verify().message().contains().content('Not a valid group')
-    assert dpytest.verify().message().contains().content(
-        'To use the join command, do: $join \'Group\' <Num> where 0 <= <Num> <= 99 \n ( For example: $join Group 0 )')
-    # Try to remove ourself from an invalid group
-    await(dpytest.message("$remove Group 999"))
-    assert dpytest.verify().message().contains().content('Group 999 is not a valid group')
-    assert dpytest.verify().message().contains().content('To use the remove command, do: $remove \'Group\' <Num> where 0 <= <Num> <= 99')
-    # with pytest.raises(Exception):
-    #     await dpytest.message("$join")
-    #     assert dpytest.verify().message().contains().content(
-    #         'To use the join command, do: $join \'Group\' <Num> \n ( For example: $join Group 0 )')
-    #     assert dpytest.verify().message().contains().content(
-    #         'To use the join command, do: $join \'Group\' <Num> \n ( For example: $join Group 0 )')
+    await dpytest.message("$join -1")
+    assert dpytest.verify().message().content('Not a valid group')
+    assert dpytest.verify().message().content(
+        'To use the join command, do: $join <Num> where 0 <= <Num> <= 99 \n ( For example: $join 0 )')
+    
+    try:
+        await dpytest.message("$join")
+        # should not reach here
+        assert False
+    except:
+        assert dpytest.verify().message().content(
+            'To use the join command, do: $join <Num> \n ( For example: $join 0 )')
 
 
 # -----------------------
@@ -79,7 +80,7 @@ async def test_deadline(bot):
     # assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
     # Test reminders while none have been set
     await dpytest.message("$coursedue CSC505")
-    assert dpytest.verify().message().contains().content("Rejoice..!! You have no pending homeworks for CSC505..!!")
+    assert dpytest.verify().message().content("Rejoice..!! You have no pending homeworks for CSC505..!!")
     # Test setting 1 reminder
     await dpytest.message("$addhw CSC505 DANCE SEP 21 2050 10:00")
     assert dpytest.verify().message().contains().content(
@@ -98,7 +99,7 @@ async def test_deadline(bot):
         "A date has been added for: CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
     # Clear reminders at the end of testing since we're using a local JSON file to store them
     await dpytest.message("$clearreminders")
-    assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
+    assert dpytest.verify().message().content("All reminders have been cleared..!!")
 
 
 # --------------------------------
@@ -162,11 +163,13 @@ async def test_pinning(bot):
     await dpytest.message("$pin TestMessage www.google.com this is a test")
     # print(dpytest.get_message().content)
     assert dpytest.verify().message().contains().content(
-        "A new message has been pinned with tag: TestMessage and link: www.google.com with a description: this is a test")
+        "A new message has been pinned with tag: TestMessage and description: www.google.com this is a test")
     await dpytest.message("$pin TestMessage www.discord.com this is also a test")
-    # print(dpytest.get_message().content)
     assert dpytest.verify().message().contains().content(
-        "A new message has been pinned with tag: TestMessage and link: www.discord.com with a description: this is also a test")
+        "A new message has been pinned with tag: TestMessage and description: www.discord.com this is also a test")
+
+    #clean up
+    #await dpytest.message("$unpin TestMessage")
 
 
 # ----------------
@@ -176,24 +179,28 @@ async def test_pinning(bot):
 async def test_unpinning(bot):
     # Test pinning a message
     await dpytest.message("$pin TestMessage www.google.com this is a test")
-    # print(dpytest.get_message().content)
     assert dpytest.verify().message().contains().content(
-        "A new message has been pinned with tag: TestMessage and link: www.google.com with a description: this is a test")
+        "A new message has been pinned with tag: TestMessage and description: www.google.com this is a test")
+    await dpytest.message("$pin TestMessage www.discord.com this is also a test")
+    assert dpytest.verify().message().contains().content(
+        "A new message has been pinned with tag: TestMessage and description: www.discord.com this is also a test")
     # Tests unpinning a message that doesn't exist
-    await dpytest.message("$unpin None ThisWillFail")
+    await dpytest.message("$unpin None")
     assert dpytest.verify().message().contains().content(
-        "No message found with the combination of tagname: None, description ThisWillFail")
+        "No message found with the combination of tagname: None, and author:")
     # Tests unpinning messages that DO exist
-    await dpytest.message("$unpin TestMessage this is a test")
+    await dpytest.message("$unpin TestMessage")
     assert dpytest.verify().message().contains().content(
-        "1 pinned message(s) has been deleted with tag: TestMessage")
+        "2 pinned message(s) has been deleted with tag: TestMessage")
     # Tests adding another message to update pins
     await dpytest.message("$pin TestMessage2 www.discord.com test")
     assert dpytest.verify().message().contains().content(
-        "A new message has been pinned with tag: TestMessage2 and link: www.discord.com with a description: test")
+        "A new message has been pinned with tag: TestMessage2 and description: www.discord.com test")
     await dpytest.message("$updatepin TestMessage2 www.zoom.com test")
     assert dpytest.verify().message().contains().content(
-        "A pinned message has been updated with tag: TestMessage2 and new link: www.zoom.com")
+        "1 pinned message(s) has been deleted with tag: TestMessage2")
+    assert dpytest.verify().message().contains().content(
+        "A new message has been pinned with tag: TestMessage2 and description: www.zoom.com test")
 
 
 # ----------------------
@@ -202,10 +209,14 @@ async def test_unpinning(bot):
 @pytest.mark.asyncio
 async def test_pinError(bot):
     # Tests pinning without a message, will fail
-    with pytest.raises(Exception):
+    try:
         await dpytest.message("$pin")
-    assert dpytest.verify().message().contains().content(
-        'To use the pin command, do: $pin TAGNAME LINK DESCRIPTION \n ( For example: $pin HW https://discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )')
+        #shouldnt reach here
+        assert False
+    except:
+        assert dpytest.verify().message().content(
+            "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
+            "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )")
 
 
 # --------------------
@@ -227,14 +238,33 @@ async def test_verifyError(bot):
 # --------------------
 @pytest.mark.asyncio
 async def test_voting(bot):
-    # Test voting, should raise an exception since we aren't in a group
-    with pytest.raises(Exception):
-        await dpytest.message(content="$vote Project 1")
-    assert dpytest.verify().message().contains().content(
-        "Could not find the Group you are in, please contact a TA or join with your group number")
-    assert dpytest.verify().message().contains().content(
-        'To join a group, use the join command, do: $vote \'Project\' <Num> \n'
-        '( For example: $vote Project 0 )')
+    # Test voting
+    await dpytest.message(content="$vote 1")
+    assert dpytest.verify().message().content(
+        "You are not in a group. You must join a group before voting on a project.")
+    await dpytest.message("$join 99")
+    dpytest.get_message()
+    await dpytest.message(content="$vote 1")
+    assert dpytest.verify().message().content(
+        "Group 99 has voted for Project 1!")
+    await dpytest.message(content="$vote 2")
+    assert dpytest.verify().message().content(
+        "Group 99 removed vote for Project 1")
+    assert dpytest.verify().message().content(
+        "Group 99 has voted for Project 2!")
+    await dpytest.message(content="$vote 2")
+    assert dpytest.verify().message().content(
+        "You already voted for Project 2")
+    try:
+        await dpytest.message(content="$vote")
+        #shouldnt reach here
+        assert False
+    except:
+        assert dpytest.verify().message().contains().content(
+            "To join a project, use the join command, do: $vote <Num> \n( For example: $vote 0 )")
+    await dpytest.message(content="$vote -1")
+    assert dpytest.verify().message().content(
+        "A valid project number is 1-99.")
 
 # --------------------
 # Tests cogs/qanda
