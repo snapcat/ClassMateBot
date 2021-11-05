@@ -148,6 +148,12 @@ For the pinning.py file **(All Modified Commands in Project 2)**
 
 For the groups.py file
 
+:open_file_folder: [$startupgroups command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/startupgroups.md) **(Modified Command in Project 2)**
+
+:open_file_folder: [$reset command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/reset.md) **(Modified Command in Project 2)**
+
+:open_file_folder: [$connect command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/connect.md) **(Modified Command in Project 2)**
+
 :open_file_folder: [$groups command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/groups.md) **(Modified Command in Project 2)**
 
 :open_file_folder: [$group command](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Groups/group.md) **(New Command in Project 2)**
