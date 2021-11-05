@@ -13,7 +13,7 @@ The bot can now be run through a Heroku dyno, allowing for better bot up-time an
 Previously, the bot would only work for a single Discord server, which creates obvious problems with scaling the app to a general-purpose bot. We added functionality to allow the bot to store different data for different Discord servers, allowing the bot to be used in multiple servers concurrently.
 
 ### Group Making
-Since the not allows users to join and leave groups - the group making functionality allows the users to connect with their group members in private text channels, visible only to instructors and the members of that particular group. This works by assinging a specific role to the user when they join a group and giving them access to the private channel using the role. If the user changes groups (i.e. role changes too), they will immediately lose access to the previous group channel with no impact to the rest of the team's ability to communicate.
+Since the not allows users to join and leave groups - the group making functionality allows the users to connect with their group members in private text channels, visible only to instructors and the members of that particular group. This works by assigning a specific role to the user when they join a group and giving them access to the private channel using the role. If the user changes groups (i.e. role changes too), they will immediately lose access to the previous group channel with no impact to the rest of the team's ability to communicate.
 
 ## Modifications
 
