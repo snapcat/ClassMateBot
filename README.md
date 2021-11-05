@@ -26,13 +26,6 @@
   
 </p>
 
----
-
-
-https://user-images.githubusercontent.com/89809302/140442405-e043564d-c946-4116-bb79-e9f8a341da21.mp4
-
-<a href="https://youtu.be/U59HyX21S7k">Watch on YouTube</a>
-
 
 ---
 
@@ -41,6 +34,14 @@ https://user-images.githubusercontent.com/89809302/140442405-e043564d-c946-4116-
 This project helps to improve the life of students, TAs and teachers by automating many mundane tasks which are sometimes done manually. ClassMateBot is a discord bot made in Python and could be used for any discord channel.
 
 This is Project 2 for the ClassMate Bot. Changes are marked below and listed in [Project 2 Changes](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Project2Changes.md).
+
+---
+
+
+https://user-images.githubusercontent.com/89809302/140442405-e043564d-c946-4116-bb79-e9f8a341da21.mp4
+
+<a href="https://youtu.be/U59HyX21S7k">Watch on YouTube</a>
+
 
 ---
 
