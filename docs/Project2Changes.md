@@ -28,5 +28,8 @@ Deadline: The database stores UTC time and trying to put in a time based on your
 
 Voting: The voting for a project was improved with the output and being able to change a vote, which you could not do previously.
 
+### Verification
+The previous version of ClassMateBot had a verify function which would change a user's role from unverified to unverified. This version stores the user's username, guild, and real name in an associated cloud database table. This version also standardizes the names of the roles, rather than having the developer define them in the .env file, and creates the role with the correct permissions if they do not already exist in the server at the time the bot joins a new guild. There is handling implemented for cases where a user attempts to verify themselves without the associated roles in place, or if the user is already verified.
+
 ## Documentation
 This version includes a more detailed [Installation Guide](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/installation.md) including the new database and cloud setup instructions.
