@@ -21,7 +21,7 @@
 |.5|test cases exist  | [test_bot.py](https://github.com/SE21-Team2/ClassMateBot/blob/main/test/test_bot.py)|.5|
 |.5|Use of code coverage  | [Codecov](https://codecov.io/gh/SE21-Team2/ClassMateBot)|.5|
 |.5|other automated analysis tools  | [Github Actions](https://github.com/SE21-Team2/ClassMateBot/blob/main/.github/workflows/main.yml)|.5|
-|.5|test cases:.a large proportion of the issues related to handling failing cases. | if a test case fails, open an issue and fix it|.5|
+|.5|test cases:.a large proportion of the issues related to handling failing cases. | [Tests](https://github.com/SE21-Team2/ClassMateBot/blob/main/test/test_bot.py)|.5|
 |.5|test cases are routinely executed | [Github Actions](https://github.com/SE21-Team2/ClassMateBot/blob/main/.github/workflows/main.yml)|.5|
 |1|Documentation describing how this version improves on the older version| [Project 2 Changes](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Project2Changes.md) |1|
 |3|This version is a little(1), some(2), much(3) improved on the last version.|[Project 2 Changes](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Project2Changes.md)| 3|
