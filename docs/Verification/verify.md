@@ -24,4 +24,4 @@ $verify Jane Doe
 ```
 Successful execution of this command will assign you some verified role and give you the access to the channels. You will also receive a welcome message from ClassMateBot with important links related to the course.
 
-![$verify Jane Doe](https://github.com/War-Keeper/ClassMateBot/blob/main/data/media/verify.gif)
+![$verify Jane Doe](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/verify.PNG)
