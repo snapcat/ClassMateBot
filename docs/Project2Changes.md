@@ -12,6 +12,9 @@ The bot can now be run through a Heroku dyno, allowing for better bot up-time an
 ### Multi-server Support
 Previously, the bot would only work for a single Discord server, which creates obvious problems with scaling the app to a general-purpose bot. We added functionality to allow the bot to store different data for different Discord servers, allowing the bot to be used in multiple servers concurrently.
 
+### Group Making
+Since the not allows users to join and leave groups - the group making functionality allows the users to connect with their group members in private text channels, visible only to instructors and the members of that particular group. This works by assinging a specific role to the user when they join a group and giving them access to the private channel using the role. If the user changes groups (i.e. role changes too), they will immediately lose access to the previous group channel with no impact to the rest of the team's ability to communicate.
+
 ## Modifications
 
 ### Database
@@ -22,7 +25,7 @@ Existing commands were improved for usability where there were prior gaps. The f
 
 Message Pinning: The pinnedmessages for example had no way to view pinned messages unless you remembered what was the pin tag. If that was forgotten, the message would forever be lost. Also, it was very specific formatting for requiring a link and became tedious to use. The command was made more usable by having only a tag and description, providing ways to find all of the messages, and other changes focused on usability.
 
-Groups: The groups commands allowed a person to join multiple groups. This was limited to one. The command to list groups was $group, so that was changed to $groups and a group command was added to display your group or specific other groups and the members inside. The $remove command was changed to $leave and removes you from your current group (since you are only in one now).
+Groups: The groups commands allowed a person to join multiple groups. This was limited to one. The command to list groups was $group, so that was changed to $groups and a group command was added to display your group or specific other groups and the members inside. The $remove command was changed to $leave and removes you from your current group (since you are only in one now). [NEW] The $startupgroups command creates new group roles for the server. [NEW] The $reset command now deletes all group roles in the server, making it helpful for semester long projects that involve switching teams mid-way. [NEW] The $connect command creates a private text channel for all groups with members, allowing them to communicate on the server itself! Moreover, this private channel can be accessed by the Instructors too, making it easier to communicate specific team-related information and queries between the Instructors and members of a particular team.
 
 Deadline: The database stores UTC time and trying to put in a time based on your current clock without realizing this would be wrong. Added a command to get the offset needed to get the proper times to input.
 
