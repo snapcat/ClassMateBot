@@ -10,7 +10,7 @@ def startupgroups(self, ctx): <br>
 This function takes as arguments the values provided by the constructor through self and context in which the command was called.
 
 # How to run it?
-In any channel of the server, you can set upp the roles for the group by typing `startupgroups`.
+In any channel of the server, you can set upp the roles for the group by typing `startupgroups`. This needs to be done only ONCE!
 ```
 $startupgroups
 ```
