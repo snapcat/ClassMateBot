@@ -144,6 +144,11 @@ class Groups(commands.Cog):
         )
         identifier = "group_" + str(group_num)
         role = get(ctx.guild.roles, name=identifier)
+
+        if role is None:
+            await ctx.guild.create_role(name=identifier)
+            role = get(ctx.guild.roles, name=identifier)
+
         await member.add_roles(role)
 
         await ctx.send(f'You are now in Group {group_num}! There are now {group_count[0][0] + 1}/6 members.')
