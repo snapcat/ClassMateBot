@@ -83,6 +83,7 @@ Another unique and useful feature of our ClassMateBot is that it helps the stude
 Moreover, the group creation feature allows members of the group to join a private text channel to communicate with ease! This works by assigning a role to the user when they join a group and giving them access to the private channel specically for their group, this is especially useful when switching groups because a change in the user's role will automatically revoke access to the private channel. Additionally, the private channels are set up so instructors can help with clarifications directly without having to reach out to them via DMs.
 
 ![group demo](https://user-images.githubusercontent.com/89809302/140443462-e8a59aae-1235-4a74-8d32-47c77a597a01.png)
+![group demo chg](https://user-images.githubusercontent.com/89809302/140443855-11b040fb-0e17-4134-9e2e-4dcc903d7ae2.png)
 
 
 ### 6 - Question and Answer **(New Project 2 Commands)**
