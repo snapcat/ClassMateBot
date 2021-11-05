@@ -26,6 +26,13 @@
   
 </p>
 
+---
+
+
+https://user-images.githubusercontent.com/89809302/140442405-e043564d-c946-4116-bb79-e9f8a341da21.mp4
+
+<a href="https://youtu.be/U59HyX21S7k">Watch on YouTube</a>
+
 
 ---
 
@@ -34,14 +41,6 @@
 This project helps to improve the life of students, TAs and teachers by automating many mundane tasks which are sometimes done manually. ClassMateBot is a discord bot made in Python and could be used for any discord channel.
 
 This is Project 2 for the ClassMate Bot. Changes are marked below and listed in [Project 2 Changes](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Project2Changes.md).
-
----
-
-
-https://user-images.githubusercontent.com/89809302/140442405-e043564d-c946-4116-bb79-e9f8a341da21.mp4
-
-<a href="https://youtu.be/U59HyX21S7k">Watch on YouTube</a>
-
 
 ---
 
@@ -78,7 +77,12 @@ Another problem that the students face is that they cannot pin important message
 
 ### 5 - Group Creation
 Another unique and useful feature of our ClassMateBot is that it helps the students in the process of group making for their projects. Through this feature, the bot could help the students identify other members of the class with similar ideals and acts as a medium to connect them initially. This feature is also helpful for students randomly assigned to a group to connect with the new member which would not only save time, but also, saves effort as many times students do not have their names as their usernames on discord. Through this students can join, leave or connect with others. 
+
 ![image](https://user-images.githubusercontent.com/32313919/140244316-7fac7ce4-32a7-444d-b8cf-b3b8b2d2dea1.png)
+
+Moreover, the group creation feature allows members of the group to join a private text channel to communicate with ease! This works by assigning a role to the user when they join a group and giving them access to the private channel specically for their group, this is especially useful when switching groups because a change in the user's role will automatically revoke access to the private channel. Additionally, the private channels are set up so instructors can help with clarifications directly without having to reach out to them via DMs.
+
+![group demo](https://user-images.githubusercontent.com/89809302/140443462-e8a59aae-1235-4a74-8d32-47c77a597a01.png)
 
 
 ### 6 - Question and Answer **(New Project 2 Commands)**
