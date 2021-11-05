@@ -17,7 +17,7 @@
 |1|Issues reports: there are many | [Issues](https://github.com/SE21-Team2/ClassMateBot/issues) |1|
 |.5|Use of code formatters. | [.pylintrc](https://github.com/SE21-Team2/ClassMateBot/blob/main/.pylintrc)|.5|
 |.5|Use of style checkers | [.pylintrc](https://github.com/SE21-Team2/ClassMateBot/blob/main/.pylintrc)|.5|
-|.5|Docs: short video, animated, hosted on your repo. That convinces people why they want to work on your code. | |0|
+|.5|Docs: short video, animated, hosted on your repo. That convinces people why they want to work on your code. | [README.md](https://github.com/SE21-Team2/ClassMateBot/blob/main/README.md) |.5|
 |.5|test cases exist  | [test_bot.py](https://github.com/SE21-Team2/ClassMateBot/blob/main/test/test_bot.py)|.5|
 |.5|Use of code coverage  | [Codecov](https://codecov.io/gh/SE21-Team2/ClassMateBot)|.5|
 |.5|other automated analysis tools  | [Github Actions](https://github.com/SE21-Team2/ClassMateBot/blob/main/.github/workflows/main.yml)|.5|
@@ -25,4 +25,4 @@
 |.5|test cases are routinely executed | [Github Actions](https://github.com/SE21-Team2/ClassMateBot/blob/main/.github/workflows/main.yml)|.5|
 |1|Documentation describing how this version improves on the older version| [Project 2 Changes](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Project2Changes.md) |1|
 |3|This version is a little(1), some(2), much(3) improved on the last version.|[Project 2 Changes](https://github.com/SE21-Team2/ClassMateBot/blob/main/docs/Project2Changes.md)| 3|
-|16| Total| | 15.5|
+|16| Total| | 16|
