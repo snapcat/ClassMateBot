@@ -16,4 +16,7 @@ $startupgroups
 ```
 Successful execution of this command will create 100 unassigned group roles for the users in the server.
 
-![group demo](https://user-images.githubusercontent.com/89809302/140447516-76271758-a52d-423f-b342-cdfc13359ce3.png)
+![image](https://user-images.githubusercontent.com/89809302/140447594-468f1c7b-feaf-449a-bdcb-ac70a5bf066e.png)
+
+![image](https://user-images.githubusercontent.com/89809302/140447634-2ba168bf-9b27-4b6a-9a8a-af5ca3da9182.png)
+
