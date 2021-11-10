@@ -28,7 +28,7 @@ CREATE TABLE pinned_messages (
     guild_id        BIGINT NOT NULL,
     author_id       BIGINT NOT NULL,
     tag             VARCHAR NOT NULL,
-    description     VARCHAR NOT NULL,
+    description     VARCHAR NOT NULL
 );
 
 CREATE TABLE review_questions (
