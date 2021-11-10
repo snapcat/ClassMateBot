@@ -36,3 +36,11 @@ CREATE TABLE review_questions (
     question        VARCHAR NOT NULL,
     answer          VARCHAR NOT NULL
 );
+
+CREATE TABLE questions (
+    guild_id        BIGINT NOT NULL,
+	number          BIGINT NOT NULL,
+    question        VARCHAR NOT NULL,
+	author_id       BIGINT,
+	msg_id          BIGINT NOT NULL
+);
