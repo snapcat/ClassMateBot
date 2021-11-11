@@ -1,15 +1,25 @@
 <p align="center"><img width=20.5% src="https://github.com/SE21-Team2/ClassMateBot/blob/main/data/neworange.png"></p>
 <h1 align="center" >ClassMate Bot</h1>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-![Python](https://img.shields.io/badge/python-v3.8+-yellow.svg)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+[![DOI](https://zenodo.org/badge/426029685.svg)](https://zenodo.org/badge/latestdoi/426029685)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5646734.svg)](https://doi.org/10.5281/zenodo.5646734)
-![Build Status](https://github.com/SE21-Team2/ClassMateBot/actions/workflows/main.yml/badge.svg)
-![GitHub issues](https://img.shields.io/github/issues/shikhanair/TeachersPetBot)
-![GitHub closed issues](https://img.shields.io/github/issues-closed/SE21-Team2/ClassMateBot)
-![Lines of code](https://img.shields.io/tokei/lines/github/SE21-Team2/ClassMateBot)
-[![codecov](https://codecov.io/gh/SE21-Team2/ClassMateBot/branch/main/graph/badge.svg)](https://codecov.io/gh/SE21-Team2/ClassMateBot)
+![Python](https://img.shields.io/badge/python-v3.8+-yellow.svg)
+![Lines of code](https://img.shields.io/tokei/lines/github/CSC510-Group-25/ClassMateBot)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c1c81dbe55ac4b9ca27533ec23a8493d)](https://www.codacy.com/gh/CSC510-Group-25/ClassMateBot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CSC510-Group-25/ClassMateBot&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/CSC510-Group-25/ClassMateBot/branch/main/graph/badge.svg?token=B1E9S0HRRC)](https://codecov.io/gh/CSC510-Group-25/ClassMateBot)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/CSC510-Group-25/ClassMateBot)](https://github.com/CSC510-Group-25/ClassMateBot/pulls)
+[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/CSC510-Group-25/ClassMateBot)](https://github.com/CSC510-Group-25/ClassMateBot/pulls?q=is%3Apr+is%3Aclosed)
+[![GitHub issues](https://img.shields.io/github/issues/CSC510-Group-25/ClassMateBot)](https://github.com/CSC510-Group-25/ClassMateBot/issues)
+[![GitHub closed issues](https://img.shields.io/github/issues-closed/CSC510-Group-25/ClassMateBot)](https://github.com/CSC510-Group-25/ClassMateBot/issues?q=is%3Aissue+is%3Aclosed)
+[![GitHub issues by-label](https://img.shields.io/github/issues-raw/CSC510-Group-25/ClassMateBot/bug?color=red&label=Active%20bugs)](https://github.com/CSC510-Group-25/ClassMateBot/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+[![GitHub closed issues by-label](https://img.shields.io/github/issues-closed-raw/CSC510-Group-25/ClassMateBot/bug?label=Squished%20bugs)](https://github.com/CSC510-Group-25/ClassMateBot/issues?q=is%3Aissue+label%3Abug+is%3Aclosed)
+[![Python application](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/main.yml/badge.svg)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/main.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/CSC510-Group-25/ClassMateBot/Python%20application)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/main.yml)
+[![Pytest](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pytest_with_cov.yml/badge.svg)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pytest_with_cov.yml)
+[![Pylint](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pylint.yml/badge.svg)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pylint.yml)
+
+
 
 <p align="center">
   <a href="#dart-basic-overview">Basic Overview</a>
@@ -22,7 +32,9 @@
   ::
   <a href="#earth_americas-future-scope">Future Scope</a>
   ::
-  <a href="#pencil2-contributors-for-project-2">Contributors</a>
+  <a href="#pencil2-contributors-for-project-3">Contributors</a>
+  ::
+  <a href="https://github.com/CSC510-Group-25/ClassMateBot/wiki">Wiki</a>
   
 </p>
 
@@ -178,6 +190,21 @@ For the reviewqs.py file **(All New Commands in Project 2)**
 
 ## :earth_americas: Future Scope
 [Project 3](https://github.com/SE21-Team2/ClassMateBot/projects/2) suggested tasks are located in the Projects tab. 
+
+
+---
+
+## :pencil2: Contributors for Project 3
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/etracey7/"><img src="https://avatars.githubusercontent.com/u/78971563?v=4" width="75px;" alt=""/><br /><sub><b>Emily Tracey</b></sub></a></td>
+    <td align="center"><a href="https://github.com/peeyush10234/"><img src="https://avatars.githubusercontent.com/u/10905673?v=4" width="75px;" alt=""/><br /><sub><b>Peeyush Taneja</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/jhnguye4/"><img src="https://avatars.githubusercontent.com/u/42051115?v=4" width="75px;" alt=""/><br /><sub><b>Jonathan Nguyen</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/snapcat/"><img src="https://avatars.githubusercontent.com/u/89357283?v=4" width="75px;" alt=""/><br /><sub><b>Leila Moran</b></sub></a><br /></td>
+    <td align="center"><a href="https://www.github.com/shraddhamishra7"><img src="https://avatars.githubusercontent.com/u/7471821?v=4" width="75px;" alt=""/><br /><sub><b>Shraddha Mishra</b></sub></a><br /></td>
+  </tr>
+</table>
 
 ---
 

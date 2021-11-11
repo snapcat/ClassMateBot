@@ -1,5 +1,21 @@
 Cite as
 
+Emily Tracey, Leila Moran, Shraddha Mishra, Jonathan Nguyen, & Peeyush Taneja. (2021, November 10). CSC510-Group-25/ClassMateBot (Version v3).
+Zenodo. https://doi.org/10.5281/zenodo.5673334
+
+```
+@software{CSC510-Group-25/ClassMateBot,
+  title     = {CSC510-Group-25/ClassMateBot (Version v3)},
+  DOI       = {10.5281/zenodo.5673334}, 
+  author    = {Leila Moran, Emily Tracey, Shraddha Mishra, Jonathan Nguyen, & Peeyush Taneja}, 
+  publisher = {Zenodo}, 
+  year      = {2021}, 
+  month     = {November}
+}
+```
+
+For Version 2 Cite as
+
 Tanya Chu, Steven Jones, Shikha Nair, Alex Snezhko, & Pradhan Chetan Venkataramaiah. (2021, November 04). SE21-Team2/ClassMateBot (Version v2).
 Zenodo. https://doi.org/10.5281/zenodo.5646734
 
