@@ -169,7 +169,11 @@ disable=print-statement,
         E0401,
         C0413,
         R0801,
-        R0201
+        R0201,
+        C0301, # Line too long (127/120) (line-too-long)
+        C0411, # (wrong-import-order)
+        W0611, # Unused join imported from os.path (unused-import)
+        C0412  # Imports from package discord are not grouped (ungrouped-imports)
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
