@@ -16,7 +16,7 @@
 [![GitHub closed issues by-label](https://img.shields.io/github/issues-closed-raw/CSC510-Group-25/ClassMateBot/bug?label=Squished%20bugs)](https://github.com/CSC510-Group-25/ClassMateBot/issues?q=is%3Aissue+label%3Abug+is%3Aclosed)
 [![Python application](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/main.yml/badge.svg)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/main.yml)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/CSC510-Group-25/ClassMateBot/Python%20application)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/main.yml)
-[![Pytest](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pytest_with_cov.yml/badge.svg)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pytest_with_cov.yml)
+[![Pytest](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pytest.yml/badge.svg)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pytest.yml)
 [![Pylint](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pylint.yml/badge.svg)](https://github.com/CSC510-Group-25/ClassMateBot/actions/workflows/pylint.yml)
 
 
