@@ -99,13 +99,13 @@ class Qanda(commands.Cog):
             await ctx.author.send('Please send answers to the #q-and-a channel.')
             await ctx.message.delete()
             return
-        
+
         # to stop SQL from freezing. Only allows valid numbers.
-        if not re.match('^([1-9]\d*|0)$', num):
+        if not re.match(r'^([1-9]\d*|0)$', num):
             await ctx.author.send('Please include a valid question number. EX: $answer 1 /"Oct 12/" anonymous')
             await ctx.message.delete()
             return
-        
+
         #if not isinstance(ans, str):
             #await ctx.author.send('Please include a valid answer. EX: $answer 1 /"Oct 12/" anonymous')
            # await ctx.message.delete()
@@ -146,7 +146,7 @@ class Qanda(commands.Cog):
         else:
             role = 'Student'
         db.query(
-            'INSERT INTO answers (guild_id, q_number, answers, author_id, author_role) VALUES (%s, %s, %s, %s, %s)',
+            'INSERT INTO answers (guild_id, q_number, answer, author_id, author_role) VALUES (%s, %s, %s, %s, %s)',
             (ctx.guild.id, num, ans, author, role)
         )
 
@@ -202,21 +202,20 @@ class Qanda(commands.Cog):
     #TODO
     #deleteQuestion (q_num) #ALSO DELETES ALL ANSWERS FOR THIS QUESTION. instructor only
     #deleteAllQuestions    #instructor only
-    #deleteAllQuestionsBy ... 
+    #deleteAllQuestionsBy ...
     #deleteAllEmptyQuestions
 
-    #archiveQA (DM all questions and their answers)
 
 
     #deleteAllAnswersFor (q_num) #instructor
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: deleteAllAnswersFor
-    #    Description: 
+    #    Description:
     #    Inputs:
     #       - ctx: context of the command
     #       - num: question number
     #    Outputs:
-    #       - 
+    #       -
     # -----------------------------------------------------------------------------------------------------------------
     @commands.has_role('Instructor')
     @commands.command(name='DALLAF', help='(PLACEHOLDER NAME) Delete all answers for a question\n'
@@ -228,13 +227,13 @@ class Qanda(commands.Cog):
             await ctx.author.send('Please use this command inside the #q-and-a channel.')
             await ctx.message.delete()
             return
-        
+
         # to stop SQL from freezing. Only allows valid numbers.
-        if not re.match('^([1-9]\d*|0)$', num):
-            await ctx.author.send('Please include a valid question number. EX: $answer 1 /"Oct 12/" anonymous')
+        if not re.match(r'^([1-9]\d*|0)$', num):
+            await ctx.author.send('Please include a valid question number. EX: $DALLAF 1')
             await ctx.message.delete()
             return
-        
+
         # check if question number exists
         q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s AND number = %s',
                      (ctx.guild.id, num))
@@ -254,16 +253,16 @@ class Qanda(commands.Cog):
             (ctx.guild.id, num)
         )
         # Delete all answers for question
-        answers = db.query('DELETE FROM answers WHERE guild_id = %s AND q_number = %s',
-                           (ctx.guild.id, num))
-        
+        db.query('DELETE FROM answers WHERE guild_id = %s AND q_number = %s',
+                (ctx.guild.id, num))
+
         if len(rows_deleted) == 0:
-            await ctx.send(
+            await ctx.author.send(
                 f"No answers exist for Q{num}")
         else:
-            await ctx.send(
+            await ctx.author.send(
                 f"deleted {len(rows_deleted)} answers for Q{num}")
-        
+
         # check if message exists on the channel. If it does, restore the question!
         try:
             message = await ctx.fetch_message(q[3])
@@ -297,15 +296,15 @@ class Qanda(commands.Cog):
             await ctx.author.send(error)
         await ctx.message.delete()
 
-    #getAnswersFor (q_num)
+    #getAllAnsFor (q_num)
     # -----------------------------------------------------------------------------------------------------------------
-    #    Function: getAnswersFor
+    #    Function: getAllAnsFor
     #    Description: gets all answers for a question
     #    Inputs:
     #       - ctx: context of the command
     #       - num: question number
     #    Outputs:
-    #       - All questions and their answers, if any
+    #       - All answers for a question, if any
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name='getAnswersFor', help='Get all answers for a question\n'
                                        'EX: $getAnswersFor 1')
@@ -318,10 +317,11 @@ class Qanda(commands.Cog):
             return
 
         # to stop SQL from screaming. Only allows valid numbers.
-        if not re.match('^([1-9]\d*|0)$', num):
+        if not re.match(r'^([1-9]\d*|0)$', num):
             await ctx.author.send('Please include a valid question number. EX: $answer 1 /"Oct 12/" anonymous')
             await ctx.message.delete()
             return
+
         # check if question number exists
         q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s AND number = %s',
                      (ctx.guild.id, num))
@@ -330,6 +330,7 @@ class Qanda(commands.Cog):
             # delete user msg
             await ctx.message.delete()
             return
+
         q = q[0]
 
         # check if message exists
@@ -346,20 +347,29 @@ class Qanda(commands.Cog):
         q_author_str = 'anonymous' if q[2] is None else (await self.bot.fetch_user(q[2])).name
         qstr = f"Q{q[0]}: {q[1]} by {q_author_str}\n"
 
-
         # get all answers for question and add to msg
         answers = db.query('SELECT answer, author_id, author_role FROM answers WHERE guild_id = %s AND q_number = %s',
                            (ctx.guild.id, num))
+
+        # if there are no answers, return
+        if len(answers) == 0:
+            qstr += f"No answers for Q{q[0]}\n"
+            await ctx.author.send(qstr)
+            await ctx.message.delete()
+            return
+
         for answer, author, role in answers:
             a_author = 'anonymous' if author is None else (await self.bot.fetch_user(author)).name
             qstr += f"{a_author} ({role}) Ans: {answer}\n"
-        
-        #msgstr = f"Fetched all answers for question {num}"
 
+        # send the question and answers to user
         await ctx.author.send(qstr)
 
         # delete user msg
+        #try:
         await ctx.message.delete()
+        #except NotFound:
+        #    pass
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: getAllAnsFor_error(self, ctx, error)
@@ -378,9 +388,92 @@ class Qanda(commands.Cog):
                 '(Example: $getAnswersFor 1)')
         else:
             await ctx.author.send(error)
+        #try:
         await ctx.message.delete()
+        #except NotFound:
+        #    pass
+
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: archiveQA
+    #    Description: DM all questions and their answers
+    #    Inputs:
+    #       - ctx: context of the command
+    #    Outputs:
+    #       - DMs all questions and answers to the user
+    # -----------------------------------------------------------------------------------------------------------------
+    @commands.command(name='archiveQA', help='(PLACEHOLDER NAME) DM all questions and their answers\n'
+                                       'EX: $archiveQA')
+    async def archiveQA(self, ctx):
+
+        # make sure to check that this is actually being asked in the Q&A channel
+        if not ctx.channel.name == 'q-and-a':
+            await ctx.author.send('Please use this command inside the #q-and-a channel.')
+            await ctx.message.delete()
+            return
+
+        # get questions
+        q = db.query('SELECT number, question, author_id FROM questions WHERE guild_id = %s',
+                     (ctx.guild.id,))
+        if len(q) == 0:
+            await ctx.author.send('No questions found in database.')
+            # delete user msg
+            await ctx.message.delete()
+            return
+
+        # get answers for every question number
+        #for qnum in q:
+        #    number = str(qnum[0])
+        #    await ctx.invoke(self.bot.get_command('getAnswersFor'), num=number)
+
+        for number, question, author_id in q:
+
+            q_author_str = 'anonymous' if author_id is None else (await self.bot.fetch_user(author_id)).name
+            qstr = f"Q{number}: {question} by {q_author_str}\n"
+
+            # get all answers for question and add to msg
+            answers = db.query('SELECT answer, author_id, author_role FROM answers WHERE guild_id = %s AND q_number = %s',
+                           (ctx.guild.id, number))
+
+            if len(answers) == 0:
+                qstr += f"No answers for Q{number}\n"
+            else:
+                for answer, author, role in answers:
+                    a_author = 'anonymous' if author is None else (await self.bot.fetch_user(author)).name
+                    qstr += f"{a_author} ({role}) Ans: {answer}\n"
+
+            # send the question and answers to user
+            await ctx.author.send(qstr)
+
+        # in case of message deletion errors
+        #try:
+        await ctx.message.delete()
+        #except NotFound:
+        #    pass
 
 
+
+    #TODO
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: archiveqa_error(self, ctx, error)
+    #    Description: prints error message for archiveQA command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
+    @archiveQA.error
+    async def archiveqa_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.author.send(
+                'archiveQA doesn\'t need any arguments. Just use $archiveQA')
+        else:
+            await ctx.author.send(error)
+        # in case of message deletion errors
+        #try:
+        await ctx.message.delete()
+        #except NotFound:
+        #    pass
 
 
 def setup(bot):
