@@ -125,7 +125,7 @@ class Qanda(commands.Cog):
         q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s AND number = %s',
                      (ctx.guild.id, num))
         if len(q) == 0:
-            await ctx.author.send('Invalid question number: ' + str(num))
+            await ctx.author.send('No such question with the number: ' + str(num))
             # delete user msg
             await ctx.message.delete()
             return
@@ -135,7 +135,8 @@ class Qanda(commands.Cog):
         try:
             message = await ctx.fetch_message(q[3])
         except NotFound:
-            await ctx.author.send('Invalid question number: ' + str(num))
+            nf_str = f"Question {num} not found. It may have been deleted."
+            await ctx.author.send(nf_str)
             # delete user msg
             await ctx.message.delete()
             return
@@ -165,7 +166,9 @@ class Qanda(commands.Cog):
         try:
             await message.edit(content=new_answer)
         except NotFound:
-            await ctx.author.send('Invalid question number: ' + str(num))
+            nf_str = f"Question {num} not found. It may have been deleted."
+            await ctx.author.send(nf_str)
+            #await ctx.author.send('Invalid question number: ' + str(num))
 
         # delete user msg
         await ctx.message.delete()
@@ -224,7 +227,7 @@ class Qanda(commands.Cog):
         q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s AND number = %s',
                      (ctx.guild.id, num))
         if len(q) == 0:
-            await ctx.author.send('Invalid question number: ' + str(num))
+            await ctx.author.send('No such question with the number: ' + str(num))
             # delete user msg
             await ctx.message.delete()
             return
@@ -312,7 +315,7 @@ class Qanda(commands.Cog):
         q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s AND number = %s',
                      (ctx.guild.id, num))
         if len(q) == 0:
-            await ctx.author.send('Invalid question number: ' + str(num))
+            await ctx.author.send('No such question with the number: ' + str(num))
             # delete user msg
             await ctx.message.delete()
             return
@@ -350,12 +353,8 @@ class Qanda(commands.Cog):
 
         # send the question and answers to user
         await ctx.author.send(qstr)
-
-        # delete user msg
-        #try:
         await ctx.message.delete()
-        #except NotFound:
-        #    pass
+
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: getAllAnsFor_error(self, ctx, error)
@@ -398,7 +397,7 @@ class Qanda(commands.Cog):
             return
 
         # get questions
-        q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s',
+        q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s ORDER BY number ASC',
                      (ctx.guild.id,))
         if len(q) == 0:
             await ctx.author.send('No questions found in database.')
@@ -568,7 +567,7 @@ class Qanda(commands.Cog):
             return
 
        # check if question number exists
-        q = db.query('SELECT number, msg_id FROM questions WHERE guild_id = %s AND number = %s',
+        q = db.query('SELECT number, msg_id, is_ghost FROM questions WHERE guild_id = %s AND number = %s',
                      (ctx.guild.id, num))
         if len(q) == 0:
             await ctx.author.send('Question number not in database: ' + str(num))
@@ -577,6 +576,11 @@ class Qanda(commands.Cog):
             return
 
         q = q[0]
+
+        # if is_ghost is false, set to true
+        if not q[2]:
+            db.query('UPDATE questions SET is_ghost = NOT is_ghost WHERE guild_id = %s AND number = %s',
+            (ctx.guild.id, num))
 
         # check if message exists on channel
         try:
