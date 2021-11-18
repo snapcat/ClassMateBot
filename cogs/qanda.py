@@ -253,7 +253,7 @@ class Qanda(commands.Cog):
         try:
             message = await ctx.fetch_message(q[3])
         except NotFound:
-            nf_str = f"Question {num} not found in channel. It may have been deleted."
+            nf_str = f"Q{num} is a ghost!"
             await ctx.author.send(nf_str)
             # delete user msg
             await ctx.message.delete()

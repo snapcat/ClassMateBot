@@ -356,12 +356,17 @@ async def test_qanda(bot):
     assert dpytest.verify().message().contains().content(
         'Please use this command inside the #q-and-a channel.')
 
-    # Tests getting answers with bad input
+    # Tests getting answers with bad input: no arg
     with pytest.raises(commands.MissingRequiredArgument):
         await dpytest.message("$getAnswersFor", channel=channel)
     assert dpytest.verify().message().contains().content(
         'To use the getAnswersFor command, do: $getAnswersFor QUESTION_NUMBER\n '
         '(Example: $getAnswersFor 1)')
+
+    # Tests getting answers with bad input
+    await dpytest.message("$getAnswersFor abc", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Please include a valid question number. EX: $getAnswersFor 1')
 
     # Test archiveQA: questions without answers
     await dpytest.message("$archiveQA",channel=channel)
@@ -413,6 +418,11 @@ async def test_qanda(bot):
     await dpytest.message("$DALLAF abc", channel=channel)
     assert dpytest.verify().message().contains().content(
         'Please include a valid question number. EX: $DALLAF 1')
+
+    # test deleting all answers for a non-existent question
+    await dpytest.message("$DALLAF 100", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Invalid question number: 100')
 
     # test deleting all answers for a question with none
     await dpytest.message("$DALLAF 1", channel=channel)
@@ -471,6 +481,18 @@ async def test_qanda(bot):
     assert dpytest.verify().message().contains().content(
         'Q1 is already a ghost!')
 
+    # Tests getting answers for a ghost
+    await dpytest.message("$getAnswersFor 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Question 1 not found. It may have been deleted.')
+
+    # test deleting all answers for ghost
+    await dpytest.message("$DALLAF 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'deleted 2 answers for Q1')
+    assert dpytest.verify().message().contains().content(
+        'Q1 is a ghost!')
+
     # SET UP FOR GHOST TESTING
     await dpytest.message("$ask \"I AM NOT A GHOST\" anonymous", channel=channel)
     assert dpytest.verify().message().contains().content(
@@ -508,6 +530,14 @@ async def test_qanda(bot):
     await dpytest.message("$archiveQA",channel=channel)
     assert dpytest.verify().message().contains().content(
         'No questions found in database.')
+
+    # Test that archiveQA does not work outside of QA
+    await dpytest.message("$archiveQA", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    # Tests that the bot sent the appropriate message
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
 
     ####### END OF NEW TESTS
 
