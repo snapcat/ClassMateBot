@@ -39,9 +39,17 @@ CREATE TABLE review_questions (
 
 CREATE TABLE questions (
     guild_id        BIGINT NOT NULL,
-	number          BIGINT NOT NULL,
+    number          BIGINT NOT NULL,
     question        VARCHAR NOT NULL,
-	author_id       BIGINT,
-	msg_id          BIGINT NOT NULL,
+    author_id       BIGINT,
+    msg_id          BIGINT NOT NULL
     is_ghost        BOOLEAN DEFAULT false
+);
+
+CREATE TABLE answers (
+    guild_id        BIGINT NOT NULL,
+    q_number        BIGINT NOT NULL,
+    answer          VARCHAR NOT NULL,
+    author_id       BIGINT,
+    author_role     VARCHAR NOT NULL
 );
