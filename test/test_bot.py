@@ -433,6 +433,82 @@ async def test_qanda(bot):
         'Q2: When is the last day of classes? by ' + user.name + '\n'
         'No answers for Q2\n')
 
+    # answer a question
+    await dpytest.message("$answer 1 \"TestA\"", channel=channel)
+    await dpytest.message("$answer 1 \"TestB\" anonymous", channel=channel)
+
+    # Test that deleting questions does not work outside of QA
+    msg = await dpytest.message("$deleteQuestion 1", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # test deleting questions with bad input: no args
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$deleteQuestion", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'To use the deleteQuestion command, do: $deleteQuestion QUESTION_NUMBER\n '
+        '(Example: $deleteQuestion 1')
+
+    # test deleting question with bad input
+    await dpytest.message("$deleteQuestion abc", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Please include a valid question number. EX: $deleteQuestion 1')
+
+    # test deleting a non-existent question
+    await dpytest.message("$deleteQuestion 100", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Question number not in database: 100')
+
+    # Test deleting a question
+    await dpytest.message("$deleteQuestion 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1 is now a ghost. To see ghost handling options, use the $help command.')
+
+    # Test deleting a ghost question
+    await dpytest.message("$deleteQuestion 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1 is already a ghost!')
+
+    # SET UP FOR GHOST TESTING
+    await dpytest.message("$ask \"I AM NOT A GHOST\" anonymous", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q3: I AM NOT A GHOST by anonymous')
+
+    # Test archiveQA again; ensure haunting
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1 is a ghost!')
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        'No answers for Q2\n')
+    assert dpytest.verify().message().contains().content(
+        'Q3: I AM NOT A GHOST by anonymous\n'
+        'No answers for Q3\n')
+
+    # Test that deleting all QAs does not work outside of QA
+    msg = await dpytest.message("$deleteAllQA", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # Test deleting all QAs
+    await dpytest.message("$deleteAllQA", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Deleted 3 questions from the database, including 1 ghost questions.')
+
+    # Test deleting all QAs without any questions
+    await dpytest.message("$deleteAllQA", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No questions found in database.')
+
+    # Test archiveQA again: deleting all QAs
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No questions found in database.')
+
     ####### END OF NEW TESTS
 
 # --------------------
