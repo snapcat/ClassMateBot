@@ -553,12 +553,23 @@ async def test_qanda(bot):
     await dpytest.message("$ask \"Zombie3\" anonymous", channel=channel)
     assert dpytest.verify().message().contains().content(
         'Q7: Zombie3 by anonymous')
-
     # hold on to q7
     qz_id = channel.last_message_id
     qz = await channel.fetch_message(qz_id)
+
+    await dpytest.message("$answer 7 \"test\" anonymous", channel=channel)
+
+    # zomb-ify Q7
     await qz.delete()
 
+    # ghosts: 2, zombies: 1
+
+    # test deleting all answers for zombie
+    await dpytest.message("$DALLAF 7", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'deleted 1 answers for Q7')
+    assert dpytest.verify().message().contains().content(
+        'Q7 is a zombie!')
     # ghosts: 2, zombies: 1
 
     # test deleteAllQA: questions with and without answers, ghosts and zombies
