@@ -824,7 +824,7 @@ class Qanda(commands.Cog):
             return
 
          # get questions
-        q = db.query('SELECT number, question, author_id, msg_id FROM questions WHERE guild_id = %s AND is_ghost IS FALSE',
+        q = db.query('SELECT number, msg_id FROM questions WHERE guild_id = %s AND is_ghost IS FALSE',
                      (ctx.guild.id,))
         if len(q) == 0:
             await ctx.author.send('No zombies detected.')
