@@ -24,6 +24,22 @@ class Helpful(commands.Cog):
         await ctx.send(f"Pong! My ping currently is {round(min(999999999, self.bot.latency * 1000))}ms")
 
 
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: ping_error(self, ctx, error)
+    #    Description: prints error message for ping command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
+    @ping.error
+    async def ping_error(self, ctx, error):
+        await ctx.author.send(error)
+        #await ctx.message.delete()
+        print(error)
+
+
 # -------------------------------------
 # add the file to the bot's cog system
 # -------------------------------------
