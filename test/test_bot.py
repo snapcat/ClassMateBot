@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import discord.ext.test as dpytest
 from dotenv import load_dotenv
 import pytest
+from discord.ext import commands
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -60,7 +61,7 @@ async def test_groupError(bot):
     assert dpytest.verify().message().content('Not a valid group')
     assert dpytest.verify().message().content(
         'To use the join command, do: $join <Num> where 0 <= <Num> <= 99 \n ( For example: $join 0 )')
-    
+
     try:
         await dpytest.message("$join")
         # should not reach here
@@ -293,7 +294,7 @@ async def test_voting(bot):
     assert dpytest.verify().message().content(
         "A valid project number is 1-99.")
 
-# --------------------
+# -------------------
 # Tests cogs/qanda
 # --------------------
 @pytest.mark.asyncio
@@ -303,6 +304,7 @@ async def test_qanda(bot):
     user = dpytest.get_config().members[0]
     guild = dpytest.get_config().guilds[0]
     channel = await guild.create_text_channel('q-and-a')
+    gen_channel = await guild.create_text_channel('general')
     await guild.create_role(name="Instructor")
     role = discord.utils.get(guild.roles, name="Instructor")
     await dpytest.add_role(user, role)
@@ -310,12 +312,261 @@ async def test_qanda(bot):
     # Test asking a question anonymously
     await dpytest.message("$ask \"What class is this?\" anonymous", channel=channel)
     assert dpytest.verify().message().contains().content(
-        'What class is this? by anonymous')
+        'Q1: What class is this? by anonymous')
 
     # Test asking a question with name
     await dpytest.message("$ask \"When is the last day of classes?\"", channel=channel)
     assert dpytest.verify().message().contains().content(
-        'When is the last day of classes? by ' + user.name)
+        'Q2: When is the last day of classes? by ' + user.name)
+
+    # placeholder test for empty input (question)
+    #await dpytest.message("$ask \"\"", channel=channel)
+    #assert dpytest.verify().message().contains().content('STRING GOES HERE')
+    
+    # Test asking a question in the wrong channel
+    msg = await dpytest.message("$ask \"Is this the right channel?\"", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    assert dpytest.verify().message().contains().content(
+        'Please send questions to the #q-and-a channel.')
+
+    # Tests unknown anonymous input (question)
+    await dpytest.message("$ask \"Who am I?\" wronganon", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+
+    # Tests incorrect use of ask command: missing args
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$ask", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'To use the ask command, do: $ask \"QUESTION\" anonymous*<optional>* \n '
+        '(For example: $ask \"What class is this?\" anonymous)')
+
+    # Test answering a question in the wrong channel
+    msga = await dpytest.message("$answer 1 \"Test\"", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msga.id)
+    assert dpytest.verify().message().contains().content(
+        'Please send answers to the #q-and-a channel.')
+    
+    # Tests unknown anonymous input (answer)
+    await dpytest.message("$answer 1 \"A Thing\" wronganon", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+
+    # Tests answering a nonexistent question (answer)
+    await dpytest.message("$answer 100 \"nope\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No such question with the number: 100')
+
+    # placeholder test for empty input (answer)
+    #await dpytest.message("$answer 100 \"\" ", channel=channel)
+    #assert dpytest.verify().message().contains().content('STRING GOES HERE')
+
+    # Tests incorrect use of answer command: no args
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$answer", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'To use the answer command, do: $answer QUESTION_NUMBER \"ANSWER\" anonymous*<optional>*\n '
+        '(For example: $answer 2 \"Yes\")')
+
+    # Tests answering with bad input (answer)
+    await dpytest.message("$answer \"nope\" lol", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Please include a valid question number. EX: $answer 1 /"Oct 12/" anonymous')
+
+    # Test getAnswersFor in wrong channel
+    msg = await dpytest.message("$getAnswersFor 1", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+   # Tests getting answers for nonexistent question
+    await dpytest.message("$getAnswersFor 100", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No such question with the number: 100')
+
+    # Tests getAnswersFor with bad input: no arg
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$getAnswersFor", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'To use the getAnswersFor command, do: $getAnswersFor QUESTION_NUMBER\n '
+        '(Example: $getAnswersFor 1)')
+
+    # Tests getting answers with bad input
+    await dpytest.message("$getAnswersFor abc", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Please include a valid question number. EX: $getAnswersFor 1')
+
+    # Tests getting answers: no answers
+    await dpytest.message("$getAnswersFor 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No answers for Q1')
+
+    # Test archiveQA: questions without answers
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1: What class is this? by anonymous\n'
+        'No answers for Q1\n')
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        'No answers for Q2\n')
+
+    # Test answering a question
+    await dpytest.message("$answer 2 \"TestA\"", channel=channel)
+    # Test answering a question anonymously
+    await dpytest.message("$answer 2 \"TestB\" anonymous", channel=channel)
+
+    # Tests getting answers: question has answers
+    await dpytest.message("$getAnswersFor 2", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        + user.name + ' (Instructor) Ans: TestA\n'
+        'anonymous (Instructor) Ans: TestB\n')
+
+    # Test archiveQA: questions with answers
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1: What class is this? by anonymous\n'
+        'No answers for Q1\n')
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        + user.name + ' (Instructor) Ans: TestA\n'
+        'anonymous (Instructor) Ans: TestB\n')
+
+    # Test that deleting answers does not work outside of QA
+    msg = await dpytest.message("$DALLAF 1", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # test deleting all answers with bad input: no args
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$DALLAF", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'To use the deleteAllAnswersFor command, do: $DALLAF QUESTION_NUMBER\n '
+        '(Example: $DALLAF 1)')
+
+    # test deleting all answers with bad input
+    await dpytest.message("$DALLAF abc", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Please include a valid question number. EX: $DALLAF 1')
+
+    # test deleting all answers for a non-existent question
+    await dpytest.message("$DALLAF 100", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No such question with the number: 100')
+
+    # test deleting all answers for a question with none
+    await dpytest.message("$DALLAF 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No answers exist for Q1')
+
+    # test deleting all answers
+    await dpytest.message("$DALLAF 2", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'deleted 2 answers for Q2')
+
+    # Test archiveQA again; ensure proper deletion
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1: What class is this? by anonymous\n'
+        'No answers for Q1\n')
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        'No answers for Q2\n')
+
+    # answer a question
+    await dpytest.message("$answer 1 \"TestC\"", channel=channel)
+    await dpytest.message("$answer 1 \"TestD\" anonymous", channel=channel)
+
+    # Test that deleting questions does not work outside of QA
+    msg = await dpytest.message("$deleteQuestion 1", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # test deleting questions with bad input: no args
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$deleteQuestion", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'To use the deleteQuestion command, do: $deleteQuestion QUESTION_NUMBER\n '
+        '(Example: $deleteQuestion 1')
+
+    # test deleting question with bad input
+    await dpytest.message("$deleteQuestion abc", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Please include a valid question number. EX: $deleteQuestion 1')
+
+    # test deleting a non-existent question
+    await dpytest.message("$deleteQuestion 100", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Question number not in database: 100')
+
+    # Test deleting a question
+    await dpytest.message("$deleteQuestion 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1 is now a ghost. To see ghost handling options, use the $help command.')
+
+    # Test deleting a ghost question
+    await dpytest.message("$deleteQuestion 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1 is already a ghost!')
+
+    # Tests getting answers for a ghost
+    await dpytest.message("$getAnswersFor 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Question 1 not found. It may have been deleted.')
+
+    # test deleting all answers for ghost
+    await dpytest.message("$DALLAF 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'deleted 2 answers for Q1')
+    assert dpytest.verify().message().contains().content(
+        'Q1 is a ghost!')
+
+    # Test archiveQA again; ensure haunting
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1 is a ghost!')
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        'No answers for Q2\n')
+
+    # Test that deleting all QAs does not work outside of QA
+    msg = await dpytest.message("$deleteAllQA", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # Test deleting all QAs
+    await dpytest.message("$deleteAllQA", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Deleted 2 questions from the database, including 1 ghost questions.')
+
+    # Test deleting all QAs without any questions
+    await dpytest.message("$deleteAllQA", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No questions found in database.')
+
+    # Test archiveQA again: deleting all QAs
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No questions found in database.')
+
+    # Test that archiveQA does not work outside of QA
+    await dpytest.message("$archiveQA", channel=gen_channel)
+    with pytest.raises(discord.NotFound):
+        await gen_channel.fetch_message(msg.id)
+    # Tests that the bot sent the appropriate message
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+
 
 # --------------------
 # Tests cogs/reviewQs
