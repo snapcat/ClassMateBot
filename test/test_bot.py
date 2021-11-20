@@ -390,6 +390,11 @@ async def test_qanda(bot):
     assert dpytest.verify().message().contains().content(
         "This channel isn't haunted.")
 
+    # Test unearthZombies: no zombies
+    await dpytest.message("$unearthZombies", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "No zombies detected.")
+
     # zomb-ify Q3
     await q3.delete()
 
@@ -498,16 +503,68 @@ async def test_qanda(bot):
         'Q5: Zombie by anonymous\n'
         'anonymous (Instructor) Ans: test\n')
 
-    # Test deleting all answers for a zombie
-    # test deleting a zombie question (ghosts + 1)
+    # Test reviving a ghost (revive without answers)
+    await dpytest.message("$reviveGhost 4", channel=channel)
+    # no assert needed!
 
+    # ghosts: 0, zombies: 1
 
-    # test revive: ghost (no way to check)
-    # test revive: zombie (check last message)
+    # Test deleting a zombie (ghosts + 1, zombies -1)
+    await dpytest.message("$deleteQuestion 3", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q3 was not found in channel. To restore it, use: $reviveGhost 3')
+    
+    # ghosts: 1, zombies: 0
 
-    # deleteAllQA: ghosts and zombies
-    # test unearth: no zombies
-    # test unearth: zombies found
+    # zomb-ify Q5
+    await q5.delete()
+
+    # ghosts: 1, zombies: 1
+
+    # test reviving a zombie with answers
+    await dpytest.message("$reviveGhost 5", channel=channel)
+    # now we can assert because a message is actually posted this time.
+    assert dpytest.verify().message().contains().content(
+        'Q5: Zombie by anonymous\n'
+        'anonymous (Instructor) Ans: test\n')
+    
+    # ghosts: 1, zombies: 0
+
+    # create another zombie 
+    await dpytest.message("$ask \"Zombie2\" anonymous", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q6: Zombie2 by anonymous')
+
+    # hold on to q5
+    q6_id = channel.last_message_id
+    q6 = await channel.fetch_message(q6_id)
+    await q6.delete()
+
+    # test unearthZombies: zombies found
+    await dpytest.message("$unearthZombies", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Found 1 zombies and assigned them ghost status.\n"
+        "To view them, use: $allChannelGhosts\n"
+        "To restore a question, use: $reviveGhost QUESTION_NUMBER")
+
+    # ghosts: 2, zombies: 0
+
+    # create final zombie
+    await dpytest.message("$ask \"Zombie3\" anonymous", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q7: Zombie3 by anonymous')
+
+    # hold on to q7
+    qz_id = channel.last_message_id
+    qz = await channel.fetch_message(qz_id)
+    await qz.delete()
+
+    # ghosts: 2, zombies: 1
+
+    # test deleteAllQA: questions with and without answers, ghosts and zombies
+    await dpytest.message("$deleteAllQA", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Deleted 7 questions from the database, including 1 zombies and 2 ghosts.")
 
 
 # -------------------------
