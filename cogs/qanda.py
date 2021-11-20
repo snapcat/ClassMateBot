@@ -823,7 +823,7 @@ class Qanda(commands.Cog):
             await ctx.message.delete()
             return
 
-         # get questions
+        # get questions
         q = db.query('SELECT number, msg_id FROM questions WHERE guild_id = %s AND is_ghost IS FALSE',
                      (ctx.guild.id,))
         if len(q) == 0:
@@ -840,8 +840,6 @@ class Qanda(commands.Cog):
                 zombies += 1
                 db.query('UPDATE questions SET is_ghost = NOT is_ghost WHERE guild_id = %s AND number = %s',
                 (ctx.guild.id, number))
-            else:
-                continue
 
         if zombies == 0:
             await ctx.author.send("No zombies detected.")
