@@ -346,7 +346,6 @@ async def test_qanda(bot):
         + user.name + ' (Instructor) Ans: TestA\n'
         'anonymous (Instructor) Ans: TestB\n')
 
-
     # test deleting all answers for a question with none
     await dpytest.message("$DALLAF 1", channel=channel)
     assert dpytest.verify().message().contains().content(
@@ -366,9 +365,6 @@ async def test_qanda(bot):
     await dpytest.message("$channelGhost 100", channel=channel)
     assert dpytest.verify().message().contains().content(
         "No such question with the number: 100")
-
-    # Tests getting answers for a ghost
-    # test deleting all answers for ghost
 
     # GHOST AND ZOMBIE TESTING
 
@@ -444,11 +440,17 @@ async def test_qanda(bot):
         "You can\'t answer a ghost!"
     )
 
+
     # Test channelGhost: answers
     await dpytest.message("$channelGhost 4", channel=channel)
     assert dpytest.verify().message().contains().content(
         'Q4: Am I a ghost? by anonymous\nanonymous (Instructor) Ans: Yes\n'
     )
+
+    # Tests getting answers for a ghost
+    await dpytest.message("$getAnswersFor 4", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4 is a ghost!')
 
     # Test allChannelGhosts: answers
     await dpytest.message("$allChannelGhosts", channel=channel)
@@ -658,6 +660,11 @@ async def test_qanda_errors(bot):
     assert dpytest.verify().message().contains().content(
         'No questions found in database.')
 
+    # Test archiveQA: empty database
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No questions found in database.')
+
     # Test that archiveQA does not work outside of QA
     await dpytest.message("$archiveQA", channel=gen_channel)
     assert dpytest.verify().message().contains().content(
@@ -737,7 +744,6 @@ async def test_qanda_errors(bot):
     await dpytest.message("$reviveGhost 1", channel=channel)
     assert dpytest.verify().message().contains().content(
         "No such question with the number: 1")
-
 
 # --------------------
 # Tests cogs/reviewQs
