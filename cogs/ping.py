@@ -33,11 +33,10 @@ class Helpful(commands.Cog):
     #    Outputs:
     #       - Error details
     # -----------------------------------------------------------------------------------------------------------------
-    @ping.error
-    async def ping_error(self, ctx, error):
-        await ctx.author.send(error)
-        #await ctx.message.delete()
-        print(error)
+    #@ping.error
+    #async def ping_error(self, ctx, error):
+    #    await ctx.author.send(error)
+    #    print(error)
 
 
 # -------------------------------------
