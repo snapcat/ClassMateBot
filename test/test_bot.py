@@ -304,8 +304,8 @@ async def test_qanda(bot):
     user = dpytest.get_config().members[0]
     guild = dpytest.get_config().guilds[0]
     channel = await guild.create_text_channel('q-and-a')
-    gen_channel = await guild.create_text_channel('general')
-    await guild.create_role(name="Instructor")
+    irole = await guild.create_role(name="Instructor")
+    await irole.edit(permissions=discord.Permissions(8))
     role = discord.utils.get(guild.roles, name="Instructor")
     await dpytest.add_role(user, role)
 
@@ -319,10 +319,279 @@ async def test_qanda(bot):
     assert dpytest.verify().message().contains().content(
         'Q2: When is the last day of classes? by ' + user.name)
 
-    # placeholder test for empty input (question)
-    #await dpytest.message("$ask \"\"", channel=channel)
-    #assert dpytest.verify().message().contains().content('STRING GOES HERE')
-    
+    # Tests getting answers: no answers
+    await dpytest.message("$getAnswersFor 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No answers for Q1')
+
+    # Test answering a question
+    await dpytest.message("$answer 2 \"TestA\"", channel=channel)
+    # Test answering a question anonymously
+    await dpytest.message("$answer 2 \"TestB\" anonymous", channel=channel)
+
+    # Tests getting answers: question has answers
+    await dpytest.message("$getAnswersFor 2", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        + user.name + ' (Instructor) Ans: TestA\n'
+        'anonymous (Instructor) Ans: TestB\n')
+
+    # Tests channelGhost: not a ghost, has answers
+    await dpytest.message("$channelGhost 2", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'This question is not a ghost. Fetching anyway. . .')
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        + user.name + ' (Instructor) Ans: TestA\n'
+        'anonymous (Instructor) Ans: TestB\n')
+
+    # test deleting all answers for a question with none
+    await dpytest.message("$DALLAF 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No answers exist for Q1')
+
+    # test deleting all answers
+    await dpytest.message("$DALLAF 2", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'deleted 2 answers for Q2')
+
+    # Test reviveGhost: non-existent question
+    await dpytest.message("$reviveGhost 100", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "No such question with the number: 100")
+
+    # Test channelGhost: non-existent question
+    await dpytest.message("$channelGhost 100", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "No such question with the number: 100")
+
+    # GHOST AND ZOMBIE TESTING
+
+    # ask and dequeue
+    await dpytest.message("$ask \"Am I a zombie?\" anonymous", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q3: Am I a zombie? by anonymous')
+
+    # hold on to q3
+    q3_id = channel.last_message_id
+    q3 = await channel.fetch_message(q3_id)
+
+    # Tests channelGhost: not a ghost, no answers
+    await dpytest.message("$channelGhost 3", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'This question is not a ghost. Fetching anyway. . .')
+    assert dpytest.verify().message().contains().content(
+        'Q3: Am I a zombie? by anonymous\n'
+        'No answers for Q3\n')
+
+    # Test spooky: no ghosts or zombies
+    await dpytest.message("$spooky", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "This channel isn't haunted.")
+
+    # Test unearthZombies: no zombies
+    await dpytest.message("$unearthZombies", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "No zombies detected.")
+
+    # zomb-ify Q3
+    await q3.delete()
+
+    # test answering a zombie
+    await dpytest.message("$answer 3 \"zombie test\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Question 3 not found. It's a zombie!"
+    )
+
+    # test getting answers for a zombie
+    await dpytest.message("$getAnswersFor 3", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Question 3 not found. It's a zombie!"
+    )
+
+    # ask and dequeue
+    await dpytest.message("$ask \"Am I a ghost?\" anonymous", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4: Am I a ghost? by anonymous')
+    # answer Q4
+    await dpytest.message("$answer 4 \"Yes\" anonymous", channel=channel)
+
+    # ask and dequeue
+    await dpytest.message("$ask \"Zombie\" anonymous", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q5: Zombie by anonymous')
+
+    # hold on to q5
+    q5_id = channel.last_message_id
+    q5 = await channel.fetch_message(q5_id)
+
+    # answer Q5; zombie with an answer
+    await dpytest.message("$answer 5 \"test\" anonymous", channel=channel)
+
+    # Test deleting a question
+    await dpytest.message("$deleteQuestion 4", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4 is now a ghost. To restore it, use: $reviveGhost 4')
+
+    # Test deleting a ghost question
+    await dpytest.message("$deleteQuestion 4", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4 is already a ghost!')
+
+    # test answering a ghost
+    await dpytest.message("$answer 4 \"Ghost Test\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "You can\'t answer a ghost!"
+    )
+
+
+    # Test channelGhost: answers
+    await dpytest.message("$channelGhost 4", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4: Am I a ghost? by anonymous\nanonymous (Instructor) Ans: Yes\n'
+    )
+
+    # Tests getting answers for a ghost
+    await dpytest.message("$getAnswersFor 4", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4 is a ghost!')
+
+    # Test allChannelGhosts: answers
+    await dpytest.message("$allChannelGhosts", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4: Am I a ghost? by anonymous\n'
+        'anonymous (Instructor) Ans: Yes\n')
+
+    # test deleting all answers for ghost
+    await dpytest.message("$DALLAF 4", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'deleted 1 answers for Q4')
+    assert dpytest.verify().message().contains().content(
+        'Q4 is a ghost!')
+
+    # Test channelGhost: no answers
+    await dpytest.message("$channelGhost 4", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4: Am I a ghost? by anonymous\n'
+        'No answers for Q4\n')
+
+    # Test allChannelGhosts: no answers
+    await dpytest.message("$allChannelGhosts", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q4: Am I a ghost? by anonymous\n'
+        'No answers for Q4\n')
+
+    # Test spooky: ghosts and zombies are present
+    await dpytest.message("$spooky", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'This channel is haunted by 1 ghosts and 1 zombies.')
+
+    # Test archiveQA: zombie, ghost, questions with and without answers
+    await dpytest.message("$archiveQA",channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q1: What class is this? by anonymous\n'
+        'No answers for Q1\n')
+    assert dpytest.verify().message().contains().content(
+        'Q2: When is the last day of classes? by ' + user.name + '\n'
+        'No answers for Q2\n')
+    assert dpytest.verify().message().contains().content(
+        "Q3 was deleted. It's a zombie!")
+    assert dpytest.verify().message().contains().content(
+        'Q4 is a ghost!')
+    assert dpytest.verify().message().contains().content(
+        'Q5: Zombie by anonymous\n'
+        'anonymous (Instructor) Ans: test\n')
+
+    # Test reviving a ghost (revive without answers)
+    await dpytest.message("$reviveGhost 4", channel=channel)
+    # no assert needed!
+
+    # ghosts: 0, zombies: 1
+
+    # Test deleting a zombie (ghosts + 1, zombies -1)
+    await dpytest.message("$deleteQuestion 3", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q3 was not found in channel. To restore it, use: $reviveGhost 3')
+
+    # ghosts: 1, zombies: 0
+
+    # zomb-ify Q5
+    await q5.delete()
+
+    # ghosts: 1, zombies: 1
+
+    # test reviving a zombie with answers
+    await dpytest.message("$reviveGhost 5", channel=channel)
+    # now we can assert because a message is actually posted this time.
+    assert dpytest.verify().message().contains().content(
+        'Q5: Zombie by anonymous\n'
+        'anonymous (Instructor) Ans: test\n')
+
+    # ghosts: 1, zombies: 0
+
+    # create another zombie
+    await dpytest.message("$ask \"Zombie2\" anonymous", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q6: Zombie2 by anonymous')
+
+    # hold on to q5
+    q6_id = channel.last_message_id
+    q6 = await channel.fetch_message(q6_id)
+    await q6.delete()
+
+    # test unearthZombies: zombies found
+    await dpytest.message("$unearthZombies", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Found 1 zombies and assigned them ghost status.\n"
+        "To view them, use: $allChannelGhosts\n"
+        "To restore a question, use: $reviveGhost QUESTION_NUMBER")
+
+    # ghosts: 2, zombies: 0
+
+    # create final zombie
+    await dpytest.message("$ask \"Zombie3\" anonymous", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Q7: Zombie3 by anonymous')
+    # hold on to q7
+    qz_id = channel.last_message_id
+    qz = await channel.fetch_message(qz_id)
+
+    await dpytest.message("$answer 7 \"test\" anonymous", channel=channel)
+
+    # zomb-ify Q7
+    await qz.delete()
+
+    # ghosts: 2, zombies: 1
+
+    # test deleting all answers for zombie
+    await dpytest.message("$DALLAF 7", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'deleted 1 answers for Q7')
+    assert dpytest.verify().message().contains().content(
+        'Q7 is a zombie!')
+
+    # test deleteAllQA: questions with and without answers, ghosts and zombies
+    await dpytest.message("$deleteAllQA", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Deleted 7 questions from the database, including 1 zombies and 2 ghosts.")
+
+
+# -------------------------
+# Tests cogs/qanda: error testing
+# -------------------------
+@pytest.mark.asyncio
+async def test_qanda_errors(bot):
+    # Test q and a functionalities
+    # create channel and get user
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    channel = await guild.create_text_channel('q-and-a')
+    gen_channel = await guild.create_text_channel('general')
+    irole = await guild.create_role(name="Instructor")
+    await irole.edit(permissions=discord.Permissions(8))
+    role = discord.utils.get(guild.roles, name="Instructor")
+    await dpytest.add_role(user, role)
+
     # Test asking a question in the wrong channel
     msg = await dpytest.message("$ask \"Is this the right channel?\"", channel=gen_channel)
     with pytest.raises(discord.NotFound):
@@ -348,7 +617,7 @@ async def test_qanda(bot):
         await gen_channel.fetch_message(msga.id)
     assert dpytest.verify().message().contains().content(
         'Please send answers to the #q-and-a channel.')
-    
+
     # Tests unknown anonymous input (answer)
     await dpytest.message("$answer 1 \"A Thing\" wronganon", channel=channel)
     assert dpytest.verify().message().contains().content(
@@ -399,42 +668,6 @@ async def test_qanda(bot):
     assert dpytest.verify().message().contains().content(
         'Please include a valid question number. EX: $getAnswersFor 1')
 
-    # Tests getting answers: no answers
-    await dpytest.message("$getAnswersFor 1", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'No answers for Q1')
-
-    # Test archiveQA: questions without answers
-    await dpytest.message("$archiveQA",channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Q1: What class is this? by anonymous\n'
-        'No answers for Q1\n')
-    assert dpytest.verify().message().contains().content(
-        'Q2: When is the last day of classes? by ' + user.name + '\n'
-        'No answers for Q2\n')
-
-    # Test answering a question
-    await dpytest.message("$answer 2 \"TestA\"", channel=channel)
-    # Test answering a question anonymously
-    await dpytest.message("$answer 2 \"TestB\" anonymous", channel=channel)
-
-    # Tests getting answers: question has answers
-    await dpytest.message("$getAnswersFor 2", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Q2: When is the last day of classes? by ' + user.name + '\n'
-        + user.name + ' (Instructor) Ans: TestA\n'
-        'anonymous (Instructor) Ans: TestB\n')
-
-    # Test archiveQA: questions with answers
-    await dpytest.message("$archiveQA",channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Q1: What class is this? by anonymous\n'
-        'No answers for Q1\n')
-    assert dpytest.verify().message().contains().content(
-        'Q2: When is the last day of classes? by ' + user.name + '\n'
-        + user.name + ' (Instructor) Ans: TestA\n'
-        'anonymous (Instructor) Ans: TestB\n')
-
     # Test that deleting answers does not work outside of QA
     msg = await dpytest.message("$DALLAF 1", channel=gen_channel)
     with pytest.raises(discord.NotFound):
@@ -458,29 +691,6 @@ async def test_qanda(bot):
     await dpytest.message("$DALLAF 100", channel=channel)
     assert dpytest.verify().message().contains().content(
         'No such question with the number: 100')
-
-    # test deleting all answers for a question with none
-    await dpytest.message("$DALLAF 1", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'No answers exist for Q1')
-
-    # test deleting all answers
-    await dpytest.message("$DALLAF 2", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'deleted 2 answers for Q2')
-
-    # Test archiveQA again; ensure proper deletion
-    await dpytest.message("$archiveQA",channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Q1: What class is this? by anonymous\n'
-        'No answers for Q1\n')
-    assert dpytest.verify().message().contains().content(
-        'Q2: When is the last day of classes? by ' + user.name + '\n'
-        'No answers for Q2\n')
-
-    # answer a question
-    await dpytest.message("$answer 1 \"TestC\"", channel=channel)
-    await dpytest.message("$answer 1 \"TestD\" anonymous", channel=channel)
 
     # Test that deleting questions does not work outside of QA
     msg = await dpytest.message("$deleteQuestion 1", channel=gen_channel)
@@ -506,67 +716,100 @@ async def test_qanda(bot):
     assert dpytest.verify().message().contains().content(
         'Question number not in database: 100')
 
-    # Test deleting a question
-    await dpytest.message("$deleteQuestion 1", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Q1 is now a ghost. To see ghost handling options, use the $help command.')
-
-    # Test deleting a ghost question
-    await dpytest.message("$deleteQuestion 1", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Q1 is already a ghost!')
-
-    # Tests getting answers for a ghost
-    await dpytest.message("$getAnswersFor 1", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Question 1 not found. It may have been deleted.')
-
-    # test deleting all answers for ghost
-    await dpytest.message("$DALLAF 1", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'deleted 2 answers for Q1')
-    assert dpytest.verify().message().contains().content(
-        'Q1 is a ghost!')
-
-    # Test archiveQA again; ensure haunting
-    await dpytest.message("$archiveQA",channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Q1 is a ghost!')
-    assert dpytest.verify().message().contains().content(
-        'Q2: When is the last day of classes? by ' + user.name + '\n'
-        'No answers for Q2\n')
-
     # Test that deleting all QAs does not work outside of QA
-    msg = await dpytest.message("$deleteAllQA", channel=gen_channel)
-    with pytest.raises(discord.NotFound):
-        await gen_channel.fetch_message(msg.id)
+    await dpytest.message("$deleteAllQA", channel=gen_channel)
     assert dpytest.verify().message().contains().content(
         'Please use this command inside the #q-and-a channel.')
-
-    # Test deleting all QAs
-    await dpytest.message("$deleteAllQA", channel=channel)
-    assert dpytest.verify().message().contains().content(
-        'Deleted 2 questions from the database, including 1 ghost questions.')
 
     # Test deleting all QAs without any questions
     await dpytest.message("$deleteAllQA", channel=channel)
     assert dpytest.verify().message().contains().content(
         'No questions found in database.')
 
-    # Test archiveQA again: deleting all QAs
+    # Test archiveQA: empty database
     await dpytest.message("$archiveQA",channel=channel)
     assert dpytest.verify().message().contains().content(
         'No questions found in database.')
 
     # Test that archiveQA does not work outside of QA
     await dpytest.message("$archiveQA", channel=gen_channel)
-    with pytest.raises(discord.NotFound):
-        await gen_channel.fetch_message(msg.id)
-    # Tests that the bot sent the appropriate message
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # Test channelGhost in the wrong channel
+    await dpytest.message("$channelGhost 1", channel=gen_channel)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # Tests channelGhost: missing args
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$channelGhost", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'To use the channelGhost command, do: $channelGhost QUESTION_NUMBER\n '
+        '(Example: $channelGhost 1)')
+
+    # Tests channelGhost: invalid arg
+    await dpytest.message("$channelGhost blah", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Please include a valid question number. EX: $channelGhost 1')
+
+    # Tests channelGhost: empty database
+    await dpytest.message("$channelGhost 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No such question with the number: 1')
+
+    # Test allChannelGhosts in the wrong channel
+    await dpytest.message("$allChannelGhosts", channel=gen_channel)
     assert dpytest.verify().message().contains().content(
         'Please use this command inside the #q-and-a channel.')
 
 
+    # allChannelGhosts without any ghosts
+    await dpytest.message("$allChannelGhosts", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'No ghosts found in database.')
+
+    # Test spooky in the wrong channel
+    await dpytest.message("$spooky", channel=gen_channel)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # Test spooky: empty database
+    await dpytest.message("$spooky", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "This channel isn't haunted.")
+
+    # Test unearthZombies in the wrong channel
+    await dpytest.message("$unearthZombies", channel=gen_channel)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # Test unearthZombies: empty database
+    await dpytest.message("$unearthZombies", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "No zombies detected.")
+
+    # Test reviveGhost in the wrong channel
+    await dpytest.message("$reviveGhost 1", channel=gen_channel)
+    assert dpytest.verify().message().contains().content(
+        'Please use this command inside the #q-and-a channel.')
+
+    # Tests reviveGhost: missing args
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$reviveGhost", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'To use the reviveGhost command, do: $reviveGhost QUESTION_NUMBER\n '
+        '(Example: $reviveGhost 1)')
+
+    # Tests reviveGhost: invalid arg
+    await dpytest.message("$reviveGhost blah", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        'Please include a valid question number. EX: $reviveGhost 1')
+
+    # Test reviveGhost: empty database
+    await dpytest.message("$reviveGhost 1", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "No such question with the number: 1")
 
 # --------------------
 # Tests cogs/reviewQs
