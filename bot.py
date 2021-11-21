@@ -8,8 +8,10 @@ from discord.utils import get
 from discord import Intents
 from dotenv import load_dotenv
 from discord.ext.commands import Bot, has_permissions, CheckFailure
-from better_profanity import profanity
-profanity.load_censor_words()
+#from better_profanity import profanity
+
+
+import profanity_helper
 
 # ----------------------------------------------------------------------------------------------
 # Initializes the discord bot with a unique TOKEN and joins the bot to a server provided by the
@@ -26,6 +28,8 @@ UNVERIFIED_ROLE_NAME = os.getenv("UNVERIFIED_ROLE_NAME")
 intents = Intents.all()
 # Set all bot commands to begin with $
 bot = Bot(intents=intents, command_prefix="$")
+# profanity filter is on by default
+#filtering = True
 
 # ------------------------------------------------------------------------------------------------------------------
 #    Function: on_guild_join()
@@ -81,10 +85,10 @@ async def on_guild_join(guild):
                     await member.add_roles(unverified, reason=None, atomic=True)
             await channel.send("To verify yourself, use \"$verify <FirstName LastName>\"")
 
+
 # ------------------------------------------------------------------------------------------------------------------
 #    Function: on_ready()
-#    Description: Activates when the bot starts, prints the name of the server it joins and the names of all members
-#                 of that server
+#    Description: Activates when the bot starts.
 #    Inputs:
 #    -
 #    Outputs:
@@ -102,7 +106,7 @@ async def on_ready():
     # members = "\n -".join([member.name for member in guild.members])
     # print(f"Guild Members:\n - {members}")
     # db.connect()
-    
+
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
             bot.load_extension(f"cogs.{filename[:-3]}")
@@ -113,6 +117,17 @@ async def on_ready():
             type=discord.ActivityType.watching, name="Over This Server"
         )
     )
+
+    # LOAD ALL COMMANDS INTO WHITELISTS.
+    # gonna have to figure out an optimal way... for now, do everything!
+    for n in bot.commands:
+        profanity_helper.whitelist.append(n.name)
+        profanity_helper.command_list.append(n.name)
+        #profanity_helper.whitelist_set.add(n.name)
+
+    #profanity_helper.loadCommandWhitelist()
+    profanity_helper.loadDefaultWhitelist()
+
     print("READY!")
 
 ###########################
@@ -132,9 +147,17 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    if profanity.contains_profanity(message.content):
+    #is_admin = message.author.guild_permissions.administrator
+    # admins can say anything.
+    #if not is_admin and profanity_helper.profanity.contains_profanity(message.content):
+        #bad_msg = "Please do not use bad language in this channel. Your message: \n"
+        #bad_msg += message.content
+        #bad_msg += "\n Censored: \n"
+        # something something something, TODO
+
+    if profanity_helper.filtering and profanity_helper.profanity.contains_profanity(message.content):
         await message.channel.send(message.author.name + ' says: ' +
-            profanity.censor(message.content))
+            profanity_helper.profanity.censor(message.content))
         await message.delete()
 
     await bot.process_commands(message)
@@ -151,10 +174,39 @@ async def on_message(message):
 @bot.event
 async def on_message_edit(before, after):
     ''' run on message edited '''
-    if profanity.contains_profanity(after.content):
-        await after.channel.send(after.author.name + ' says: ' +
-            profanity.censor(after.content))
-        await after.delete()
+
+    # TODO: this can cause a message not found error with qanda
+    if profanity_helper.filtering:
+        if profanity_helper.profanity.contains_profanity(after.content):
+            await after.channel.send(after.author.name + ' says: ' +
+                profanity_helper.profanity.censor(after.content))
+            await after.delete()
+
+
+
+# -----------------------------------------------------------------------
+#    Function: toggleFilter
+#    Description: Command to toggle the filter
+#    Inputs:
+#    - ctx: used to access the values passed through the current context
+#    Outputs:
+#    -
+# ------------------------------------------------------------------------
+@bot.command(name="toggleFilter", help="Turns the profanity filter on or off")
+@has_permissions(administrator=True)
+async def toggleFilter(ctx):
+
+    #if not ctx.channel.name == 'instructor-commands':
+    #    await ctx.author.send('Please use this command inside #instructor-commands')
+    #    await ctx.message.delete()
+    #    return
+
+    if profanity_helper.filtering:
+        profanity_helper.filtering = False
+    else:
+        profanity_helper.filtering = True
+    await ctx.author.send(f"Profanity filter set to: {profanity_helper.filtering}")
+
 
 # ------------------------------------------------------------------------------------------
 #    Function: on_member_join(member)
@@ -170,7 +222,7 @@ async def on_member_join(member):
     unverified = discord.utils.get(
         member.guild.roles, name="unverified"
     )  # finds the unverified role in the guild
-    await member.add_roles(unverified) # assigns the unverified role to the new member 
+    await member.add_roles(unverified) # assigns the unverified role to the new member
     await member.send("Hello " + member.name + "!")
     await member.send(
         "Verify yourself before getting started! \n To use the verify command, do: $verify <your_full_name> \n \
@@ -215,4 +267,3 @@ async def shutdown(ctx):
 
 # Starts the bot with the current token
 bot.run(TOKEN)
-
