@@ -198,12 +198,13 @@ async def toggleFilter(ctx):
 #    Description: Command to add a word to the whitelist
 #    Inputs:
 #    - ctx: used to access the values passed through the current context
+#    - word: the word or sentence to be whitelisted
 #    Outputs:
 #    -
 # ------------------------------------------------------------------------
-@bot.command(name="whitelist", help="adds a word to the whitelist")
+@bot.command(name="whitelist", help="adds a word to the whitelist. EX: $whitelist word or sentence")
 @has_permissions(administrator=True)
-async def whitelistWord(ctx, word=''):
+async def whitelistWord(ctx, *, word=''):
 
     if not ctx.channel.name == 'instructor-commands':
         await ctx.author.send('Please use this command inside #instructor-commands')
@@ -215,8 +216,41 @@ async def whitelistWord(ctx, word=''):
 
     profanity_helper.wlword(word)
 
-    await ctx.send(
-        f"{word} has been added to the whitelist.")
+    await ctx.send(f"**{word}** has been added to the whitelist.")
+
+# -----------------------------------------------------------------------
+#    Function: dewhitelistWord
+#    Description: Command to remove a word from the whitelist
+#    Inputs:
+#    - ctx: used to access the values passed through the current context
+#    - word: the word or sentence to be de-whitelisted
+#    Outputs:
+#    -
+# ------------------------------------------------------------------------
+@bot.command(name="dewhitelist", help="Removes a word from the whitelist. EX: $dewhitelist word or sentence")
+@has_permissions(administrator=True)
+async def dewhitelistWord(ctx, *, word=''):
+
+    if not ctx.channel.name == 'instructor-commands':
+        await ctx.author.send('Please use this command inside #instructor-commands')
+        await ctx.message.delete()
+        return
+
+    if word == '':
+        return
+
+    if word in profanity_helper.command_list:
+        await ctx.send("Cannot remove a command from the whitelist.")
+        return
+
+    if word in profanity_helper.whitelist:
+        profanity_helper.unwlword(word)
+        await ctx.send(f"**{word}** has been removed from the whitelist.")
+        return
+
+    await ctx.send(f"**{word}** not found in whitelist.")
+
+
 
 
 # ------------------------------------------------------------------------------------------

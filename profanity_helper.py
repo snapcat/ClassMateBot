@@ -52,6 +52,11 @@ def wlword(word):
     whitelist.append(word)
     profanity.load_censor_words(whitelist_words=whitelist)
 
+# a function to remove a word from the whitelist and reload the filter.
+def unwlword(word):
+    whitelist.remove(word)
+    profanity.load_censor_words(whitelist_words=whitelist)
+
 
 # loads saved whitelist. TODO
 #def loadSavedWhitelist():
