@@ -18,16 +18,14 @@ censorlist = []
 # list of new words to censor
 newcensorlist = []
 
-
-# loads commands into the whitelist as a precaution.
-def loadCommandWhitelist():
+# loads whitelist into filter
+def loadwhitelist():
     profanity.load_censor_words(whitelist_words=whitelist)
 
 # loads default whitelist. Includes commands. TODO
 def loadDefaultWhitelist():
-
     #wl_set = set(whitelist)
-
+    #NOTE: THIS MAY CAUSE BUGS IF FILE DOESN'T EXIST, HAS FINAL NEWLINE, OR IS EMPTY... maybe?
     with open('default_whitelist.txt', 'r', encoding='UTF-8') as file:
         for line in file:
             thing = line.rstrip()
@@ -36,18 +34,28 @@ def loadDefaultWhitelist():
 
     profanity.load_censor_words(whitelist_words=whitelist)
 
+# a helper to use contains_profanity because load_censor_words won't use the whitelist otherwise.
+def helpChecker(content):
+    # some words really, really like being censored.
+    # the S word is whitelisted just fine without this check, but the F word? Nope. F word needs this check.
+    if content in whitelist:
+        return False
 
+    return profanity.contains_profanity(content)
+
+# a helper to censor profanity because it triggers discord formatting otherwise.
+def helpCensor(content):
+    return profanity.censor(content, r'\*')
+
+# a function to add a word to the whitelist and reload the filter.
+def wlword(word):
+    whitelist.append(word)
+    profanity.load_censor_words(whitelist_words=whitelist)
 
 
 # loads saved whitelist. TODO
 #def loadSavedWhitelist():
 #    profanity.load_censor_words(whitelist_words=command_list)
-
-        #file1 = open("profanity_files/whitelist.txt","a")
-        #File_object.readlines()
-        #file1.write("Today \n")
-        #file1.close()
-
         # for each word in words:
         #   read and strip newline
         # if in array: skip, else: add to array

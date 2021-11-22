@@ -6,6 +6,7 @@ from discord import NotFound
 from discord.ext import commands
 import db
 #import profanity_helper
+
 class WordFilter(commands.Cog):
 
     def __init__(self, bot):
@@ -39,19 +40,18 @@ class WordFilter(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.has_role('Instructor')
     @commands.command(
-        name='whitelist',
-        help='Add a word to the censor whitelist. EX: $whitelist \"WORD\"')
-    async def whitelistWord(self, ctx, word: str =''):
+        name='whitelisttest',
+        help='Add a word to the censor whitelist. Enclose in quotation marks. EX: $whitelist \"WORD\"')
+    async def whitelistWordTest(self, ctx, word: str =''):
 
-        if not ctx.channel.name == 'instructor-commands':
-            await ctx.author.send('Please use this command inside #instructor-commands')
-            await ctx.message.delete()
-            return
+        #if not ctx.channel.name == 'instructor-commands':
+        #    await ctx.author.send('Please use this command inside #instructor-commands')
+        #    await ctx.message.delete()
+        #    return
 
-        #file1 = open("MyFile.txt","a")
-        #File_object.readlines()
-        #file1.write("Today \n")
-        #file1.close()
+
+
+
 
         await ctx.send(
             f"_{word}_ has been added to the whitelist. TODO")
@@ -65,13 +65,13 @@ class WordFilter(commands.Cog):
     #    Outputs:
     #       - Error details
     # -----------------------------------------------------------------------------------------------------------------
-    @whitelistWord.error
+    @whitelistWordTest.error
     async def whitelistWord_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 'Todo')
         else:
-            await ctx.author.send(error)
+            await ctx.send(error)
         print(error)
         await ctx.message.delete()
 
@@ -96,9 +96,7 @@ class WordFilter(commands.Cog):
             return
 
         # clear whitelist and reconstruct.
-        # l1 = [n.name for n in self.bot.commands]
-        # f = open("myfile.txt", "w")
-        # f.close()
+
 
         await ctx.send("Whitelist has been cleared. TODO")
 
@@ -135,15 +133,6 @@ class WordFilter(commands.Cog):
             await ctx.message.delete()
             return
 
-        #file1 = open("MyFile.txt","a")
-        #File_object.readlines()
-        #file1.write("Today \n")
-        #file1.close()
-
-        # for each word in words:
-        #   read and strip newline, add to array
-
-        # pass array to profanity whitelist?
 
         await ctx.send("Whitelist has been loaded. TODO")
 
@@ -160,24 +149,6 @@ class WordFilter(commands.Cog):
     async def loadWhitelist_error(self, ctx, error):
         print(error)
         await ctx.message.delete()
-
-    #TODO: this used to be in bot.py
-    #@bot.command(name="censor", help="censors a word. EX: $censor \"WORD\"")
-    #@commands.has_role('Instructor')
-    #@commands.command(name="censor", help="censors a word. EX: $censor \"WORD\"")
-    #async def censorWord(ctx):
-
-        #if not ctx.channel.name == 'instructor-commands':
-        #    await ctx.author.send('Please use this command inside #instructor-commands')
-        #    await ctx.message.delete()
-        #    return
-
-        #if profanity_helper.filtering:
-        #    profanity_helper.filtering = False
-        #else:
-        #    profanity_helper.filtering = True
-        #await ctx.author.send(f"Profanity filter set to: {profanity_helper.filtering}")
-
 
 def setup(bot):
     n = WordFilter(bot)

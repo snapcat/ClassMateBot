@@ -28,8 +28,6 @@ UNVERIFIED_ROLE_NAME = os.getenv("UNVERIFIED_ROLE_NAME")
 intents = Intents.all()
 # Set all bot commands to begin with $
 bot = Bot(intents=intents, command_prefix="$")
-# profanity filter is on by default
-#filtering = True
 
 # ------------------------------------------------------------------------------------------------------------------
 #    Function: on_guild_join()
@@ -123,10 +121,9 @@ async def on_ready():
     for n in bot.commands:
         profanity_helper.whitelist.append(n.name)
         profanity_helper.command_list.append(n.name)
-        #profanity_helper.whitelist_set.add(n.name)
 
-    #profanity_helper.loadCommandWhitelist()
-    profanity_helper.loadDefaultWhitelist()
+    profanity_helper.loadwhitelist()
+    #profanity_helper.loadDefaultWhitelist()
 
     print("READY!")
 
@@ -147,18 +144,12 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    #is_admin = message.author.guild_permissions.administrator
-    # admins can say anything.
-    #if not is_admin and profanity_helper.profanity.contains_profanity(message.content):
-        #bad_msg = "Please do not use bad language in this channel. Your message: \n"
-        #bad_msg += message.content
-        #bad_msg += "\n Censored: \n"
-        # something something something, TODO
-
-    if profanity_helper.filtering and profanity_helper.profanity.contains_profanity(message.content):
-        await message.channel.send(message.author.name + ' says: ' +
-            profanity_helper.profanity.censor(message.content))
-        await message.delete()
+    # don't want to accidentally censor a word before it can be whitelisted
+    if "whitelist" not in message.content:
+        if profanity_helper.filtering and profanity_helper.helpChecker(message.content):
+            await message.channel.send(message.author.name + ' says: ' +
+                profanity_helper.helpCensor(message.content))
+            await message.delete()
 
     await bot.process_commands(message)
 
@@ -177,9 +168,9 @@ async def on_message_edit(before, after):
 
     # TODO: this can cause a message not found error with qanda
     if profanity_helper.filtering:
-        if profanity_helper.profanity.contains_profanity(after.content):
+        if profanity_helper.helpChecker(after.content):
             await after.channel.send(after.author.name + ' says: ' +
-                profanity_helper.profanity.censor(after.content))
+                profanity_helper.helpCensor(after.content))
             await after.delete()
 
 
@@ -196,16 +187,36 @@ async def on_message_edit(before, after):
 @has_permissions(administrator=True)
 async def toggleFilter(ctx):
 
-    #if not ctx.channel.name == 'instructor-commands':
-    #    await ctx.author.send('Please use this command inside #instructor-commands')
-    #    await ctx.message.delete()
-    #    return
-
     if profanity_helper.filtering:
         profanity_helper.filtering = False
     else:
         profanity_helper.filtering = True
-    await ctx.author.send(f"Profanity filter set to: {profanity_helper.filtering}")
+    await ctx.send(f"Profanity filter set to: {profanity_helper.filtering}")
+
+# -----------------------------------------------------------------------
+#    Function: whitelistWord
+#    Description: Command to add a word to the whitelist
+#    Inputs:
+#    - ctx: used to access the values passed through the current context
+#    Outputs:
+#    -
+# ------------------------------------------------------------------------
+@bot.command(name="whitelist", help="adds a word to the whitelist")
+@has_permissions(administrator=True)
+async def whitelistWord(ctx, word=''):
+
+    if not ctx.channel.name == 'instructor-commands':
+        await ctx.author.send('Please use this command inside #instructor-commands')
+        await ctx.message.delete()
+        return
+
+    if word == '':
+        return
+
+    profanity_helper.wlword(word)
+
+    await ctx.send(
+        f"{word} has been added to the whitelist.")
 
 
 # ------------------------------------------------------------------------------------------
