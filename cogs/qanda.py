@@ -21,7 +21,7 @@ class Qanda(commands.Cog):
     #    Outputs:
     #       - User question in new post
     # -----------------------------------------------------------------------------------------------------------------
-    @commands.command(name='ask', help='Ask question. Please put question text in quotes. Add *anonymous* if desired.'
+    @commands.command(name='ask', help='Ask question. Please put question text in quotes. Add *anonymous* or *anon* if desired.'
                                        'EX: $ask /"When is the exam?/" anonymous')
     async def askQuestion(self, ctx, qs: str, anonymous=''):
 
@@ -36,8 +36,10 @@ class Qanda(commands.Cog):
             author = ctx.message.author.id
         elif anonymous == 'anonymous':
             author = None
+        elif anonymous == 'anon':
+            author = None
         else:
-            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous**, **anon**, or leave blank.')
             await ctx.message.delete()
             return
 
@@ -90,7 +92,7 @@ class Qanda(commands.Cog):
     #      - User answer added to question post
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name='answer',
-                      help='Answer question. Please put answer text in quotes. Add *anonymous* if desired.'
+                      help='Answer question. Please put answer text in quotes. Add *anonymous* or *anon* if desired.'
                            'EX: $answer 1 /"Oct 12/" anonymous')
     async def answer(self, ctx, num, ans, anonymous=''):
         ''' answer the specific question '''
@@ -116,8 +118,10 @@ class Qanda(commands.Cog):
             author = ctx.message.author.id
         elif anonymous == 'anonymous':
             author = None
+        elif anonymous == 'anon':
+            author = None
         else:
-            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous**, **anon**, or leave blank.')
             await ctx.message.delete()
             return
 

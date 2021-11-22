@@ -368,7 +368,7 @@ async def test_qanda(bot):
     # GHOST AND ZOMBIE TESTING
 
     # ask and dequeue
-    await dpytest.message("$ask \"Am I a zombie?\" anonymous", channel=channel)
+    await dpytest.message("$ask \"Am I a zombie?\" anon", channel=channel)
     assert dpytest.verify().message().contains().content(
         'Q3: Am I a zombie? by anonymous')
 
@@ -414,7 +414,7 @@ async def test_qanda(bot):
     assert dpytest.verify().message().contains().content(
         'Q4: Am I a ghost? by anonymous')
     # answer Q4
-    await dpytest.message("$answer 4 \"Yes\" anonymous", channel=channel)
+    await dpytest.message("$answer 4 \"Yes\" anon", channel=channel)
 
     # ask and dequeue
     await dpytest.message("$ask \"Zombie\" anonymous", channel=channel)
@@ -602,7 +602,7 @@ async def test_qanda_errors(bot):
     # Tests unknown anonymous input (question)
     await dpytest.message("$ask \"Who am I?\" wronganon", channel=channel)
     assert dpytest.verify().message().contains().content(
-        'Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+        'Unknown input for *anonymous* option. Please type **anonymous**, **anon**, or leave blank.')
 
     # Tests incorrect use of ask command: missing args
     with pytest.raises(commands.MissingRequiredArgument):
@@ -621,7 +621,7 @@ async def test_qanda_errors(bot):
     # Tests unknown anonymous input (answer)
     await dpytest.message("$answer 1 \"A Thing\" wronganon", channel=channel)
     assert dpytest.verify().message().contains().content(
-        'Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+        'Unknown input for *anonymous* option. Please type **anonymous**, **anon**, or leave blank.')
 
     # Tests answering a nonexistent question (answer)
     await dpytest.message("$answer 100 \"nope\"", channel=channel)
@@ -762,7 +762,6 @@ async def test_qanda_errors(bot):
     await dpytest.message("$allChannelGhosts", channel=gen_channel)
     assert dpytest.verify().message().contains().content(
         'Please use this command inside the #q-and-a channel.')
-
 
     # allChannelGhosts without any ghosts
     await dpytest.message("$allChannelGhosts", channel=channel)
