@@ -21,7 +21,7 @@ class Qanda(commands.Cog):
     #    Outputs:
     #       - User question in new post
     # -----------------------------------------------------------------------------------------------------------------
-    @commands.command(name='ask', help='Ask question. Please put question text in quotes. Add *anonymous* if desired.'
+    @commands.command(name='ask', help='Ask question. Please put question text in quotes. Add *anonymous* or *anon* if desired.'
                                        'EX: $ask /"When is the exam?/" anonymous')
     async def askQuestion(self, ctx, qs: str, anonymous=''):
 
@@ -31,13 +31,25 @@ class Qanda(commands.Cog):
             await ctx.message.delete()
             return
 
+        if not qs or qs.isspace():
+            await ctx.author.send("Please enter a valid question.")
+            await ctx.message.delete()
+            return
+
+        if len(qs) <= 2:
+            await ctx.author.send('Question too short.')
+            await ctx.message.delete()
+            return
+
         # get author
         if anonymous == '':
             author = ctx.message.author.id
         elif anonymous == 'anonymous':
             author = None
+        elif anonymous == 'anon':
+            author = None
         else:
-            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous**, **anon**, or leave blank.')
             await ctx.message.delete()
             return
 
@@ -90,9 +102,9 @@ class Qanda(commands.Cog):
     #      - User answer added to question post
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name='answer',
-                      help='Answer question. Please put answer text in quotes. Add *anonymous* if desired.'
+                      help='Answer question. Please put answer text in quotes. Add *anonymous* or *anon* if desired.'
                            'EX: $answer 1 /"Oct 12/" anonymous')
-    async def answer(self, ctx, num, ans, anonymous=''):
+    async def answer(self, ctx, num, ans: str, anonymous=''):
         ''' answer the specific question '''
         # make sure to check that this is actually being asked in the Q&A channel
         if not ctx.channel.name == 'q-and-a':
@@ -100,24 +112,31 @@ class Qanda(commands.Cog):
             await ctx.message.delete()
             return
 
-        # to stop SQL from freezing. Only allows valid numbers.
-        if not re.match(r'^([1-9]\d*|0)$', num):
-            await ctx.author.send('Please include a valid question number. EX: $answer 1 /"Oct 12/" anonymous')
+        if not ans or ans.isspace():
+            await ctx.author.send("Please enter a valid answer.")
             await ctx.message.delete()
             return
 
-        #if not isinstance(ans, str):
-            #await ctx.author.send('Please include a valid answer. EX: $answer 1 /"Oct 12/" anonymous')
-           # await ctx.message.delete()
-           # return
+#        if len(ans) == 0:
+#            await ctx.author.send('Answer too short.')
+#            await ctx.message.delete()
+#            return
 
         # get author
         if anonymous == '':
             author = ctx.message.author.id
         elif anonymous == 'anonymous':
             author = None
+        elif anonymous == 'anon':
+            author = None
         else:
-            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+            await ctx.author.send('Unknown input for *anonymous* option. Please type **anonymous**, **anon**, or leave blank.')
+            await ctx.message.delete()
+            return
+
+        # to stop SQL from freezing. Only allows valid numbers.
+        if not re.match(r'^([1-9]\d*|0)$', num):
+            await ctx.author.send('Please include a valid question number. EX: $answer 1 /"Oct 12/" anonymous')
             await ctx.message.delete()
             return
 

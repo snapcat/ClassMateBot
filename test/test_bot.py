@@ -368,7 +368,7 @@ async def test_qanda(bot):
     # GHOST AND ZOMBIE TESTING
 
     # ask and dequeue
-    await dpytest.message("$ask \"Am I a zombie?\" anonymous", channel=channel)
+    await dpytest.message("$ask \"Am I a zombie?\" anon", channel=channel)
     assert dpytest.verify().message().contains().content(
         'Q3: Am I a zombie? by anonymous')
 
@@ -414,7 +414,7 @@ async def test_qanda(bot):
     assert dpytest.verify().message().contains().content(
         'Q4: Am I a ghost? by anonymous')
     # answer Q4
-    await dpytest.message("$answer 4 \"Yes\" anonymous", channel=channel)
+    await dpytest.message("$answer 4 \"Yes\" anon", channel=channel)
 
     # ask and dequeue
     await dpytest.message("$ask \"Zombie\" anonymous", channel=channel)
@@ -602,7 +602,7 @@ async def test_qanda_errors(bot):
     # Tests unknown anonymous input (question)
     await dpytest.message("$ask \"Who am I?\" wronganon", channel=channel)
     assert dpytest.verify().message().contains().content(
-        'Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+        'Unknown input for *anonymous* option. Please type **anonymous**, **anon**, or leave blank.')
 
     # Tests incorrect use of ask command: missing args
     with pytest.raises(commands.MissingRequiredArgument):
@@ -621,7 +621,7 @@ async def test_qanda_errors(bot):
     # Tests unknown anonymous input (answer)
     await dpytest.message("$answer 1 \"A Thing\" wronganon", channel=channel)
     assert dpytest.verify().message().contains().content(
-        'Unknown input for *anonymous* option. Please type **anonymous** or leave blank.')
+        'Unknown input for *anonymous* option. Please type **anonymous**, **anon**, or leave blank.')
 
     # Tests answering a nonexistent question (answer)
     await dpytest.message("$answer 100 \"nope\"", channel=channel)
@@ -763,7 +763,6 @@ async def test_qanda_errors(bot):
     assert dpytest.verify().message().contains().content(
         'Please use this command inside the #q-and-a channel.')
 
-
     # allChannelGhosts without any ghosts
     await dpytest.message("$allChannelGhosts", channel=channel)
     assert dpytest.verify().message().contains().content(
@@ -810,6 +809,32 @@ async def test_qanda_errors(bot):
     await dpytest.message("$reviveGhost 1", channel=channel)
     assert dpytest.verify().message().contains().content(
         "No such question with the number: 1")
+
+    # Test ask: empty question
+    await dpytest.message("$ask \"\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid question.")
+
+    # Test ask: whitepaces only
+    await dpytest.message("$ask \"   \"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid question.")
+
+    # Test ask: one char question
+    await dpytest.message("$ask \"A\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Question too short.")
+
+    # Test answer: empty answer
+    await dpytest.message("$answer 1 \"\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid answer.")
+
+    # Test answer: whitespaces only
+    await dpytest.message("$answer 1 \"    \"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid answer.")
+
 
 # --------------------
 # Tests cogs/reviewQs
