@@ -810,6 +810,32 @@ async def test_qanda_errors(bot):
     assert dpytest.verify().message().contains().content(
         "No such question with the number: 1")
 
+    # Test ask: empty question
+    await dpytest.message("$ask \"\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid question.")
+
+    # Test ask: whitepaces only
+    await dpytest.message("$ask \"   \"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid question.")
+
+    # Test ask: one char question
+    await dpytest.message("$ask \"A\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Question too short.")
+
+    # Test answer: empty answer
+    await dpytest.message("$answer 1 \"\"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid answer.")
+
+    # Test answer: whitespaces only
+    await dpytest.message("$answer 1 \"    \"", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid answer.")
+
+
 # --------------------
 # Tests cogs/reviewQs
 # --------------------
