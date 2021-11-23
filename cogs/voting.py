@@ -85,13 +85,23 @@ class Voting(commands.Cog):
         )
         await ctx.send(f'Group {group} has voted for Project {project_num}!')
 
-    # this handles errors related to the vote command
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: vote_error(self, ctx, error)
+    #    Description: prints error message for vote command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
     @vote.error
     async def vote_error(self, ctx, error):
         if isinstance(error, commands.UserInputError):
             await ctx.send('To join a project, use the join command, do: $vote <Num> \n'
             '( For example: $vote 0 )')
-        print(error)
+        else:
+            await ctx.author.send(error)
+        #await ctx.message.delete()
 
     # ----------------------------------------------------------------------------------
     #    Function: projects(self, ctx)
@@ -116,6 +126,18 @@ class Voting(commands.Cog):
         else:
             await ctx.send('There are currently no votes for any project numbers.')
 
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: project_error(self, ctx, error)
+    #    Description: prints error message for projects command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
+    @projects.error
+    async def project_error(self, ctx, error):
+        await ctx.author.send(error)
 
 # -----------------------------------------------------------
 # add the file to the bot's cog system
