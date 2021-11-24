@@ -4,4 +4,4 @@
 include = cogs/*,test/*,conftest.py,db.py,setup.py,bot.py
 
 [report]
-omit = setup.py,bot.py
+omit = setup.py,bot.py,cogs/wordfilter.py
