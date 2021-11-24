@@ -8,6 +8,7 @@
 import os
 import asyncio
 from datetime import datetime, timedelta
+from dateutil import parser
 import sys
 from discord.ext import commands
 
@@ -59,13 +60,15 @@ class Deadline(commands.Cog):
     #          indicating that the reminder has been added
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="addhw",
-                      help="add homework and due-date $addhw CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) "
+                      help="add homework and due-date $addhw CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM)"
                       "ex. $addhw CSC510 HW2 SEP 25 2024 17:02")
     async def duedate(self, ctx, coursename: str, hwcount: str, *, date: str):
         author = ctx.message.author
 
         try:
-            duedate = datetime.strptime(date, '%b %d %Y %H:%M')
+            duedate = parser.parse(date)
+            print(duedate)
+            # duedate = datetime.strptime(date, '%b %d %Y %H:%M')
             # print(seconds)
         except ValueError:
             try:
