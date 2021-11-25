@@ -151,7 +151,7 @@ async def on_message(message):
     if profanity_helper.filtering:
         if cname != 'instructor-commands':
             nustr = message.content.replace('"','')
-            if profanity_helper.helpChecker(nustr):
+            if profanity_helper.helpChecker(nustr) or profanity_helper.helpChecker(message.content):
             #if profanity_helper.helpChecker(message.content):
                 badmsg = "Please do not use inappropriate language in this server. Your message:\n"
                 badmsg += profanity_helper.helpCensor(nustr)
