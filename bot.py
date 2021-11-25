@@ -176,6 +176,7 @@ async def on_message(message):
 async def on_message_edit(before, after):
     ''' run on message edited '''
 
+
     if profanity_helper.filtering:
         if profanity_helper.helpChecker(after.content):
             if not after.author.bot:
@@ -215,7 +216,8 @@ async def toggleFilter(ctx):
 # ------------------------------------------------------------------------
 @bot.command(name="whitelist", help="adds a word to the whitelist. EX: $whitelist word or sentence")
 @has_permissions(administrator=True)
-async def whitelistWord(ctx, *, word =''):
+
+async def whitelistWord(ctx, *, word=''):
 
     if not ctx.channel.name == 'instructor-commands':
         await ctx.author.send('Please use this command inside #instructor-commands')
