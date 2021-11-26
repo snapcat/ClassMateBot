@@ -885,7 +885,7 @@ async def test_poll(bot):
     assert dpytest.verify().message().contains().content(
         "**POLL by Student**\n\nabc\n** **")
 
-    irole = await guild.create_role(name="Instructor")
+    await guild.create_role(name="Instructor")
     role = discord.utils.get(guild.roles, name="Instructor")
     await dpytest.add_role(user, role)
 
