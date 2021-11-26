@@ -62,7 +62,7 @@ class Poll(commands.Cog):
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(
         name="quizpoll",
-        help = 'Create a multi reaction poll by typing $poll "title" [option 1] [option 2] [option 3]... with up to 6 options. \n '
+        help = 'Create a multi reaction poll by typing \n$poll "title" [option 1] ... [option 6]\n '
                 'Be sure to enclose title with quotes and options with brackets!\n'
                 'EX: $quizpoll "I am a poll" [Vote for me!] [I am option 2]')
     async def quizpoll(self, ctx, title: str, *, ops):
