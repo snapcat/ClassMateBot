@@ -1,5 +1,4 @@
-#TODO: This functionality does . . .
-
+# This cog provides functionality for commands related to polls and quizzes.
 import discord
 from discord.ext import commands
 import re
@@ -52,17 +51,18 @@ class Poll(commands.Cog):
 
     # @commands.cooldown(2, 60, BucketType.user)
     # -----------------------------------------------------------------------------------------------------------------
-    #    Function: quizpoll(self, ctx)
-    #    Description: TODO
+    #    Function: quizpoll(self, ctx, title: str, *, ops)
+    #    Description: Allows the user to begin quiz polls; that is, multi-reaction polls with listed options.
     #    Inputs:
     #       - ctx: context of the command
-    #       -
+    #       - title: a string enclosed in double quotes; the quiz title
+    #       - ops: up to six options, each in brackets
     #    Outputs:
-    #       - TODO
+    #       - an embedded quiz
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(
         name="quizpoll",
-        help = 'Create a multi reaction poll by typing \n$poll "title" [option 1] ... [option 6]\n '
+        help = 'Create a multi reaction poll by typing \n$poll "TITLE" [option 1] ... [option 6]\n '
                 'Be sure to enclose title with quotes and options with brackets!\n'
                 'EX: $quizpoll "I am a poll" [Vote for me!] [I am option 2]')
     async def quizpoll(self, ctx, title: str, *, ops):
@@ -83,7 +83,7 @@ class Poll(commands.Cog):
             await ctx.message.delete()
             return
 
-
+        # regex: extracts every string between brackets
         options = re.findall(r'\[([^[\]]*)\]', ops)
 
         if len(options) < 2:
@@ -107,10 +107,10 @@ class Poll(commands.Cog):
                     await ctx.message.delete()
                     return
                 if not i == len(options):
-                    pollMessage = pollMessage + "\n\n" + self.emojiLetters[i] + "   " + choice
+                    pollMessage = pollMessage + "\n\n" + self.emojiLetters[i] + "     " + choice
                 i += 1
 
-            ads = ["  "]
+            ads = [""]
 
             e = discord.Embed(title="**" + title + "**",
                                 description=pollMessage + ads[0],
@@ -125,13 +125,14 @@ class Poll(commands.Cog):
                 i += 1
         except KeyError:
             await ctx.author.send(
-                'To use the quizpoll command, do: $quizpoll "TITLE" [option1] [option2] [option3] ... with up to 6 options. \n '
+                'To use the quizpoll command, do: $quizpoll "TITLE" [option1] [option2] ... [option6]\n '
                 'Be sure to enclose title with quotes and options with brackets!\n'
                 'EX: $quizpoll "I am a poll" [Vote for me!] [I am option 2]')
             await ctx.message.delete()
             return
         # delete user message
-        ctx.message.delete()
+        else:
+            await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: quizpoll_error(self, ctx, error)
@@ -146,7 +147,7 @@ class Poll(commands.Cog):
     async def quizpoll_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.author.send(
-                'To use the quizpoll command, do: $quizpoll "TITLE" [option1] [option2] [option3] ... with up to 6 options. \n '
+                'To use the quizpoll command, do: $quizpoll "TITLE" [option1] [option2] ... [option6]\n '
                 'Be sure to enclose title with quotes and options with brackets!\n'
                 'EX: $quizpoll "I am a poll" [Vote for me!] [I am option 2]')
         else:
@@ -154,19 +155,19 @@ class Poll(commands.Cog):
         await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
-    #    Function: poll(self, ctx)
-    #    Description: TODO
+    #    Function: poll(self, ctx, qs)
+    #    Description: Allows the user to create a simple reaction poll with thumbs up, thumbs down, and unsure.
     #    Inputs:
     #       - ctx: context of the command
-    #       -
+    #       - qs: question string; the poll question
     #    Outputs:
-    #       - TODO
+    #       - an embedded reaction poll
     # -----------------------------------------------------------------------------------------------------------------
     @commands.command(name="poll", help = 'Create a reaction poll by typing $poll QUESTION\n'
                                             'EX: $poll What do you think about cats?')
-    async def poll(self, ctx, *, pollstr=''):
+    async def poll(self, ctx, *, qs=''):
 
-        if pollstr == '':
+        if qs == '':
             await ctx.author.send("Please enter a question for your poll.")
             #await ctx.send(
                 #'To use the poll command, do: $poll QUESTION\n'
@@ -174,8 +175,8 @@ class Poll(commands.Cog):
             await ctx.message.delete()
             return
 
-        # if using pollstr:str instead of *; checks for empty and whitespace only strings
-        #if not pollstr or pollstr.isspace():
+        # if using qs:str instead of *; checks for empty and whitespace only strings
+        #if not qs or qs.isspace():
         #    await ctx.author.send("Please enter a question for your poll.")
             #await ctx.send(
             #    'To use the poll command, do: $poll QUESTION\n'
@@ -183,7 +184,7 @@ class Poll(commands.Cog):
             #await ctx.message.delete()
         #    return
 
-        if len(pollstr) <= 2:
+        if len(qs) <= 2:
             await ctx.author.send("Poll question too short.")
             await ctx.message.delete()
             return
@@ -199,7 +200,7 @@ class Poll(commands.Cog):
 
         # create a poll, post to channel, and add reactions.
         #pollmsg = f"**POLL by {author_str}**\n\n{pollstr}\n** **"
-        pollmsg = f"**POLL by {author}**\n\n{pollstr}\n** **"
+        pollmsg = f"**POLL by {author}**\n\n{qs}\n** **"
         message = await ctx.send(pollmsg)
 
         #TODO: ADD POLL ID TO DATABASE.
