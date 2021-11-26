@@ -45,13 +45,25 @@ class Pinning(commands.Cog):
         await ctx.send(
             f"A new message has been pinned with tag: {tagname} and description: {description} by {author}.")
 
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: addMessage_error(self, ctx, error)
+    #    Description: prints error message for pin command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
     @addMessage.error
     async def addMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
                 "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )")
-        print(error)
+        else:
+            await ctx.author.send(error)
+            #await ctx.message.delete()
+            print(error)
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: deleteMessage(self, ctx, tagname: str, *)
@@ -81,12 +93,24 @@ class Pinning(commands.Cog):
             await ctx.send(
                 f"{len(rows_deleted)} pinned message(s) has been deleted with tag: {tagname}.")
 
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: deleteMessage_error(self, ctx, error)
+    #    Description: prints error message for unpin command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
     @deleteMessage.error
     async def deleteMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 'To use the unpin command, do: $unpin TAGNAME \n ( For example: $unpin HW8 )')
-        print(error)
+        else:
+            await ctx.author.send(error)
+            #await ctx.message.delete()
+            print(error)
 
     # ----------------------------------------------------------------------------------
     #    Function: retrieveMessages(self, ctx, tagname: str)
@@ -117,14 +141,25 @@ class Pinning(commands.Cog):
         for tag, description in messages:
             await ctx.send(f"Tag: {tag}, Description: {description}")
 
-
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: retrieveMessages_error(self, ctx, error)
+    #    Description: prints error message for pinnedmessages command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
     @retrieveMessages.error
     async def retrieveMessages_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "To use the pinnedmessages command, do: $pinnedmessages:"
                 " TAGNAME \n ( For example: $pinnedmessages HW8 )")
-        print(error)
+        else:
+            await ctx.author.send(error)
+            #await ctx.message.delete()
+            print(error)
 
     # ----------------------------------------------------------------------------------------------------------
     #    Function: updatePinnedMessage(self, ctx, tagname: str, *, description: str)
@@ -142,13 +177,26 @@ class Pinning(commands.Cog):
         await ctx.invoke(self.bot.get_command('unpin'), tagname)
         await ctx.invoke(self.bot.get_command('pin'), tagname=tagname, description=description)
 
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: updatePinnedMessage_error(self, ctx, error)
+    #    Description: prints error message for updatepin command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
     @updatePinnedMessage.error
     async def updatePinnedMessage_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "To use the updatepin command, do: $pin TAGNAME DESCRIPTION \n ( $updatepin HW8 https://discordapp"
                 ".com/channels/139565116151562240/139565116151562240/890814489480531969 HW8 reminder )")
-        print(error)
+        else:
+            await ctx.author.send(error)
+            #await ctx.message.delete()
+            print(error)
+
 
 
 # -------------------------------------

@@ -175,7 +175,6 @@ async def on_message(message):
 @bot.event
 async def on_message_edit(before, after):
     ''' run on message edited '''
-
     if profanity_helper.filtering:
         if profanity_helper.helpChecker(after.content):
             if not after.author.bot:
