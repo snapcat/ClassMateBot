@@ -73,6 +73,25 @@ class NewComer(commands.Cog):
             )
             await member.send(embed=embed)
 
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: verify_error(self, ctx, error)
+    #    Description: prints error message for verify command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
+    @verify.error
+    async def verify_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(
+                "To use the verify command, do: $verify <FirstName LastName> \n ( For example: $verify Jane Doe )")
+        else:
+            await ctx.author.send(error)
+            #await ctx.message.delete()
+            print(error)
+
 
 # --------------------------------------
 # add the file to the bot's cog system

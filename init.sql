@@ -42,7 +42,8 @@ CREATE TABLE questions (
     number          BIGINT NOT NULL,
     question        VARCHAR NOT NULL,
     author_id       BIGINT,
-    msg_id          BIGINT NOT NULL
+    msg_id          BIGINT NOT NULL,
+    is_ghost        BOOLEAN DEFAULT false
 );
 
 CREATE TABLE answers (
