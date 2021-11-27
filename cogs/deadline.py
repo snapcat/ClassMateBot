@@ -7,14 +7,16 @@
 # A user can also update or delete a reminder if needed.
 import os
 import asyncio
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, time
 from dateutil import parser
 import sys
-from discord.ext import commands
+from discord.ext import commands, tasks
+import discord
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
 
+bot = commands.Bot("!")
 
 class Deadline(commands.Cog):
 
@@ -256,7 +258,7 @@ class Deadline(commands.Cog):
             delta = due_date - curr_date
             formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S")
             await ctx.send(f"{course} {homework} is due in {delta.days} days, {delta.seconds//3600}"
-                            f" minutes and {(delta.seconds//60)%60} seconds ({formatted_due_date})")
+                            f" hours and {(delta.seconds//60)%60} minutes ({formatted_due_date})")
 
         # for reminder in self.reminders:
         #     timeleft = datetime.strptime(reminder["DUEDATE"], '%Y-%m-%d %H:%M:%S') - time
@@ -299,7 +301,7 @@ class Deadline(commands.Cog):
         for course, homework, due_date in due_today:
             delta = due_date - datetime.now(timezone.utc)
             await ctx.send(f"{course} {homework} is due in {delta.days} days, {delta.seconds//3600}"
-                            f" minutes and {(delta.seconds//60)%60} seconds")
+                            f" hours and {(delta.seconds//60)%60} minutes")
         if len(due_today) == 0:
             await ctx.send("You have no dues today..!!")
 
@@ -484,6 +486,56 @@ class Deadline(commands.Cog):
             db.query('DELETE FROM reminders WHERE now() > due_date')
             await asyncio.sleep(10)
 
+    # -----------------------------------------------------------------------------------------------------
+    #    Function: send_reminders_day(self)
+    #    Description: task that runs once per day and sends a reminders for assignments due
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    # -----------------------------------------------------------------------------------------------------
+    @tasks.loop(hours=24)
+    async def send_reminders_day(self):
+        channel = discord.utils.get(self.bot.get_all_channels(), name="reminders")
+        reminders = db.query("SELECT course, homework, due_date "
+            "FROM reminders "
+            "WHERE due_date::date = now()::date")
+        for course,homework,due_date in reminders:
+            difference = due_date - datetime.now(timezone.utc)
+            await channel.send(f"{homework} for {course} is due in {(difference.seconds//3600)} hours")
+
+    
+    # -----------------------------------------------------------------------------------------------------
+    #    Function: bofore(self)
+    #    Description: runs once per day and waits until 8:00 AM EST to send reminders via the send 
+    #       reminders day function
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    # -----------------------------------------------------------------------------------------------------
+    @send_reminders_day.before_loop
+    async def before(self):
+        WHEN = time(13, 0, 0) # 8:00 AM eastern
+        now = datetime.utcnow()
+        target_time = datetime.combine(now.date(), WHEN) 
+        seconds_until_target = (target_time - now).total_seconds()
+        await asyncio.sleep(seconds_until_target)  
+            
+    # -----------------------------------------------------------------------------------------------------
+    #    Function: send_reminders_hour(self)
+    #    Description: task that runs once per hours and sends a reminders for assignments due
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    # -----------------------------------------------------------------------------------------------------
+    @tasks.loop(hours=1)
+    async def send_reminders_hour(self):
+        channel = discord.utils.get(self.bot.get_all_channels(), name="reminders")
+        reminders = db.query("SELECT course, homework, due_date "
+            "FROM reminders "
+            "WHERE due_date::date = now()::date")
+        for course,homework,due_date in reminders:
+            difference = due_date - datetime.now(timezone.utc)
+            if difference.seconds//3600 == 0:
+                await channel.send(f"{homework} for {course} is due within the hour")
+
+
 
 # -------------------------------------
 # add the file to the bot's cog system
@@ -491,6 +543,10 @@ class Deadline(commands.Cog):
 def setup(bot):
     n = Deadline(bot)
     loop = asyncio.get_event_loop()
-    # TODO
+
+    WHEN = time(18, 0, 0)  # 6:00 PM
+
     loop.create_task(n.delete_old_reminders())
+    n.send_reminders_day.start()
+    n.send_reminders_hour.start()
     bot.add_cog(n)
