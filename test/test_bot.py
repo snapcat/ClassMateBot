@@ -62,13 +62,10 @@ async def test_groupError(bot):
     assert dpytest.verify().message().content(
         'To use the join command, do: $join <Num> where 0 <= <Num> <= 99 \n ( For example: $join 0 )')
 
-    try:
+    with pytest.raises(commands.MissingRequiredArgument):
         await dpytest.message("$join")
-        # should not reach here
-        assert False
-    except:
-        assert dpytest.verify().message().content(
-            'To use the join command, do: $join <Num> \n ( For example: $join 0 )')
+    assert dpytest.verify().message().content(
+        'To use the join command, do: $join <Num> \n ( For example: $join 0 )')
 
 
 # -----------------------
@@ -210,15 +207,11 @@ async def test_unpinning(bot):
 @pytest.mark.asyncio
 async def test_pinError(bot):
     # Tests pinning without a message, will fail
-    try:
+    with pytest.raises(commands.MissingRequiredArgument):
         await dpytest.message("$pin")
-
-        #shouldnt reach here
-        assert False
-    except:
-        assert dpytest.verify().message().content(
-            "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
-            "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )")
+    assert dpytest.verify().message().content(
+        "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
+        "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )")
 
 
 # --------------------
@@ -283,13 +276,10 @@ async def test_voting(bot):
     await dpytest.message(content="$vote 2")
     assert dpytest.verify().message().content(
         "You already voted for Project 2")
-    try:
+    with pytest.raises(commands.UserInputError):
         await dpytest.message(content="$vote")
-        #shouldnt reach here
-        assert False
-    except:
-        assert dpytest.verify().message().contains().content(
-            "To join a project, use the join command, do: $vote <Num> \n( For example: $vote 0 )")
+    assert dpytest.verify().message().contains().content(
+        "To join a project, use the join command, do: $vote <Num> \n( For example: $vote 0 )")
     await dpytest.message(content="$vote -1")
     assert dpytest.verify().message().content(
         "A valid project number is 1-99.")
@@ -865,3 +855,102 @@ async def test_review_qs(bot):
     assert dpytest.verify().message().contains().content(
         'To use the addQuestion command, do: $addQuestion \"Question\" \"Answer\" \n'
         '(For example: $addQuestion \"What class is this?\" "CSC510")')
+
+# --------------------------------
+# Test polling: poll
+# --------------------------------
+@pytest.mark.asyncio
+async def test_poll(bot):
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    channel = await guild.create_text_channel('polls')
+
+    # Test poll: no input
+    await dpytest.message("$poll", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a question for your poll.")
+
+    # Test poll: whitespace
+    await dpytest.message("$poll    ", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Please enter a question for your poll.")
+
+    # Test poll: question too short
+    await dpytest.message("$poll ab", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "Poll question too short.")
+
+    # Test poll: student
+    await dpytest.message("$poll abc", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "**POLL by Student**\n\nabc\n** **")
+
+    irole = await guild.create_role(name="Instructor")
+    role = discord.utils.get(guild.roles, name="Instructor")
+    await dpytest.add_role(user, role)
+
+    # Test poll: instructor
+    await dpytest.message("$poll abc", channel=channel)
+    assert dpytest.verify().message().contains().content(
+        "**POLL by Instructor**\n\nabc\n** **")
+
+    # Test poll: reactions
+    msgid = channel.last_message_id
+    msg = await channel.fetch_message(msgid)
+
+    # should have three reactions, but this is a known bug.
+    # From dpytest: This is d.py/discord's fault, the message object from send isn't
+    # the same as the one in the state
+    assert len(msg.reactions) == 1
+
+
+
+# --------------------------------
+# Test polling: quizpoll
+# --------------------------------
+@pytest.mark.asyncio
+async def test_quizpoll(bot):
+    #user = dpytest.get_config().members[0]
+    #guild = dpytest.get_config().guilds[0]
+    #channel = await guild.create_text_channel('polls')
+
+    # Test quizpoll: no input
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$quizpoll")
+    assert dpytest.verify().message().contains().content(
+        'To use the quizpoll command, do: $quizpoll "TITLE" [option1] [option2] ... [option6]\n '
+        'Be sure to enclose title with quotes and options with brackets!\n'
+        'EX: $quizpoll "I am a poll" [Vote for me!] [I am option 2]')
+
+    # Test quizpoll: title is whitespace
+    await dpytest.message("$quizpoll \"  \" [a] [b] [c] [d] [e] [f]")
+    assert dpytest.verify().message().contains().content(
+        "Please enter a valid title.")
+
+    # Test quizpoll: title is too short
+    await dpytest.message("$quizpoll \"a\" [a] [b] [c] [d] [e] [f]")
+    assert dpytest.verify().message().contains().content(
+        "Title too short.")
+
+    # Test quizpoll: too few options
+    await dpytest.message("$quizpoll \"TITLE\" [a]")
+    assert dpytest.verify().message().contains().content(
+        "Polls need at least two options.")
+
+    # Test quizpoll: too many options
+    await dpytest.message("$quizpoll \"TITLE\" [a] [b] [c] [d] [e] [f] [g]")
+    assert dpytest.verify().message().contains().content(
+        "Polls cannot have more than six options.")
+
+    # Test quizpoll: option is empty
+    await dpytest.message("$quizpoll \"TITLE\" [] [b] [c]")
+    assert dpytest.verify().message().contains().content(
+        "Options cannot be blank or whitespace only.")
+
+    e = discord.Embed(title="**TITLE**",
+                    description="\n\n🇦     a\n\n🇧     b\n\n🇨     c",
+                    colour=0x83bae3)
+
+    # Test quizpoll embed
+    await dpytest.message("$quizpoll \"TITLE\" [a] [b] [c]")
+    assert dpytest.verify().message().embed(e)
