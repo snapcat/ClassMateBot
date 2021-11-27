@@ -137,7 +137,6 @@ async def on_ready():
 async def on_message(message):
     ''' run on message sent to a channel '''
     # allow messages from test bot
-    # NOTE from Group25: Not sure if this is actually being used anywhere.
     if message.author.bot and message.author.id == 889697640411955251:
         ctx = await bot.get_context(message)
         await bot.invoke(ctx)
@@ -145,22 +144,13 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    cname = message.channel.name
-    # CHECK CHANNELS.
     # don't want to accidentally censor a word before it can be whitelisted
-    if profanity_helper.filtering:
-        if cname != 'instructor-commands':
-            nustr = message.content.replace('"','')
-            if profanity_helper.helpChecker(nustr) or profanity_helper.helpChecker(message.content):
-            #if profanity_helper.helpChecker(message.content):
-                badmsg = "Please do not use inappropriate language in this server. Your message:\n"
-                badmsg += profanity_helper.helpCensor(nustr)
-                #badmsg += profanity_helper.helpCensor(message.content)
-                #if message.author.bot: # if the author is the bot
-                    #return
-                await message.author.send(badmsg)
-                await message.delete()
-                return
+    if "whitelist" not in message.content:
+        if profanity_helper.filtering and profanity_helper.helpChecker(message.content):
+            await message.channel.send(message.author.name + ' says: ' +
+                profanity_helper.helpCensor(message.content))
+            await message.delete()
+
     await bot.process_commands(message)
 
 
@@ -176,15 +166,14 @@ async def on_message(message):
 async def on_message_edit(before, after):
     ''' run on message edited '''
 
+    # TODO: this can cause a message not found error with qanda
     if profanity_helper.filtering:
         if profanity_helper.helpChecker(after.content):
-            if not after.author.bot:
-                await after.channel.send(after.author.name + ' says: ' +
-                    profanity_helper.helpCensor(after.content))
-                await after.delete()
-            else:
-                numsg = profanity_helper.helpCensor(after.content)
-                await after.edit(content=numsg)
+            await after.channel.send(after.author.name + ' says: ' +
+                profanity_helper.helpCensor(after.content))
+            await after.delete()
+
+
 
 # -----------------------------------------------------------------------
 #    Function: toggleFilter
@@ -215,7 +204,7 @@ async def toggleFilter(ctx):
 # ------------------------------------------------------------------------
 @bot.command(name="whitelist", help="adds a word to the whitelist. EX: $whitelist word or sentence")
 @has_permissions(administrator=True)
-async def whitelistWord(ctx, *, word =''):
+async def whitelistWord(ctx, *, word=''):
 
     if not ctx.channel.name == 'instructor-commands':
         await ctx.author.send('Please use this command inside #instructor-commands')

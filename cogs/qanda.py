@@ -5,6 +5,7 @@ from discord.ext import commands
 import db
 import re
 
+
 class Qanda(commands.Cog):
 
     def __init__(self, bot):
