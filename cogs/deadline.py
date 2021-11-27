@@ -375,12 +375,12 @@ class Deadline(commands.Cog):
     async def listreminders(self, ctx):
         author = ctx.message.author
         reminders = db.query(
-            'SELECT course, homework, due_date FROM reminders WHERE guild_id = %s and author_id = %s',
+            'SELECT course, homework, due_date FROM reminders WHERE guild_id = %s and author_id = %s and now() < due_date',
             (ctx.guild.id, author.id)
         )
 
         for course, homework, due_date in reminders:
-            formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S")
+            formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S%z")
             await ctx.send(f"{course} homework named: {homework} which is due on: {formatted_due_date} by {author.name}")
         if not reminders:
             await ctx.send("Mission Accomplished..!! You don't have any more dues..!!")
@@ -398,6 +398,45 @@ class Deadline(commands.Cog):
     async def listreminders_error(self, ctx, error):
         await ctx.author.send(error)
         print(error)
+
+    # ---------------------------------------------------------------------------------
+    #    Function: overdue(self, ctx)
+    #    Description: Print out all the reminders
+    #    Inputs:
+    #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: used to access the values passed through the current context
+    #    Outputs: returns either an error stating a reason for failure or
+    #             returns a list of all the assignments
+    # ---------------------------------------------------------------------------------
+    @commands.command(name="overdue", pass_context=True, help="lists overdue reminders")
+    async def overdue(self, ctx):
+        author = ctx.message.author
+        reminders = db.query(
+            'SELECT course, homework, due_date FROM reminders WHERE guild_id = %s and author_id = %s'
+            'and now() > due_date',
+            (ctx.guild.id, author.id)
+        )
+
+        for course, homework, due_date in reminders:
+            formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S%z")
+            await ctx.send(f"{course} homework named: {homework} which was due on: {formatted_due_date} by {author.name}")
+        if not reminders:
+            await ctx.send("There are no overdue reminders")
+
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: listreminders_error(self, ctx, error)
+    #    Description: prints error message for listreminders command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
+    @overdue.error
+    async def overdue_error(self, ctx, error):
+        await ctx.author.send(error)
+        print(error)
+
 
 
     # ---------------------------------------------------------------------------------
@@ -476,15 +515,30 @@ class Deadline(commands.Cog):
     #     await ctx.send('Unidentified command..please use $help to get the list of available commands')
 
     # -----------------------------------------------------------------------------------------------------
-    #    Function: delete_old_reminders(self)
-    #    Description: asynchronously keeps on tracking the database for expired reminders and cleans them.
+    #    Function: clearoverdue(self)
+    #    Description: checks for expired reminders and cleans them.
     #    Inputs:
     #    - self: used to access parameters passed to the class through the constructor
+    #    - ctx: context of the command
     # -----------------------------------------------------------------------------------------------------
-    async def delete_old_reminders(self):
-        while self is self.bot.get_cog("Deadline"):
-            db.query('DELETE FROM reminders WHERE now() > due_date')
-            await asyncio.sleep(10)
+    @commands.command(name="clearoverdue", pass_context=True, help="deletes overdue reminders")
+    async def clearoverdue(self, ctx):
+        db.query('DELETE FROM reminders WHERE now() > due_date')
+        await ctx.send("All overdue reminders have been cleared..!!")
+
+    # -----------------------------------------------------------------------------------------------------------------
+    #    Function: clearoverdue_error(self, ctx, error)
+    #    Description: prints error message for clearoverdue command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -----------------------------------------------------------------------------------------------------------------
+    @clearoverdue.error
+    async def clearoverdue_error(self, ctx, error):
+        await ctx.author.send(error)
+        print(error)
 
     # -----------------------------------------------------------------------------------------------------
     #    Function: send_reminders_day(self)
@@ -546,7 +600,7 @@ def setup(bot):
 
     WHEN = time(18, 0, 0)  # 6:00 PM
 
-    loop.create_task(n.delete_old_reminders())
+    # loop.create_task(n.delete_old_reminders())
     n.send_reminders_day.start()
     n.send_reminders_hour.start()
     bot.add_cog(n)
