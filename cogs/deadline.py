@@ -256,16 +256,11 @@ class Deadline(commands.Cog):
 
         for course, homework, due_date in reminders:
             delta = due_date - curr_date
-            formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S")
-            await ctx.send(f"{course} {homework} is due in {delta.days} days, {delta.seconds//3600}"
+            formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S%z")
+            await ctx.author.send(f"{course} {homework} is due in {delta.days} days, {delta.seconds//3600}"
                             f" hours and {(delta.seconds//60)%60} minutes ({formatted_due_date})")
+        await ctx.message.delete()
 
-        # for reminder in self.reminders:
-        #     timeleft = datetime.strptime(reminder["DUEDATE"], '%Y-%m-%d %H:%M:%S') - time
-        #     print("timeleft: " + str(timeleft) + " days left: " + str(timeleft.days))
-        #     if timeleft.days <= 7:
-        #         await ctx.send("{} {} is due this week at {}".format(reminder["COURSE"], reminder["HOMEWORK"],
-        #                                                              reminder["DUEDATE"]))
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: duethisweek_error(self, ctx, error)
@@ -280,6 +275,7 @@ class Deadline(commands.Cog):
     async def duethisweek_error(self, ctx, error):
         await ctx.author.send(error)
         print(error)
+        await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: duetoday(self, ctx)
@@ -300,10 +296,11 @@ class Deadline(commands.Cog):
         )
         for course, homework, due_date in due_today:
             delta = due_date - datetime.now(timezone.utc)
-            await ctx.send(f"{course} {homework} is due in {delta.days} days, {delta.seconds//3600}"
+            await ctx.author.send(f"{course} {homework} is due in {delta.days} days, {delta.seconds//3600}"
                             f" hours and {(delta.seconds//60)%60} minutes")
         if len(due_today) == 0:
-            await ctx.send("You have no dues today..!!")
+            await ctx.author.send("You have no dues today..!!")
+        await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: duetoday_error(self, ctx, error)
@@ -318,6 +315,7 @@ class Deadline(commands.Cog):
     async def duetoday_error(self, ctx, error):
         await ctx.author.send(error)
         print(error)
+        await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: coursedue(self, ctx, courseid: str)
@@ -339,9 +337,10 @@ class Deadline(commands.Cog):
         )
         for homework, due_date in reminders:
             formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S")
-            await ctx.send(f"{homework} is due at {formatted_due_date}")
+            await ctx.author.send(f"{homework} is due at {formatted_due_date}")
         if len(reminders) == 0:
-            await ctx.send(f"Rejoice..!! You have no pending homeworks for {courseid}..!!")
+            await ctx.author.send(f"Rejoice..!! You have no pending homeworks for {courseid}..!!")
+        await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: coursedue_error(self, ctx, error)
@@ -355,12 +354,12 @@ class Deadline(commands.Cog):
     @coursedue.error
     async def coursedue_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
+            await ctx.author.send(
                 'To use the coursedue command, do: $coursedue CLASSNAME \n ( For example: $coursedue CSC510 )')
         else:
             await ctx.author.send(error)
-            #await ctx.message.delete()
             print(error)
+        await ctx.message.delete()
 
     # ---------------------------------------------------------------------------------
     #    Function: listreminders(self, ctx)
@@ -381,9 +380,10 @@ class Deadline(commands.Cog):
 
         for course, homework, due_date in reminders:
             formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S%z")
-            await ctx.send(f"{course} homework named: {homework} which is due on: {formatted_due_date} by {author.name}")
+            await ctx.author.send(f"{course} homework named: {homework} which is due on: {formatted_due_date} by {author.name}")
         if not reminders:
-            await ctx.send("Mission Accomplished..!! You don't have any more dues..!!")
+            await ctx.author.send("Mission Accomplished..!! You don't have any more dues..!!")
+        await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: listreminders_error(self, ctx, error)
@@ -398,6 +398,7 @@ class Deadline(commands.Cog):
     async def listreminders_error(self, ctx, error):
         await ctx.author.send(error)
         print(error)
+        await ctx.message.delete()
 
     # ---------------------------------------------------------------------------------
     #    Function: overdue(self, ctx)
@@ -419,9 +420,10 @@ class Deadline(commands.Cog):
 
         for course, homework, due_date in reminders:
             formatted_due_date = due_date.strftime("%b %d %Y %H:%M:%S%z")
-            await ctx.send(f"{course} homework named: {homework} which was due on: {formatted_due_date} by {author.name}")
+            await ctx.author.send(f"{course} homework named: {homework} which was due on: {formatted_due_date} by {author.name}")
         if not reminders:
-            await ctx.send("There are no overdue reminders")
+            await ctx.author.send("There are no overdue reminders")
+        await ctx.message.delete()
 
     # -----------------------------------------------------------------------------------------------------------------
     #    Function: listreminders_error(self, ctx, error)
@@ -436,8 +438,7 @@ class Deadline(commands.Cog):
     async def overdue_error(self, ctx, error):
         await ctx.author.send(error)
         print(error)
-
-
+        await ctx.message.delete()
 
     # ---------------------------------------------------------------------------------
     #    Function: clearallreminders(self, ctx)
