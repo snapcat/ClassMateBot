@@ -550,12 +550,13 @@ class Deadline(commands.Cog):
     @tasks.loop(hours=24)
     async def send_reminders_day(self):
         channel = discord.utils.get(self.bot.get_all_channels(), name="reminders")
-        reminders = db.query("SELECT course, homework, due_date "
-            "FROM reminders "
-            "WHERE due_date::date = now()::date")
-        for course,homework,due_date in reminders:
-            difference = due_date - datetime.now(timezone.utc)
-            await channel.send(f"{homework} for {course} is due in {(difference.seconds//3600)} hours")
+        if channel:
+            reminders = db.query("SELECT course, homework, due_date "
+                "FROM reminders "
+                "WHERE due_date::date = now()::date")
+            for course,homework,due_date in reminders:
+                difference = due_date - datetime.now(timezone.utc)
+                await channel.send(f"{homework} for {course} is due in {(difference.seconds//3600)} hours")
 
     
     # -----------------------------------------------------------------------------------------------------
@@ -582,13 +583,14 @@ class Deadline(commands.Cog):
     @tasks.loop(hours=1)
     async def send_reminders_hour(self):
         channel = discord.utils.get(self.bot.get_all_channels(), name="reminders")
-        reminders = db.query("SELECT course, homework, due_date "
-            "FROM reminders "
-            "WHERE due_date::date = now()::date")
-        for course,homework,due_date in reminders:
-            difference = due_date - datetime.now(timezone.utc)
-            if difference.seconds//3600 == 0:
-                await channel.send(f"{homework} for {course} is due within the hour")
+        if channel:
+            reminders = db.query("SELECT course, homework, due_date "
+                "FROM reminders "
+                "WHERE due_date::date = now()::date")
+            for course,homework,due_date in reminders:
+                difference = due_date - datetime.now(timezone.utc)
+                if difference.seconds//3600 == 0:
+                    await channel.send(f"{homework} for {course} is due within the hour")
 
 
 
@@ -597,11 +599,6 @@ class Deadline(commands.Cog):
 # -------------------------------------
 def setup(bot):
     n = Deadline(bot)
-    loop = asyncio.get_event_loop()
-
-    WHEN = time(18, 0, 0)  # 6:00 PM
-
-    # loop.create_task(n.delete_old_reminders())
     n.send_reminders_day.start()
     n.send_reminders_hour.start()
     bot.add_cog(n)
