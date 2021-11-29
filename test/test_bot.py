@@ -73,6 +73,13 @@ async def test_groupError(bot):
 # -----------------------
 @pytest.mark.asyncio
 async def test_deadline(bot):
+    # create instuctor user
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    irole = await guild.create_role(name="Instructor")
+    await irole.edit(permissions=discord.Permissions(8))
+    role = discord.utils.get(guild.roles, name="Instructor")
+    await dpytest.add_role(user, role)
     # Clear our reminders: Only if testing fails and leaves a reminders.JSON file with values behind
     # await dpytest.message("$clearreminders")
     # assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
@@ -105,6 +112,13 @@ async def test_deadline(bot):
 # --------------------------------
 @pytest.mark.asyncio
 async def test_listreminders(bot):
+    # create instuctor user
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    irole = await guild.create_role(name="Instructor")
+    await irole.edit(permissions=discord.Permissions(8))
+    role = discord.utils.get(guild.roles, name="Instructor")
+    await dpytest.add_role(user, role)
     # Test listing multiple reminders
     await dpytest.message("$addhw CSC505 DANCE SEP 21 2050 10:00")
     assert dpytest.verify().message().contains().content(
@@ -134,6 +148,13 @@ async def test_listreminders(bot):
 # ------------------------------
 @pytest.mark.asyncio
 async def test_duethisweek(bot):
+    # create instuctor user
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    irole = await guild.create_role(name="Instructor")
+    await irole.edit(permissions=discord.Permissions(8))
+    role = discord.utils.get(guild.roles, name="Instructor")
+    await dpytest.add_role(user, role)
     # Try adding a reminder due in an hour
     now = datetime.now() + timedelta(hours=1)
     dt_string = now.strftime("%b %d %Y %H:%M")
@@ -152,6 +173,13 @@ async def test_duethisweek(bot):
 # ------------------------------
 @pytest.mark.asyncio
 async def test_duetoday(bot):
+    # create instuctor user
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    irole = await guild.create_role(name="Instructor")
+    await irole.edit(permissions=discord.Permissions(8))
+    role = discord.utils.get(guild.roles, name="Instructor")
+    await dpytest.add_role(user, role)
     # Try adding a reminder due in an hour
     now = datetime.now() + timedelta(hours=1)
     dt_string = now.strftime("%b %d %Y %H:%M")
@@ -170,6 +198,13 @@ async def test_duetoday(bot):
 # ------------------------------
 @pytest.mark.asyncio
 async def test_overdue(bot):
+    # create instuctor user
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    irole = await guild.create_role(name="Instructor")
+    await irole.edit(permissions=discord.Permissions(8))
+    role = discord.utils.get(guild.roles, name="Instructor")
+    await dpytest.add_role(user, role)
     # Try adding a reminder due in the past
     await dpytest.message('$addhw CSC600 HW0 SEP 21 2000 10:00')
     assert dpytest.verify().message().contains().content(
