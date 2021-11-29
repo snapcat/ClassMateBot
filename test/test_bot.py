@@ -904,7 +904,6 @@ async def test_poll(bot):
     assert len(msg.reactions) == 1
 
 
-
 # --------------------------------
 # Test polling: quizpoll
 # --------------------------------
@@ -954,3 +953,4 @@ async def test_quizpoll(bot):
     # Test quizpoll embed
     await dpytest.message("$quizpoll \"TITLE\" [a] [b] [c]")
     assert dpytest.verify().message().embed(e)
+
