@@ -81,6 +81,7 @@ class Deadline(commands.Cog):
     #    Outputs: returns either an error stating a reason for failure or returns a success message
     #          indicating that the reminder has been added
     # -----------------------------------------------------------------------------------------------------------------
+    @commands.has_role('Instructor')
     @commands.command(name="addhw",
                       help="add homework and due-date $addhw CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) optional(TIMEZONE)"
                       "ex. $addhw CSC510 HW2 SEP 25 2024 17:02 EST")
@@ -139,7 +140,7 @@ class Deadline(commands.Cog):
     #    Outputs: returns either an error stating a reason for failure or
     #          returns a success message indicating that the reminder has been deleted
     # -----------------------------------------------------------------------------------------------------------------
-
+    @commands.has_role('Instructor')
     @commands.command(name="deletereminder", pass_context=True,
                       help="delete a specific reminder using course name and homework name using "
                       "$deletereminder CLASSNAME HW_NAME ex. $deletereminder CSC510 HW2 ")
@@ -190,6 +191,7 @@ class Deadline(commands.Cog):
     #    Outputs: returns either an error stating a reason for failure or
     #          returns a success message indicating that the reminder has been updated
     # -----------------------------------------------------------------------------------------------------------------
+    @commands.has_role('Instructor')
     @commands.command(name="changeduedate", pass_context=True,
                       help="update the assignment date. $changeduedate CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) optional(TIMEZONE)"
                       "ex. $changeduedate CSC510 HW2 SEP 25 2024 17:02 EST")
@@ -595,6 +597,6 @@ class Deadline(commands.Cog):
 # -------------------------------------
 def setup(bot):
     n = Deadline(bot)
-    n.send_reminders_day.start()
-    n.send_reminders_hour.start()
+    n.send_reminders_day.start()    # pylint: disable=no-member
+    n.send_reminders_hour.start()   # pylint: disable=no-member
     bot.add_cog(n)
