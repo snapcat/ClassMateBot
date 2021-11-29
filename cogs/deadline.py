@@ -16,8 +16,6 @@ import discord
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import db
 
-bot = commands.Bot("!")
-
 class Deadline(commands.Cog):
 
     def __init__(self, bot):
@@ -38,8 +36,7 @@ class Deadline(commands.Cog):
                            "datetime notifications $timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02")
     async def timenow(self, ctx, *, date: str):
         try:
-            duedate = parser.parse(date)
-            print(duedate)
+            input_time = parser.parse(date)
         except ValueError:
             await ctx.send("Due date could not be parsed")
             return
@@ -92,7 +89,6 @@ class Deadline(commands.Cog):
 
         try:
             duedate = parser.parse(date)
-            print(duedate)
         except ValueError:
             await ctx.send("Due date could not be parsed")
             return
@@ -558,10 +554,9 @@ class Deadline(commands.Cog):
                 difference = due_date - datetime.now(timezone.utc)
                 await channel.send(f"{homework} for {course} is due in {(difference.seconds//3600)} hours")
 
-    
     # -----------------------------------------------------------------------------------------------------
     #    Function: bofore(self)
-    #    Description: runs once per day and waits until 8:00 AM EST to send reminders via the send 
+    #    Description: runs once per day and waits until 8:00 AM EST to send reminders via the send
     #       reminders day function
     #    Inputs:
     #    - self: used to access parameters passed to the class through the constructor
@@ -570,10 +565,13 @@ class Deadline(commands.Cog):
     async def before(self):
         WHEN = time(13, 0, 0) # 8:00 AM eastern
         now = datetime.utcnow()
-        target_time = datetime.combine(now.date(), WHEN) 
+        target_time = datetime.combine(now.date(), WHEN)
         seconds_until_target = (target_time - now).total_seconds()
-        await asyncio.sleep(seconds_until_target)  
-            
+        if seconds_until_target < 0:
+            target_time = datetime.combine(now.date()+timedelta(days=1), WHEN)
+            seconds_until_target = (target_time - now).total_seconds()
+        await asyncio.sleep(seconds_until_target)
+
     # -----------------------------------------------------------------------------------------------------
     #    Function: send_reminders_hour(self)
     #    Description: task that runs once per hours and sends a reminders for assignments due
@@ -591,8 +589,6 @@ class Deadline(commands.Cog):
                 difference = due_date - datetime.now(timezone.utc)
                 if difference.seconds//3600 == 0:
                     await channel.send(f"{homework} for {course} is due within the hour")
-
-
 
 # -------------------------------------
 # add the file to the bot's cog system
