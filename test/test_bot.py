@@ -117,7 +117,7 @@ async def test_listreminders(bot):
     assert dpytest.verify().message().contains().content(
         "CSC505 homework named: DANCE which is due on:")
     assert dpytest.verify().message().contains().content(
-        "CSC510 homework named: HW1 which is due on")
+        "CSC510 homework named: HW1 which is due on:")
     # Test $coursedue
     await dpytest.message("$coursedue CSC505")
     assert dpytest.verify().message().contains().content(
@@ -146,6 +146,43 @@ async def test_duethisweek(bot):
     # Clear reminders at the end of testing since we're using a local JSON file to store them
     await dpytest.message("$clearreminders")
     assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
+
+# ------------------------------
+# Tests reminders due today
+# ------------------------------
+@pytest.mark.asyncio
+async def test_duetoday(bot):
+    # Try adding a reminder due in an hour
+    now = datetime.now() + timedelta(hours=1)
+    dt_string = now.strftime("%b %d %Y %H:%M")
+    await dpytest.message(f'$addhw CSC600 HW0 {dt_string}')
+    assert dpytest.verify().message().contains().content(
+        "A date has been added for: CSC600 homework named: HW0")
+    # Check to see that the reminder is due today
+    await dpytest.message("$duetoday")
+    assert dpytest.verify().message().contains().content("CSC600 HW0 is due ")
+    # Clear reminders at the end of testing since we're using a local JSON file to store them
+    await dpytest.message("$clearreminders")
+    assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
+
+# ------------------------------
+# Tests overdue reminders
+# ------------------------------
+@pytest.mark.asyncio
+async def test_overdue(bot):
+    # Try adding a reminder due in the past
+    await dpytest.message('$addhw CSC600 HW0 SEP 21 2000 10:00')
+    assert dpytest.verify().message().contains().content(
+        "A date has been added for: CSC600 homework named: HW0")
+    # Check to see that the reminder is overdue
+    await dpytest.message("$overdue")
+    assert dpytest.verify().message().contains().content("CSC600 homework named: HW0 which was due on: Sep 21 2000 10:00:00+0000")
+    # Clear reminders at the end of testing since we're using a local JSON file to store them
+    await dpytest.message("$clearoverdue")
+    assert dpytest.verify().message().contains().content("All overdue reminders have been cleared..!!")
+    # Confirm overdue was removed
+    await dpytest.message("$overdue")
+    assert dpytest.verify().message().contains().content("There are no overdue reminders")
 
 
 # --------------------
