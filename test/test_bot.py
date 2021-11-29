@@ -157,6 +157,7 @@ async def test_duethisweek(bot):
 # --------------------
 @pytest.mark.asyncio
 async def test_pinning(bot):
+  
     # Test pinning a message
     await dpytest.message("$pin TestMessage www.google.com this is a test")
     # print(dpytest.get_message().content)
@@ -169,12 +170,12 @@ async def test_pinning(bot):
     #clean up
     #await dpytest.message("$unpin TestMessage")
 
-
 # ----------------
 # Tests unpinning
 # ----------------
 @pytest.mark.asyncio
 async def test_unpinning(bot):
+  
     # Test pinning a message
     await dpytest.message("$pin TestMessage www.google.com this is a test")
     assert dpytest.verify().message().contains().content(
@@ -190,28 +191,120 @@ async def test_unpinning(bot):
     await dpytest.message("$unpin TestMessage")
     assert dpytest.verify().message().contains().content(
         "2 pinned message(s) has been deleted with tag: TestMessage")
+
+# ---------------------
+# Tests updating pins
+# ---------------------
+@pytest.mark.asyncio
+async def test_updatepin(bot):
+
     # Tests adding another message to update pins
     await dpytest.message("$pin TestMessage2 www.discord.com test")
     assert dpytest.verify().message().contains().content(
         "A new message has been pinned with tag: TestMessage2 and description: www.discord.com test")
+    # Tests updatepin
     await dpytest.message("$updatepin TestMessage2 www.zoom.com test")
     assert dpytest.verify().message().contains().content(
         "1 pinned message(s) has been deleted with tag: TestMessage2")
     assert dpytest.verify().message().contains().content(
         "A new message has been pinned with tag: TestMessage2 and description: www.zoom.com test")
 
+    # Tests updating a non-existent pin
+    await dpytest.message("$updatepin Tag Test")
+    # Confirm no message exists
+    assert dpytest.verify().message().contains().content(
+        "No message found with the combination of tagname: Tag, and author:")
+    # Ensure that a message is pinned.
+    assert dpytest.verify().message().contains().content(
+        "A new message has been pinned with tag: Tag and description: Test")
 
-# ----------------------
-# Tests invalid pinning
-# ----------------------
+# ------------------------
+# Tests pinnedmessages
+# ------------------------
 @pytest.mark.asyncio
-async def test_pinError(bot):
-    # Tests pinning without a message, will fail
+async def test_pinnedmessages(bot):
+
+    # Tests getting pins by tag: no pinned messages
+    await dpytest.message("$pinnedmessages TestTag")
+    assert dpytest.verify().message().contains().content(
+        "No messages found with the given tagname and author combination")
+
+    # pin and dequeue
+    await dpytest.message("$pin Tag1 never gonna give you up")
+    assert dpytest.verify().message().contains().content(
+        "A new message has been pinned with tag: Tag1 and description: never gonna give you up")
+    # pin and dequeue
+    await dpytest.message("$pin Tag1 never gonna let you down")
+    assert dpytest.verify().message().contains().content(
+        "A new message has been pinned with tag: Tag1 and description: never gonna let you down")
+    # pin and dequeue
+    await dpytest.message("$pin Tag2 never gonna run around and desert you")
+    assert dpytest.verify().message().contains().content(
+        "A new message has been pinned with tag: Tag2 and description: never gonna run around and desert you")
+    
+    # Tests getting pins by tag
+    await dpytest.message("$pinnedmessages Tag1")
+    assert dpytest.verify().message().contains().content(
+        "Tag: Tag1, Description: never gonna give you up")
+    assert dpytest.verify().message().contains().content(
+        "Tag: Tag1, Description: never gonna let you down")
+
+    # Tests getting all pins
+    await dpytest.message("$pinnedmessages")
+    assert dpytest.verify().message().contains().content(
+        "Tag: Tag1, Description: never gonna give you up")
+    assert dpytest.verify().message().contains().content(
+        "Tag: Tag1, Description: never gonna let you down")
+    assert dpytest.verify().message().contains().content(
+        "Tag: Tag2, Description: never gonna run around and desert you")
+    
+    
+
+# ------------------------
+# Tests pin-related errors
+# ------------------------
+@pytest.mark.asyncio
+async def test_pinningErrors(bot):
+
+    # Tests pinning without a message
     with pytest.raises(commands.MissingRequiredArgument):
         await dpytest.message("$pin")
-    assert dpytest.verify().message().content(
+    assert dpytest.verify().message().contains().content(
         "To use the pin command, do: $pin TAGNAME DESCRIPTION \n ( For example: $pin HW8 https://"
         "discordapp.com/channels/139565116151562240/139565116151562240/890813190433292298 HW8 reminder )")
+
+    # Tests unpinning without a message
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$unpin")
+    assert dpytest.verify().message().contains().content(
+        'To use the unpin command, do: $unpin TAGNAME \n ( For example: $unpin HW8 )')
+
+    # Tests updating a pin with invalid input
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$updatepin")
+    assert dpytest.verify().message().contains().content(
+        "To use the updatepin command, do: $pin TAGNAME DESCRIPTION \n ( $updatepin HW8 https://discordapp"
+        ".com/channels/139565116151562240/139565116151562240/890814489480531969 HW8 reminder )")
+
+    # Tests using pinnedmessages with invalid input
+    #with pytest.raises(commands.CommandError):
+        #await dpytest.message("$pinnedmessages \" please fail omg")
+    #assert dpytest.verify().message().contains().content(
+        #"To use the pinnedmessages command, do: $pinnedmessages:"
+        #" TAGNAME \n ( For example: $pinnedmessages HW8 )")
+
+    # The above test requires the else statement below to be included
+    # in pinning.py's retrieveMessages_error function.
+
+    #@retrieveMessages.error
+    #async def retrieveMessages_error(self, ctx, error):
+        #if isinstance(error, commands.MissingRequiredArgument):
+        # ...
+        #else:
+            #await ctx.send(
+                #"To use the pinnedmessages command, do: $pinnedmessages:"
+                #" TAGNAME \n ( For example: $pinnedmessages HW8 )")
+        #print(error)
 
 
 # --------------------
