@@ -102,6 +102,12 @@ async def test_deadline(bot):
     await dpytest.message("$addhw CSC510 HW1 DEC 21 2050 19:59")
     assert dpytest.verify().message().contains().content(
         "A date has been added for: CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
+
+    # Test adding an assignment twice
+    await dpytest.message("$addhw CSC510 HW1 DEC 21 2050 19:59")
+    assert dpytest.verify().message().contains().content(
+        "This homework has already been added..!!")
+
     # Clear reminders at the end of testing since we're using a local JSON file to store them
     await dpytest.message("$clearreminders")
     assert dpytest.verify().message().content("All reminders have been cleared..!!")
@@ -218,6 +224,46 @@ async def test_overdue(bot):
     # Confirm overdue was removed
     await dpytest.message("$overdue")
     assert dpytest.verify().message().contains().content("There are no overdue reminders")
+
+# ------------------------------
+# Tests deadline errors
+# ------------------------------
+@pytest.mark.asyncio
+async def test_deadline_errors(bot):
+    # create instuctor user
+    user = dpytest.get_config().members[0]
+    guild = dpytest.get_config().guilds[0]
+    irole = await guild.create_role(name="Instructor")
+    await irole.edit(permissions=discord.Permissions(8))
+    role = discord.utils.get(guild.roles, name="Instructor")
+    await dpytest.add_role(user, role)
+
+    # Tests timenow without an argument
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$timenow")
+    assert dpytest.verify().message().content(
+            "To use the timenow command (with current time), do: "
+            "$timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02")
+
+    # Tests deletereminder without an argument
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$deletereminder")
+    assert dpytest.verify().message().content(
+            'To use the deletereminder command, do: $deletereminder CLASSNAME HW_NAME \n '
+            '( For example: $deletereminder CSC510 HW2 )')
+
+    # Tests changeduedate without an argument
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$changeduedate")
+    assert dpytest.verify().message().content(
+            'To use the changeduedate command, do: $changeduedate CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) optional(TIMEZONE)\n'
+            ' ( For example: $changeduedate CSC510 HW2 SEP 25 2024 17:02 EST)')
+
+    # Tests coursedue without an argument
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$coursedue")
+    assert dpytest.verify().message().content(
+            'To use the coursedue command, do: $coursedue CLASSNAME \n ( For example: $coursedue CSC510 )')
 
 
 # --------------------
