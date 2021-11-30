@@ -181,8 +181,8 @@ async def test_duetoday(bot):
     role = discord.utils.get(guild.roles, name="Instructor")
     await dpytest.add_role(user, role)
     # Try adding a reminder due in an hour
-    now = datetime.now() + timedelta(minutes=10)
-    dt_string = now.strftime("%b %d %Y %H:%M %z")
+    now = datetime.now() + timedelta(hours=6)
+    dt_string = now.strftime("%b %d %Y %H:%M")
     await dpytest.message(f'$addhw CSC600 HW0 {dt_string}')
     assert dpytest.verify().message().contains().content(
         "A date has been added for: CSC600 homework named: HW0")

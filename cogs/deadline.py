@@ -246,7 +246,7 @@ class Deadline(commands.Cog):
         reminders = db.query(
             "SELECT course, homework, due_date "
             "FROM reminders "
-            "WHERE guild_id = %s AND date_part('day', due_date - now()) <= 7 AND due_date < now()",
+            "WHERE guild_id = %s AND date_part('day', due_date - now()) <= 7 AND date_part('minute', due_date - now()) >= 0",
             (ctx.guild.id,)
         )
 
@@ -289,7 +289,7 @@ class Deadline(commands.Cog):
         due_today = db.query(
             "SELECT course, homework, due_date "
             "FROM reminders "
-            "WHERE guild_id = %s AND date_part('day', due_date - now()) <= 1 AND due_date < now()",
+            "WHERE guild_id = %s AND date_part('day', due_date - now()) <= 1 AND date_part('minute', due_date - now()) >= 0",
             (ctx.guild.id,)
         )
         for course, homework, due_date in due_today:
