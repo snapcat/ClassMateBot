@@ -245,6 +245,26 @@ async def test_deadline_errors(bot):
             "To use the timenow command (with current time), do: "
             "$timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02")
 
+    # Test timenow with bad argument
+    #with pytest.raises(commands.MissingRequiredArgument):
+    await dpytest.message("$timenow blab")
+    assert dpytest.verify().message().content(
+            "Due date could not be parsed")
+
+    # Test addhw with bad argument
+    #with pytest.raises(commands.MissingRequiredArgument):
+    await dpytest.message("$addhw blab blab blab")
+    assert dpytest.verify().message().content(
+            "Due date could not be parsed")
+
+    # Tests addhw without an argument
+    with pytest.raises(commands.MissingRequiredArgument):
+        await dpytest.message("$addhw")
+    assert dpytest.verify().message().content(
+            'To use the addhw command, do: $addhw CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) optional(TIMEZONE)\n '
+            '( For example: $addhw CSC510 HW2 SEP 25 2024 17:02 EST )')
+
+
     # Tests deletereminder without an argument
     with pytest.raises(commands.MissingRequiredArgument):
         await dpytest.message("$deletereminder")
@@ -252,12 +272,20 @@ async def test_deadline_errors(bot):
             'To use the deletereminder command, do: $deletereminder CLASSNAME HW_NAME \n '
             '( For example: $deletereminder CSC510 HW2 )')
 
+
+
     # Tests changeduedate without an argument
     with pytest.raises(commands.MissingRequiredArgument):
         await dpytest.message("$changeduedate")
     assert dpytest.verify().message().content(
             'To use the changeduedate command, do: $changeduedate CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) optional(TIMEZONE)\n'
             ' ( For example: $changeduedate CSC510 HW2 SEP 25 2024 17:02 EST)')
+
+    # Test changeduedate with bad argument
+    #with pytest.raises(commands.MissingRequiredArgument):
+    await dpytest.message("$changeduedate blab blab blab")
+    assert dpytest.verify().message().content(
+            "Due date could not be parsed")
 
     # Tests coursedue without an argument
     with pytest.raises(commands.MissingRequiredArgument):
