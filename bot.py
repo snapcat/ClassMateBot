@@ -50,9 +50,6 @@ async def on_guild_join(guild):
             if 'q-and-a' not in guild.text_channels:
                 await guild.create_text_channel('q-and-a')
                 await channel.send("q-and-a channel has been added!")
-            if 'reminders' not in guild.text_channels:
-                await guild.create_text_channel('reminders')
-                await channel.send("reminders channel has been added!")
 
             if discord.utils.get(guild.roles, name="verified") is None:
                 await guild.create_role(name="verified", colour=discord.Colour(0x2ecc71),

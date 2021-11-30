@@ -73,13 +73,6 @@ async def test_groupError(bot):
 # -----------------------
 @pytest.mark.asyncio
 async def test_deadline(bot):
-    # create instuctor user
-    user = dpytest.get_config().members[0]
-    guild = dpytest.get_config().guilds[0]
-    irole = await guild.create_role(name="Instructor")
-    await irole.edit(permissions=discord.Permissions(8))
-    role = discord.utils.get(guild.roles, name="Instructor")
-    await dpytest.add_role(user, role)
     # Clear our reminders: Only if testing fails and leaves a reminders.JSON file with values behind
     # await dpytest.message("$clearreminders")
     # assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
@@ -102,12 +95,6 @@ async def test_deadline(bot):
     await dpytest.message("$addhw CSC510 HW1 DEC 21 2050 19:59")
     assert dpytest.verify().message().contains().content(
         "A date has been added for: CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
-
-    # Test adding an assignment twice
-    await dpytest.message("$addhw CSC510 HW1 DEC 21 2050 19:59")
-    assert dpytest.verify().message().contains().content(
-        "This homework has already been added..!!")
-
     # Clear reminders at the end of testing since we're using a local JSON file to store them
     await dpytest.message("$clearreminders")
     assert dpytest.verify().message().content("All reminders have been cleared..!!")
@@ -118,13 +105,6 @@ async def test_deadline(bot):
 # --------------------------------
 @pytest.mark.asyncio
 async def test_listreminders(bot):
-    # create instuctor user
-    user = dpytest.get_config().members[0]
-    guild = dpytest.get_config().guilds[0]
-    irole = await guild.create_role(name="Instructor")
-    await irole.edit(permissions=discord.Permissions(8))
-    role = discord.utils.get(guild.roles, name="Instructor")
-    await dpytest.add_role(user, role)
     # Test listing multiple reminders
     await dpytest.message("$addhw CSC505 DANCE SEP 21 2050 10:00")
     assert dpytest.verify().message().contains().content(
@@ -132,16 +112,20 @@ async def test_listreminders(bot):
     # Test setting a 2nd reminder
     await dpytest.message("$addhw CSC510 HW1 DEC 21 2050 19:59")
     assert dpytest.verify().message().contains().content(
-        "A date has been added for: CSC510 homework named: HW1 which is due on: ")
+        "A date has been added for: CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
     await dpytest.message("$listreminders")
     assert dpytest.verify().message().contains().content(
-        "CSC505 homework named: DANCE which is due on:")
+        "CSC505 homework named: DANCE which is due on: 2050-09-21 10:00:00")
     assert dpytest.verify().message().contains().content(
-        "CSC510 homework named: HW1 which is due on:")
+        "CSC510 homework named: HW1 which is due on: 2050-12-21 19:59:00")
     # Test $coursedue
     await dpytest.message("$coursedue CSC505")
     assert dpytest.verify().message().contains().content(
-        "DANCE is due at ")
+        "DANCE is due at 2050-09-21 10:00:00")
+    # Try to change the due date of DANCE to something impossible
+    await dpytest.message("$changeduedate CSC505 DANCE 4")
+    assert dpytest.verify().message().contains().content(
+        "Due date could not be parsed")
     # Clear reminders at the end of testing since we're using a local JSON file to store them
     await dpytest.message("$clearreminders")
     assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
@@ -154,13 +138,6 @@ async def test_listreminders(bot):
 # ------------------------------
 @pytest.mark.asyncio
 async def test_duethisweek(bot):
-    # create instuctor user
-    user = dpytest.get_config().members[0]
-    guild = dpytest.get_config().guilds[0]
-    irole = await guild.create_role(name="Instructor")
-    await irole.edit(permissions=discord.Permissions(8))
-    role = discord.utils.get(guild.roles, name="Instructor")
-    await dpytest.add_role(user, role)
     # Try adding a reminder due in an hour
     now = datetime.now() + timedelta(hours=1)
     dt_string = now.strftime("%b %d %Y %H:%M")
@@ -169,129 +146,10 @@ async def test_duethisweek(bot):
         "A date has been added for: CSC600 homework named: HW0")
     # Check to see that the reminder is due this week
     await dpytest.message("$duethisweek")
-    assert dpytest.verify().message().contains().content("CSC600 HW0 is due ")
+    assert dpytest.verify().message().contains().content("CSC600 HW0 is due this week")
     # Clear reminders at the end of testing since we're using a local JSON file to store them
     await dpytest.message("$clearreminders")
     assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
-
-# ------------------------------
-# Tests reminders due today
-# ------------------------------
-@pytest.mark.asyncio
-async def test_duetoday(bot):
-    # create instuctor user
-    user = dpytest.get_config().members[0]
-    guild = dpytest.get_config().guilds[0]
-    irole = await guild.create_role(name="Instructor")
-    await irole.edit(permissions=discord.Permissions(8))
-    role = discord.utils.get(guild.roles, name="Instructor")
-    await dpytest.add_role(user, role)
-    # Try adding a reminder due in an hour
-    now = datetime.now() + timedelta(hours=6)
-    dt_string = now.strftime("%b %d %Y %H:%M")
-    await dpytest.message(f'$addhw CSC600 HW0 {dt_string}')
-    assert dpytest.verify().message().contains().content(
-        "A date has been added for: CSC600 homework named: HW0")
-    # Check to see that the reminder is due today
-    await dpytest.message("$duetoday")
-    assert dpytest.verify().message().contains().content("CSC600 HW0 is due ")
-    # Clear reminders at the end of testing since we're using a local JSON file to store them
-    await dpytest.message("$clearreminders")
-    assert dpytest.verify().message().contains().content("All reminders have been cleared..!!")
-
-# ------------------------------
-# Tests overdue reminders
-# ------------------------------
-@pytest.mark.asyncio
-async def test_overdue(bot):
-    # create instuctor user
-    user = dpytest.get_config().members[0]
-    guild = dpytest.get_config().guilds[0]
-    irole = await guild.create_role(name="Instructor")
-    await irole.edit(permissions=discord.Permissions(8))
-    role = discord.utils.get(guild.roles, name="Instructor")
-    await dpytest.add_role(user, role)
-    # Try adding a reminder due in the past
-    await dpytest.message('$addhw CSC600 HW0 SEP 21 2000 10:00')
-    assert dpytest.verify().message().contains().content(
-        "A date has been added for: CSC600 homework named: HW0")
-    # Check to see that the reminder is overdue
-    await dpytest.message("$overdue")
-    assert dpytest.verify().message().contains().content("CSC600 homework named: HW0 which was due on: Sep 21 2000 10:00:00+0000")
-    # Clear reminders at the end of testing since we're using a local JSON file to store them
-    await dpytest.message("$clearoverdue")
-    assert dpytest.verify().message().contains().content("All overdue reminders have been cleared..!!")
-    # Confirm overdue was removed
-    await dpytest.message("$overdue")
-    assert dpytest.verify().message().contains().content("There are no overdue reminders")
-
-# ------------------------------
-# Tests deadline errors
-# ------------------------------
-@pytest.mark.asyncio
-async def test_deadline_errors(bot):
-    # create instuctor user
-    user = dpytest.get_config().members[0]
-    guild = dpytest.get_config().guilds[0]
-    irole = await guild.create_role(name="Instructor")
-    await irole.edit(permissions=discord.Permissions(8))
-    role = discord.utils.get(guild.roles, name="Instructor")
-    await dpytest.add_role(user, role)
-
-    # Tests timenow without an argument
-    with pytest.raises(commands.MissingRequiredArgument):
-        await dpytest.message("$timenow")
-    assert dpytest.verify().message().content(
-            "To use the timenow command (with current time), do: "
-            "$timenow MMM DD YYYY HH:MM ex. $timenow SEP 25 2024 17:02")
-
-    # Test timenow with bad argument
-    #with pytest.raises(commands.MissingRequiredArgument):
-    await dpytest.message("$timenow blab")
-    assert dpytest.verify().message().content(
-            "Due date could not be parsed")
-
-    # Test addhw with bad argument
-    #with pytest.raises(commands.MissingRequiredArgument):
-    await dpytest.message("$addhw blab blab blab")
-    assert dpytest.verify().message().content(
-            "Due date could not be parsed")
-
-    # Tests addhw without an argument
-    with pytest.raises(commands.MissingRequiredArgument):
-        await dpytest.message("$addhw")
-    assert dpytest.verify().message().content(
-            'To use the addhw command, do: $addhw CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) optional(TIMEZONE)\n '
-            '( For example: $addhw CSC510 HW2 SEP 25 2024 17:02 EST )')
-
-
-    # Tests deletereminder without an argument
-    with pytest.raises(commands.MissingRequiredArgument):
-        await dpytest.message("$deletereminder")
-    assert dpytest.verify().message().content(
-            'To use the deletereminder command, do: $deletereminder CLASSNAME HW_NAME \n '
-            '( For example: $deletereminder CSC510 HW2 )')
-
-
-
-    # Tests changeduedate without an argument
-    with pytest.raises(commands.MissingRequiredArgument):
-        await dpytest.message("$changeduedate")
-    assert dpytest.verify().message().content(
-            'To use the changeduedate command, do: $changeduedate CLASSNAME HW_NAME MMM DD YYYY optional(HH:MM) optional(TIMEZONE)\n'
-            ' ( For example: $changeduedate CSC510 HW2 SEP 25 2024 17:02 EST)')
-
-    # Test changeduedate with bad argument
-    #with pytest.raises(commands.MissingRequiredArgument):
-    await dpytest.message("$changeduedate blab blab blab")
-    assert dpytest.verify().message().content(
-            "Due date could not be parsed")
-
-    # Tests coursedue without an argument
-    with pytest.raises(commands.MissingRequiredArgument):
-        await dpytest.message("$coursedue")
-    assert dpytest.verify().message().content(
-            'To use the coursedue command, do: $coursedue CLASSNAME \n ( For example: $coursedue CSC510 )')
 
 
 # --------------------
