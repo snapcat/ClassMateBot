@@ -50,6 +50,15 @@ async def test_groupJoin(bot):
     await dpytest.message("$leave")
     assert dpytest.verify().message().content("You are not in a group!")
 
+    # Reset Groups
+    await dpytest.message("$reset")
+    print(dpytest.get_message())
+    assert dpytest.verify().message().content("Roles deleted!")
+
+    await dpytest.message('$startupgroups')
+    print(dpytest.get_message())
+
+    await dpytest.message('$connect')
 
 # ------------------------------------
 # Tests cogs/groups.py error handling
