@@ -1,4 +1,4 @@
-# About $duetoday
+# About $duetoday _(Project 3 Update)_
 This command lets the user display all the homeworks that are due today for all the courses. 
 
 # Location of Code
@@ -16,6 +16,6 @@ enter the command '$duetoday' with no other parameters:
 ```
 $duetoday
 ```
-Successful execution of this command will display all the homeworks that are due on that day.
+Successful execution of this command will display all the homeworks that are due on that day with time delta.
 
-![$duetoday](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/duetoday.gif)
+<img width="855" alt="Screen Shot 2021-12-04 at 10 03 39 AM" src="https://user-images.githubusercontent.com/78971563/144714806-5f36e62e-3e3e-4a47-9e14-b6419f1463d1.png">

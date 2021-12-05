@@ -1,8 +1,18 @@
-# About $ask _(New Project 2 Command)_
+# About $ask _(Modified in project 3)_
 This command lets users ask a question in the #q-and-a channel. The questions are automatically numbered and can be asked anonymously or display the author.
 
+## Changes
+
+This command was introduced by [SE21-Team2](https://github.com/SE21-Team2/ClassMateBot/).  
+
+Changes made by [CSC510-Group-25](https://github.com/CSC510-Group-25/ClassMateBot/):  
+
+* Users can now use anon instead of anonymous (though anonymous still works)
+* Users cannot ask empty/blank/whitespace only questions
+
+
 # Location of Code
-The code that implements the above mentioned functionality is located in [cogs/qanda.py](https://github.com/SE21-Team2/ClassMateBot/blob/main/cogs/qanda.py).
+The code that implements the above mentioned functionality is located in [cogs/qanda.py](https://github.com/CSC510-Group-25/ClassMateBot/blob/main/cogs/qanda.py).
 
 # Code Description
 ## Functions

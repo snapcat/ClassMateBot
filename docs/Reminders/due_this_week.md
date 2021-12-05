@@ -1,4 +1,4 @@
-# About $duethisweek
+# About $duethisweek _(Project 3 Update)_
 This command lets the user display all the homeworks that are due this week for all the courses. 
 
 # Location of Code
@@ -16,6 +16,6 @@ enter the command '$duethisweek' with no other parameters:
 ```
 $duethisweek
 ```
-Successful execution of this command will display all the homeworks that are due this week.
+Successful execution of this command will display all the homeworks that are due this week with time delta.
 
-![$duethisweek](https://github.com/SE21-Team2/ClassMateBot/blob/main/data/media/duethisweek.gif)
+<img width="769" alt="Screen Shot 2021-12-04 at 10 19 24 AM" src="https://user-images.githubusercontent.com/78971563/144714876-4d3a7226-91f7-4b6e-8e1b-a15d45e1e3d0.png">
