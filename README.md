@@ -42,8 +42,14 @@
 
 ---
 
+Project 3 demo video:  
+
+Watch it on youtube! https://www.youtube.com/watch?v=KBBqUkOTuSo  
+
+Watch it here:  
 
 https://user-images.githubusercontent.com/89357283/144730581-46b85493-3f5c-4c65-9d3f-fbcfffc729a3.mp4
+
 
 
 ---
