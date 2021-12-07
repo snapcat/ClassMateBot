@@ -38,9 +38,26 @@ class Groups(commands.Cog):
         for i in range(100):
             role_name = "group_" + str(i)
             role = get(ctx.message.guild.roles, name=role_name)
+            if role is None:
+                continue
             await role.delete()
 
+        await ctx.author.send("Roles deleted!")
         print("Roles deleted!")
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: reset_error(self, ctx, error)
+    #    Description: prints error message for reset command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -------------------------------------------------------------------------------------------------------
+    @reset.error
+    async def reset_error(self, ctx, error):
+        await ctx.author.send(error)
+
 
     # -------------------------------------------------------------------------------------------------------
     #    Function: startupgroups(self, ctx)
@@ -62,6 +79,20 @@ class Groups(commands.Cog):
                 await ctx.guild.create_role(name=role_name)
 
         print("Roles created successfully!")
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: startupgroups_error(self, ctx, error)
+    #    Description: prints error message for startupgroups command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -------------------------------------------------------------------------------------------------------
+    @startupgroups.error
+    async def startupgroups_error(self, ctx, error):
+        await ctx.author.send(error)
+
 
     # -------------------------------------------------------------------------------------------------------
     #    Function: connect(self, ctx)
@@ -96,6 +127,19 @@ class Groups(commands.Cog):
             }
             group_channel_name = "group-" + str(group_num)
             await ctx.guild.create_text_channel(group_channel_name, overwrites=overwrites)
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: connect_error(self, ctx, error)
+    #    Description: prints error message for connect command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -------------------------------------------------------------------------------------------------------
+    @connect.error
+    async def connect_error(self, ctx, error):
+        await ctx.author.send(error)
 
     # -------------------------------------------------------------------------------------------------------
     #    Function: join(self, ctx, group_num='-1')
@@ -153,12 +197,23 @@ class Groups(commands.Cog):
 
         await ctx.send(f'You are now in Group {group_num}! There are now {group_count[0][0] + 1}/6 members.')
 
-    # this handles errors related to the join command
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: join_error(self, ctx, error)
+    #    Description: prints error message for join command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -------------------------------------------------------------------------------------------------------
     @join.error
     async def join_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('To use the join command, do: $join <Num> \n ( For example: $join 0 )')
-        print(error)
+        else:
+            await ctx.author.send(error)
+            #await ctx.message.delete()
+            print(error)
 
     # -------------------------------------------------------------------------------------------------------
     #    Function: leave(self, ctx)
@@ -195,6 +250,23 @@ class Groups(commands.Cog):
         else:
             await ctx.send('You are not in a group!')
 
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: leave_error(self, ctx, error)
+    #    Description: prints error message for leave command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -------------------------------------------------------------------------------------------------------
+    @leave.error
+    async def leave_error(self, ctx, error):
+        await ctx.author.send(error)
+        #await ctx.message.delete()
+        print(error)
+
+
     # -------------------------------------------------------------------------------------------------------
     #    Function: group(self, ctx)
     #    Description: prints the list of groups
@@ -224,6 +296,22 @@ class Groups(commands.Cog):
         # print the embedded objects
         embed.set_footer(text="Number Represents the Group Size")
         await ctx.send(embed=embed)
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: groups_error(self, ctx, error)
+    #    Description: prints error message for groups command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -------------------------------------------------------------------------------------------------------
+    @groups.error
+    async def groups_error(self, ctx, error):
+        await ctx.author.send(error)
+        #await ctx.message.delete()
+        print(error)
+
 
         # -------------------------------------------------------------------------------------------------------
     #    Function: group(self, ctx, group_num)
@@ -276,6 +364,26 @@ class Groups(commands.Cog):
 
         # print the embedded objects
         await ctx.send(embed=embed)
+
+
+    # -------------------------------------------------------------------------------------------------------
+    #    Function: group_error(self, ctx, error)
+    #    Description: prints error message for group command
+    #    Inputs:
+    #       - ctx: context of the command
+    #       - error: error message
+    #    Outputs:
+    #       - Error details
+    # -------------------------------------------------------------------------------------------------------
+    @group.error
+    async def group_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('To use the group command, do: $group <Num> \n ( For example: $group 0 )')
+        else:
+            await ctx.author.send(error)
+            #await ctx.message.delete()
+            print(error)
+
 
     # -----------------------------------------------------------
     # This is a testing arg, not really used for anything else but adding to the csv file
